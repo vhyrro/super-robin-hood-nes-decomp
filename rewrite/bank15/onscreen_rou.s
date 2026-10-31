@@ -1,0 +1,1615 @@
+CHECKADDFLAMESETC:
+ldy ADDRESS9
+lda BLOCKROUS,Y
+beq PUTINNOWT
+sta TEMP1
+and #63
+sta TEMP
+tax
+lda ABLOCKROUS,X
+sta ADDRESS
+lda ABLOCKROUS + 1,X
+sta ADDRESS + 1
+ldx #NOOFONSCREENS - 1
+FINDASPACE:
+lda ONSCREENROU,X
+beq GOTSPACEONSCREEN
+FINDASPACE1:
+dex
+bpl FINDASPACE
+PUTINNOWT:
+rts
+GOTSPACEONSCREEN:
+bit TEMP1
+bvc @_1
+cpx #NOOFONSCREENS - 1
+beq FINDASPACE1
+lda ONSCREENROU + 1,X
+bne FINDASPACE1
+@_1:
+lda TEMP
+sta ONSCREENROU,X
+lda #0
+sta ONSCREENCOUNT1,X
+sta ONSCREENCOUNT2,X
+jmp (ADDRESS)
+ABLOCKROUS:
+BNOWT = 0
+.word PUTINNOWT
+BFLAM = 2
+.word PUTINFLAMES
+BSPIT = 4
+.word PUTINSPIT
+BEYES = 6
+.word PUTINEYES
+BDRIP = 8
+.word PUTINDRIP
+BTRAM = 10
+.word PUTINTRAMP
+BDRDN = 12 + 128
+.word PUTINDRILLDOWN
+BDRUP = 14 + 128
+.word PUTINDRILLUP
+BBAT = 16 + 128 + 64
+.word PUTINBAT
+BRAT = 18 + 128
+.word PUTINRAT
+BSPID = 20 + 128
+.word PUTINSPIDER
+BHART = 22 + 128
+.word PUTINHEART
+BBARR = 24 + 64
+.word PUTINBARREL
+BBLCK = 26 + 128
+.word PUTINBLOCK
+BCOIN = 28 + 128
+.word PUTINCOIN
+BLOCKROUS:
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $02
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $04
+.byte $04
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $02
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $02
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $06
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $94
+.byte $96
+.byte $58
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $8C
+.byte $8E
+.byte $0A
+.byte $00
+.byte $D0
+.byte $92
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $08
+.byte $9C
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $00
+.byte $02
+.byte $00
+UPDATEONSCREENS:
+ldy #NOOFONSCREENS - 1
+DOUPDATES:
+ldx ONSCREENROU,Y
+beq BACKFROMSCREENROU1
+cpx #255
+beq BACKFROMSCREENROU1
+sty ADDRESS9
+lda UPDATESCRROUS - 2,X
+sta ADDRESS
+lda UPDATESCRROUS + 1 - 2,X
+sta ADDRESS + 1
+jmp (ADDRESS)
+BACKFROMSCREENROU:
+ldy ADDRESS9
+BACKFROMSCREENROU1:
+dey
+bpl DOUPDATES
+rts
+UPDATESCRROUS:
+.word UPDATEFLAMES
+.word UPDATESPIT
+.word UPDATEEYES
+.word UPDATEDRIPS
+.word UPDATETRAMP
+.word UPDATEDRILLDOWN
+.word UPDATEDRILLUP
+.word UPDATEBAT
+.word UPDATERAT
+.word UPDATESPIDER
+.word UPDATEHEART
+.word UPDATEBARREL
+.word UPDATEBLOCK
+.word UPDATECOIN
+ONSCRXANDY0:
+lda #0
+ONSCRXANDY:
+ldy BLOCKX
+clc
+adc TIMES16LO - 1,Y
+sta ONSCREENXL,X
+lda TIMES16HI - 1,Y
+adc #0
+sta ONSCREENXH,X
+ldy BLOCKY
+lda TIMES16LO,Y
+sta ONSCREENY,X
+ldy #NOOFONSCREENS - 1
+@_1:
+sty TEMP
+cpx TEMP
+beq @_2
+lda ONSCREENROU,Y
+beq @_2
+cmp ONSCREENROU,X
+bne @_2
+lda ONSCREENXL,X
+cmp ONSCREENXL,Y
+bne @_2
+lda ONSCREENXH,X
+cmp ONSCREENXH,Y
+bne @_2
+lda ONSCREENY,X
+cmp ONSCREENY,Y
+bne @_2
+lda #0
+sta ONSCREENROU,X
+rts
+@_2:
+dey
+bpl @_1
+RTS3:
+rts
+PUTINFLAMES:
+lda #4
+cpy #10
+beq ADDFLAME
+cpy #254
+beq ADDFLAME
+lda #12
+cpy #68
+bne ADDFLAME
+jsr ONSCRXANDY
+lda ONSCREENY,X
+clc
+adc #($F8)
+sta ONSCREENY,X
+rts
+ADDFLAME:
+jmp ONSCRXANDY
+PUTINSPIT:
+lda #0
+cpy #52
+beq @_1
+lda #($FF)
+@_1:
+sta ONSCREENCOUNT1,X
+lda BLOCKX
+and #7
+sta ONSCREENCOUNT2,X
+lda #4
+jmp ONSCRXANDY
+PUTINEYES:
+lda SEED + 2
+cmp #30
+bcs DONTPUTINONSCREEN
+and #3
+sta ONSCREENCOUNT2,X
+lda SEED + 1
+sta ONSCREENCOUNT1,X
+jmp ONSCRXANDY0
+DONTPUTINONSCREEN:
+lda #0
+sta ONSCREENROU,X
+jmp RANDOM
+PUTINDRIP:
+lda BLOCKX
+and #3
+tay
+lda FIRESTABLE,Y
+sta ONSCREENCOUNT2,X
+lda #8
+jsr ONSCRXANDY
+lda ONSCREENY,X
+clc
+adc #16 + 4
+sta ONSCREENY,X
+rts
+FIRESTABLE:
+.byte $FF
+.byte $7F
+.byte $3F
+.byte $7F
+PUTINTRAMP:
+lda #8
+jmp ONSCRXANDY
+PUTINDRILLUP:
+lda #4
+jsr ONSCRXANDY
+lda ONSCREENY,X
+clc
+adc #16
+PUTINDRILLER:
+sta ONSCREENY,X
+sta ONSCREENCOUNT1,X
+lda BLOCKX
+and #7
+clc
+adc #128 + 64
+sta ONSCREENCOUNT2,X
+rts
+PUTINDRILLDOWN:
+lda #4
+jsr ONSCRXANDY
+lda ONSCREENY,X
+clc
+adc #($F6)
+jmp PUTINDRILLER
+PUTINBAT:
+ldy #NOOFONSCREENS - 1
+MOREBATS:
+lda ONSCREENROU,Y
+cmp #BBAT - 64 - 128
+bne BATOK
+lda ONSCREENXL + 1,Y
+cmp BLOCKX
+bne BATOK
+lda ONSCREENY + 1,Y
+cmp BLOCKY
+bne BATOK
+PUTINCANCELDOUBLE:
+lda #0
+sta ONSCREENROU,X
+sta ONSCREENROU + 1,X
+rts
+BATOK:
+dey
+bpl MOREBATS
+lda #255
+sta ONSCREENROU + 1,X
+lda BLOCKX
+and #1
+bne @_3
+lda #($FF)
+@_3:
+sta ONSCREENCOUNT1,X
+lda #1
+sta ONSCREENCOUNT2,X
+sta ONSCREENCOUNT2 + 1,X
+lda #10
+sta ONSCREENCOUNT1 + 1,X
+lda BLOCKX
+sta ONSCREENXL + 1,X
+lda BLOCKY
+sta ONSCREENY + 1,X
+jmp ONSCRXANDY0
+PUTINRAT:
+lda #128
+sta ONSCREENCOUNT1,X
+lda BLOCKX
+and #3
+tay
+lda RATTABLE,Y
+sta ONSCREENCOUNT2,X
+jmp ONSCRXANDY0
+RATTABLE:
+.byte $03
+.byte $83
+.byte $01
+.byte $81
+PUTINSPIDER:
+lda BLOCKX
+and #1
+sta ONSCREENCOUNT2,X
+lda #9
+jmp ONSCRXANDY
+PUTINBARREL:
+lda #255
+sta ONSCREENROU + 1,X
+lda #0
+sta ONSCREENY + 1,X
+lda BLOCKX
+and #1
+bne @_1
+lda #255
+@_1:
+sta ONSCREENCOUNT2 + 1,X
+lda BLOCKX
+lsr
+and #1
+sta ONSCREENCOUNT2,X
+lda #8
+jsr ONSCRXANDY
+bne @_2
+jmp PUTINCANCELDOUBLE
+@_2:
+rts
+PUTINBLOCK:
+jmp ONSCRXANDY0
+PUTINHEART:
+jsr CHANGEBANK13ROU
+ldy #8 * 6 * 2
+bne PUTINHEARTBIT
+PUTINCOIN:
+jsr CHANGEBANK13ROU
+ldy #0
+PUTINHEARTBIT:
+jsr PUTINHEARTBANK
+jsr CHANGEBANK12ROU
+rts
+CALCONSCREENX:
+lda ONSCREENXL,Y
+sec
+sbc SCRXL
+tax
+lda ONSCREENXH,Y
+sbc SCRXH
+sta XCOORDH
+bne OUTOFSCREEN
+rts
+OUTOFSCREEN:
+bpl @_5
+cpx #256 - 32
+bcs @_1
+bcc @_6
+@_5:
+cpx #32
+bcc @_1
+@_6:
+lda #0
+sta ONSCREENROU,Y
+pla
+pla
+jmp BACKFROMSCREENROU
+@_1:
+rts
+UPDATEFLAMES:
+jsr CALCONSCREENX
+lda XCOORDH
+bne @_1
+sty TEMP1
+ldy #3
+lda COUNTER
+and #4
+bne @_3
+dex
+ldy #3 + 64
+@_3:
+sty TEMP
+ldy TEMP1
+lda ONSCREENY,Y
+clc
+adc #YDISPLACE
+tay
+lda #149
+jsr POKESPRITE
+@_1:
+jmp BACKFROMSCREENROU
+UPDATESPIT:
+ldx ONSCREENCOUNT2,Y
+lda SPITDELAY,X
+and COUNTER
+bne ENDSPITTER
+jsr CALCONSCREENX
+ldx #NOOFSPITTERS - 1
+FINDSPITTERSLOT:
+lda SPITTERY,X
+beq GOTSPITTER
+dex
+bpl FINDSPITTERSLOT
+beq ENDSPITTER
+GOTSPITTER:
+lda ONSCREENXL,Y
+sta SPITTERXL,X
+lda ONSCREENXH,Y
+sta SPITTERXH,X
+lda ONSCREENY,Y
+clc
+adc #8
+sta SPITTERY,X
+lda ONSCREENCOUNT1,Y
+sta SPITTERDIR,X
+lda #SPITFX
+jsr SOUNDFX
+ENDSPITTER:
+jmp BACKFROMSCREENROU
+SPITDELAY:
+.byte $FF
+.byte $7F
+.byte $FF
+.byte $FF
+.byte $7F
+.byte $FF
+.byte $FF
+.byte $7F
+UPDATEEYES:
+lda COUNTER
+and #3
+bne @_2
+lda ONSCREENCOUNT1,Y
+sec
+sbc #1
+sta ONSCREENCOUNT1,Y
+bne @_2
+lda SEED
+sta ONSCREENCOUNT1,Y
+lda ONSCREENCOUNT2,Y
+eor #255
+sta ONSCREENCOUNT2,Y
+@_2:
+lda ONSCREENCOUNT2,Y
+bmi @_1
+jsr CALCONSCREENX
+lda ONSCREENCOUNT2,Y
+sta TEMP
+lda ONSCREENY,Y
+tay
+lda TEMP
+clc
+adc #EYES
+jsr WINPRINTSPRITE
+@_1:
+BACKFROMSCR:
+jmp BACKFROMSCREENROU
+UPDATEDRIPS:
+lda ONSCREENCOUNT1,Y
+bne FIREHAPPENING
+lda COUNTER
+clc
+adc ONSCREENXL,Y
+and ONSCREENCOUNT2,Y
+bne ENDDRIPS
+lda #BREATHINGFIREFX
+jsr SOUNDFX
+ldy ADDRESS9
+lda #64
+FIREHAPPENING:
+sec
+sbc #1
+sta ONSCREENCOUNT1,Y
+jsr CALCONSCREENX
+stx ADDRESS8
+lda ONSCREENY,Y
+jsr PICKUPCOLLISION
+bcs @_1
+tya
+pha
+lda #1
+jsr SUBFROMHEARTS
+pla
+tay
+@_1:
+lda ONSCREENY,Y
+sta TEMP
+lda ONSCREENCOUNT1,Y
+lsr
+lsr
+sta TEMP1
+lsr
+and #7
+tay
+lda FIRETABLE,Y
+ldy TEMP
+lsr TEMP1
+jsr WINPRINTSPRITEPOSREV
+ENDDRIPS:
+jmp BACKFROMSCREENROU
+FIRETABLE:
+.byte <(FIRE)
+.byte <(FIRE + 1)
+.byte <(FIRE + 2)
+.byte <(FIRE + 3)
+.byte <(FIRE + 4)
+.byte <(FIRE + 3)
+.byte <(FIRE + 2)
+.byte <(FIRE + 1)
+UPDATETRAMP:
+jsr CALCONSCREENX
+stx ADDRESS8
+lda XCOORDH
+bne ENDTRAMP
+lda ROBINGRAVITY
+clc
+adc #2
+bmi ENDTRAMP
+lda ONSCREENY,Y
+clc
+adc #16
+jsr PICKUPCOLLISION
+bcs ENDTRAMP
+lda #0
+sec
+sbc ROBINGRAVITY
+cmp #($E8)
+bcc @_3
+sta ROBINGRAVITY
+@_3:
+jsr CHECKLEFTRIGHTKEYS
+jsr ADDLEFTRIGHT1
+lda OROBINXL
+sta ROBINXL
+lda OROBINXL + 1
+sta ROBINXL + 1
+lda #TRAMPFX
+jsr SOUNDFX
+ldy ADDRESS9
+lda #1
+sta ROBINJUMPING
+lda #($FA)
+sta ONSCREENCOUNT1,Y
+ENDTRAMP:
+lda ONSCREENY,Y
+sta ADDRESS8 + 1
+lda ONSCREENCOUNT1,Y
+bpl @_6
+ldx ADDRESS9
+inc ONSCREENCOUNT1,X
+lda #TRAMPET + 1
+bne @_4
+@_6:
+lda #TRAMPET
+@_4:
+ldx ADDRESS8
+ldy ADDRESS8 + 1
+jsr WINPRINTSPRITE
+jmp BACKFROMSCREENROU
+UPDATEDRILLDOWN:
+jsr CALCONSCREENX
+lda #128
+sta ADDRESS7 + 1
+lda #($FF)
+jsr STANDARDDRILL
+ldx XCOORDH
+bne ENDDRILLDOWN
+cpy ADDRESS8 + 1
+bcc ENDDRILLDOWN
+@_1:
+ldx ADDRESS8
+jsr POKESPRITE
+tya
+clc
+adc #($F8)
+tay
+lda #190
+cpy ADDRESS8 + 1
+bcs @_1
+ENDDRILLDOWN:
+jmp BACKFROMSCREENROU
+UPDATEDRILLUP:
+jsr CALCONSCREENX
+lda #0
+sta ADDRESS7 + 1
+lda #1
+jsr STANDARDDRILL
+ldx XCOORDH
+bne ENDDRILLUP
+@_1:
+ldx ADDRESS8
+jsr POKESPRITE
+tya
+clc
+adc #8
+tay
+lda #190
+cpy ADDRESS8 + 1
+bcc @_1
+ENDDRILLUP:
+jmp BACKFROMSCREENROU
+STANDARDDRILL:
+sta ADDRESS7
+stx ADDRESS8
+lda ONSCREENCOUNT2,Y
+and #64
+beq @_1
+lda COUNTER
+bne PRINTDRILLUP
+@_2:
+lda ONSCREENCOUNT2,Y
+and #255 - 64
+sta ONSCREENCOUNT2,Y
+@_1:
+lda ONSCREENCOUNT2,Y
+and #7
+sta TEMP
+asl
+clc
+adc TEMP
+tax
+lda DRILLERPATTERNS + 1,X
+sta ADDRESS6 + 1
+lda DRILLERPATTERNS + 2,X
+eor COUNTER
+sta ADDRESS6
+lda ONSCREENCOUNT2,Y
+bpl MOVINGDRILL
+lda ADDRESS6
+cmp DRILLERPATTERNS,X
+bne CONTDRILL
+lda ONSCREENCOUNT2,Y
+eor #128
+sta ONSCREENCOUNT2,Y
+MOVINGDRILL:
+lda ADDRESS6
+bmi DRILLCOMINGDOWN
+and ADDRESS6 + 1
+bne CONTDRILL
+lda ONSCREENCOUNT1,Y
+sec
+sbc ADDRESS7
+sta ONSCREENCOUNT1,Y
+jmp CONTDRILL
+DRILLCOMINGDOWN:
+and ADDRESS6 + 1
+bne CONTDRILL
+lda ONSCREENCOUNT1,Y
+clc
+adc ADDRESS7
+sta ONSCREENCOUNT1,Y
+cmp ONSCREENY,Y
+bne CONTDRILL
+lda ONSCREENCOUNT2,Y
+eor #128
+sta ONSCREENCOUNT2,Y
+CONTDRILL:
+ldx ADDRESS8
+lda ONSCREENCOUNT1,Y
+tay
+jsr CHECKCHRCOLLISION
+ldy ADDRESS9
+PRINTDRILLUP:
+lda XCOORDH
+bne @_1
+lda #1 + 32
+clc
+adc ADDRESS7 + 1
+sta TEMP
+lda ONSCREENY,Y
+clc
+adc #YDISPLACE
+sta ADDRESS8 + 1
+tay
+ldx ADDRESS8
+lda #127
+jsr POKESPRITE
+@_1:
+ldy ADDRESS9
+lda ADDRESS6
+asl
+asl
+asl
+asl
+and #64
+clc
+adc #2
+clc
+adc ADDRESS7 + 1
+sta TEMP
+lda ONSCREENCOUNT1,Y
+clc
+adc #YDISPLACE
+tay
+lda #189
+rts
+DRILLERPATTERNS:
+.byte $40
+.byte $01
+.byte $00
+.byte $20
+.byte $01
+.byte $FF
+.byte $40
+.byte $03
+.byte $00
+.byte $28
+.byte $03
+.byte $FF
+.byte $28
+.byte $01
+.byte $00
+.byte $40
+.byte $01
+.byte $FF
+.byte $20
+.byte $03
+.byte $00
+.byte $40
+.byte $03
+.byte $FF
+UPDATEBAT:
+lda COUNTER
+and #1
+bne @_1
+jsr MOVEBAT
+@_1:
+BATNOTMOVING:
+lda ONSCREENY,Y
+sta ADDRESS8 + 1
+lda ONSCREENXL,Y
+sta ADDRESS7
+sec
+sbc SCRXL
+sta ADDRESS8
+lda ONSCREENXH,Y
+sta ADDRESS7 + 1
+sbc SCRXH
+sta XCOORDH
+lda ONSCREENY,Y
+sec
+sbc ARROWY
+clc
+adc #4
+cmp #16
+bcs MISSEDBAT
+jsr COLLIDEBATWITHARROW
+bcs MISSEDBAT
+ldx #0
+jsr TAKEARROWOFFROU
+lda #BATHITFX
+jsr SOUNDFX
+TURNOFFBAT:
+ldy ADDRESS9
+lda #4
+jsr STARTSTARS
+lda #65
+jsr ADDTOSCORE
+ldy ADDRESS9
+jmp TURNOFFDOUBLE
+MISSEDBAT:
+ldx ADDRESS8
+lda XCOORDH
+bne @_2
+ldy ADDRESS8 + 1
+jsr CHECKCHRCOLLISION
+bcs TURNOFFBAT
+bcc @_1
+@_2:
+clc
+adc #1
+cmp #3
+bcc @_1
+jmp TURNOFFDOUBLE
+@_1:
+ldy ADDRESS8 + 1
+ldx ADDRESS8
+lda COUNTER
+lsr
+lsr
+and #1
+BATONWALL:
+clc
+adc #BAT
+jsr WINPRINTSPRITE
+jmp BACKFROMSCREENROU
+MOVEBAT:
+@_1:
+lda ONSCREENXL,Y
+and #7
+bne BATXOK
+lda ONSCREENY,Y
+sta ADDRESS7
+lda ONSCREENXH,Y
+tax
+lda ONSCREENCOUNT1,Y
+beq NOWBATY
+bmi BATNEGX
+lda ONSCREENXL,Y
+clc
+adc #8
+bcc DOXBATCHR
+inx
+jmp DOXBATCHR
+BATNEGX:
+lda ONSCREENXL,Y
+sec
+sbc #8
+bcs DOXBATCHR
+dex
+DOXBATCHR:
+ldy ADDRESS7
+jsr FINDSOLID
+ldy ADDRESS9
+cmp #3
+bne BATXOK
+lda #0
+sec
+sbc ONSCREENCOUNT1,Y
+sta ONSCREENCOUNT1,Y
+BATXOK:
+ldx #0
+lda ONSCREENCOUNT1,Y
+bpl @_1
+ldx #255
+@_1:
+clc
+adc ONSCREENXL,Y
+sta ONSCREENXL,Y
+txa
+adc ONSCREENXH,Y
+sta ONSCREENXH,Y
+NOWBATY:
+lda ONSCREENY,Y
+clc
+adc #($F8)
+ldx ONSCREENCOUNT2,Y
+cpx #0
+beq BATYOK
+bmi BATNEGY
+clc
+adc #16
+BATNEGY:
+sta ADDRESS7
+lda ONSCREENXL,Y
+ldx ONSCREENXH,Y
+ldy ADDRESS7
+jsr FINDSOLID
+ldy ADDRESS9
+cmp #3
+bne BATYOK
+lda #0
+sec
+sbc ONSCREENCOUNT2,Y
+sta ONSCREENCOUNT2,Y
+BATYOK:
+lda ONSCREENCOUNT2 + 1,Y
+clc
+adc #1
+sta ONSCREENCOUNT2 + 1,Y
+lsr
+lsr
+lsr
+and #7
+tax
+lda BATWOBBLE,X
+@_1:
+clc
+adc ONSCREENCOUNT2,Y
+clc
+adc ONSCREENY,Y
+sta ONSCREENY,Y
+DONEBATY:
+@_1:
+rts
+BATWOBBLE:
+.byte $00
+.byte $01
+.byte $01
+.byte $00
+.byte $00
+.byte $FF
+.byte $FF
+.byte $00
+UPDATERAT:
+lda ONSCREENXH,Y
+sec
+sbc SCRXH
+clc
+adc #2
+cmp #5
+bcc @_1
+lda #0
+sta ONSCREENROU,Y
+jmp BACKFROMSCREENROU
+@_1:
+lda ONSCREENCOUNT2,Y
+and #7
+and COUNTER
+bne @_5
+lda ONSCREENCOUNT2,Y
+bmi @_2
+lda ONSCREENCOUNT1,Y
+clc
+adc #1
+bne @_3
+@_4:
+lda ONSCREENCOUNT2,Y
+eor #128
+sta ONSCREENCOUNT2,Y
+jmp @_5
+@_2:
+lda ONSCREENCOUNT1,Y
+clc
+adc #($FF)
+beq @_4
+@_3:
+sta ONSCREENCOUNT1,Y
+@_5:
+MOVEDRAT:
+@_11:
+lda ONSCREENCOUNT1,Y
+sta TEMP9
+sec
+sbc #128
+php
+clc
+adc ONSCREENXL,Y
+sta ADDRESS8
+lda ONSCREENXH,Y
+adc #0
+plp
+sbc #0
+sta ADDRESS8 + 1
+tax
+lda ONSCREENY,Y
+sta TEMP8
+lda ADDRESS8
+and #7
+bne RATNOTHITWALL
+lda ONSCREENCOUNT2,Y
+and #128
+eor #128
+bpl @_1
+lda #24
+@_1:
+clc
+adc ADDRESS8
+bcc @_2
+inx
+@_2:
+sec
+sbc #16
+bcs @_3
+dex
+@_3:
+stx ADDRESS7 + 1
+sta ADDRESS7
+ldy TEMP8
+jsr FINDSOLID
+ldy ADDRESS9
+cmp #3
+beq RATHITWALL
+ldx ADDRESS7 + 1
+lda TEMP8
+clc
+adc #16
+tay
+lda ADDRESS7
+jsr FINDSOLID
+ldy ADDRESS9
+cmp #0
+bne RATNOTHITWALL
+RATHITWALL:
+lda ONSCREENCOUNT2,Y
+eor #128
+sta ONSCREENCOUNT2,Y
+RATNOTHITWALL:
+lda ONSCREENCOUNT2,Y
+lsr
+and #64
+clc
+adc #1
+sta TEMP
+lda ADDRESS8
+sec
+sbc SCRXL
+sta ADDRESS7
+tax
+lda ADDRESS8 + 1
+sbc SCRXH
+sta XCOORDH
+lda ONSCREENY,Y
+sta ADDRESS7 + 1
+clc
+adc #4
+tay
+ldx ADDRESS7
+lda XCOORDH
+bne @_1
+jsr CHECKCHRCOLLISION
+ldx ADDRESS7
+lda ADDRESS7 + 1
+clc
+adc #8
+tay
+lda TEMP9
+asl
+and #4
+clc
+adc #144
+cmp #144
+beq @_2
+lda #200
+@_2:
+jsr POKESPRITE2BY2
+@_1:
+jmp BACKFROMSCREENROU
+UPDATESPIDER:
+jsr CALCONSCREENX
+stx ADDRESS8
+lda ONSCREENCOUNT1,Y
+sta TEMP1
+clc
+adc ONSCREENY,Y
+clc
+adc #8
+sta TEMP9
+lda ONSCREENY,Y
+clc
+adc #YDISPLACE
+sta ADDRESS8 + 1
+lda ONSCREENCOUNT2,Y
+bpl SPIDERGOINGDOWN
+lda COUNTER
+and #3
+bne MOVEDSPIDER
+lda ONSCREENCOUNT1,Y
+clc
+adc #($FF)
+sta ONSCREENCOUNT1,Y
+beq SPIDERCHANGE
+lda ONSCREENCOUNT2,Y
+and #1
+beq MOVEDSPIDER
+lda COUNTER
+beq SPIDERCHANGE
+bne MOVEDSPIDER
+SPIDERGOINGDOWN:
+lda ONSCREENCOUNT1,Y
+clc
+adc #1
+sta ONSCREENCOUNT1,Y
+and #7
+bne MOVEDSPIDER
+lda TEMP9
+clc
+adc #16
+sta TEMP
+ldx ONSCREENXH,Y
+lda ONSCREENXL,Y
+ldy TEMP
+jsr FINDSOLID
+ldy ADDRESS9
+cmp #0
+beq MOVEDSPIDER
+SPIDERCHANGE:
+lda ONSCREENCOUNT2,Y
+eor #128
+sta ONSCREENCOUNT2,Y
+MOVEDSPIDER:
+lda TEMP9
+jsr PICKUPCOLLISION
+bcs PRINTSPIDER
+lda #1
+jsr SUBFROMHEARTS
+ldy ADDRESS9
+PRINTSPIDER:
+lda ONSCREENCOUNT2,Y
+and #1
+bne @_2
+lda #152
+sta ADDRESS7
+ldx #2
+lda #179
+bne @_3
+@_2:
+lda #148
+sta ADDRESS7
+ldx #1
+lda ONSCREENCOUNT1,Y
+and #2
+clc
+adc #164
+cmp #164
+beq @_3
+lda #242
+@_3:
+stx ADDRESS7 + 1
+stx TEMP
+ldy TEMP9
+ldx XCOORDH
+bne @_4
+ldx ADDRESS8
+jsr POKESPRITE2BY2
+@_4:
+lda ADDRESS8
+clc
+adc #($FC)
+sta ADDRESS8
+bcs @_1
+dec XCOORDH
+@_1:
+lda XCOORDH
+bne ENDSPIDER
+lda ADDRESS7 + 1
+sta TEMP
+lda TEMP9
+clc
+adc #($FC)
+tay
+cmp #8
+bcc ENDSPIDER
+DRAWCHAIN:
+ldx ADDRESS8
+lda ADDRESS7
+jsr POKESPRITE
+tya
+sec
+sbc #8
+tay
+cmp ADDRESS8 + 1
+bcs DRAWCHAIN
+lda ADDRESS7 + 1
+clc
+adc #32
+sta TEMP
+ldx ADDRESS8
+lda ADDRESS7
+jsr POKESPRITE
+ENDSPIDER:
+jmp BACKFROMSCREENROU
+UPDATEBARREL:
+lda ONSCREENY + 1,Y
+bne BARRELMOVING
+lda ONSCREENXL,Y
+sec
+sbc SCRXL
+lda ONSCREENXH,Y
+sbc SCRXH
+clc
+adc #1
+cmp #3
+bcc DONTTURNOFFBARREL
+TURNOFFDOUBLE:
+lda #0
+sta ONSCREENROU,Y
+sta ONSCREENROU + 1,Y
+jmp BACKFROMSCREENROU
+DONTTURNOFFBARREL:
+lda ONSCREENY,Y
+clc
+adc #1
+sta ONSCREENY + 1,Y
+lda ONSCREENXL,Y
+sta ONSCREENXL + 1,Y
+lda ONSCREENXH,Y
+sta ONSCREENXH + 1,Y
+lda ONSCREENCOUNT2 + 1,Y
+sta ONSCREENCOUNT1,Y
+lda #0
+sta ONSCREENCOUNT1 + 1,Y
+BARRELMOVING:
+lda ONSCREENXL + 1,Y
+sec
+sbc SCRXL
+sta ADDRESS7
+lda ONSCREENXH + 1,Y
+sbc SCRXH
+sta XCOORDH
+jsr MOVEBARREL
+lda ONSCREENY + 1,Y
+sta ADDRESS7 + 1
+ldx ADDRESS7
+lda ONSCREENCOUNT2,Y
+bne @_1
+lda XCOORDH
+bne ENDBARREL
+lda #2
+sta TEMP
+lda #175
+ldy ADDRESS7 + 1
+beq ENDBARREL
+jsr POKESPRITE2BY2
+jmp BACKFROMSCREENROU
+@_1:
+lda ADDRESS7
+lsr
+lsr
+and #3
+clc
+adc #BARRELS
+@_2:
+ldy ADDRESS7 + 1
+beq ENDBARREL
+jsr WINPRINTSPRITE
+ENDBARREL:
+jmp BACKFROMSCREENROU
+MOVEBARREL:
+ldx ONSCREENCOUNT1,Y
+stx TEMP9
+inx
+lda ONSCREENXL + 1,Y
+clc
+adc ONSCREENCOUNT1,Y
+sta ONSCREENXL + 1,Y
+lda ONSCREENXH + 1,Y
+adc HIGHBITADD,X
+sta ONSCREENXH + 1,Y
+lda ONSCREENCOUNT1 + 1,Y
+beq @_3
+bmi @_1
+lsr
+lsr
+jmp @_2
+@_1:
+eor #255
+clc
+adc #1
+lsr
+lsr
+eor #255
+clc
+adc #1
+@_2:
+clc
+adc ONSCREENY + 1,Y
+sta ONSCREENY + 1,Y
+tax
+cpx #192
+bcc @_3
+lda ONSCREENCOUNT1 + 1,Y
+clc
+adc #1
+sta ONSCREENCOUNT1 + 1,Y
+cpx #232
+bcc @_4
+lda #0
+sta ONSCREENY + 1,Y
+@_4:
+rts
+@_3:
+ldx ONSCREENXH + 1,Y
+lda ONSCREENCOUNT1,Y
+bne @_5
+lda ONSCREENXL + 1,Y
+and #7
+bne BARRELONFLOOR
+@_5:
+lda ONSCREENY + 1,Y
+clc
+adc #9
+sta TEMP
+lda ONSCREENXL + 1,Y
+ldy TEMP
+jsr FINDSOLID
+ldy ADDRESS9
+cmp #3
+beq BARRELONFLOOR
+BARRELFALLING:
+lda COUNTER
+and #1
+bne DONEGRAV
+BARRELADDGRAV:
+lda ONSCREENCOUNT1 + 1,Y
+clc
+adc #1
+cmp #17
+bne STOREGRAV
+lda #16
+bne STOREGRAV
+BARRELONFLOOR:
+lda ONSCREENCOUNT1 + 1,Y
+bmi DONEGRAV
+cmp #4
+bcc @_1
+lda XCOORDH
+bne @_1
+lda #BALLBOUNCEFX
+jsr SOUNDFX
+@_1:
+lda ONSCREENCOUNT1 + 1,Y
+bmi DONEGRAV
+lsr
+eor #255
+clc
+adc #1
+STOREGRAV:
+sta ONSCREENCOUNT1 + 1,Y
+DONEGRAV:
+lda ONSCREENXL + 1,Y
+asl TEMP9
+adc #0
+and #3
+bne BARRELNOTHITWALL
+lda ONSCREENXL + 1,Y
+ldx ONSCREENCOUNT1,Y
+bmi @_1
+clc
+adc #8
+jmp @_2
+@_1:
+clc
+adc #($F8)
+@_2:
+sta TEMP
+inx
+lda ONSCREENXH + 1,Y
+adc HIGHBITADD,X
+tax
+lda ONSCREENY + 1,Y
+clc
+adc #6
+tay
+lda TEMP
+jsr FINDSOLID
+ldy ADDRESS9
+lda SOLIDFOUND
+cmp #3
+bne BARRELNOTHITWALL
+BARRELHITWALL:
+lda #0
+sec
+sbc ONSCREENCOUNT1,Y
+sta ONSCREENCOUNT1,Y
+jmp PASTBARRELWALL
+BARRELNOTHITWALL:
+PASTBARRELWALL:
+NOWCOLLIDEBARRELWITHROBIN:
+lda XCOORDH
+bne ENDBARRELMOVE
+lda ADDRESS7
+sec
+sbc ROBINONSCRX
+clc
+adc #12
+cmp #24
+bcs ENDBARRELMOVE
+lda ONSCREENY + 1,Y
+sec
+sbc ROBINY
+clc
+adc #32
+cmp #30
+bcc BARRELHITROBIN
+ldx ROBINLADDER
+bne ENDBARRELMOVE
+cmp #44
+bcs ENDBARRELMOVE
+@_1:
+lda ONSCREENY + 1,Y
+clc
+adc #($F7)
+sta ADDRESS7 + 1
+jsr ROBINJUMPOFFPLATFORM
+ldy ADDRESS9
+rts
+BARRELHITROBIN:
+lda ROBININVINC
+bne ENDBARRELMOVE
+lda #1
+jsr SUBFROMHEARTS
+ldy ADDRESS9
+ENDBARRELMOVE:
+rts
+UPDATEBLOCK:
+jsr CALCONSCREENX
+jmp BACKFROMSCREENROU
+UPDATEHEART:
+UPDATECOIN:
+jsr CALCONSCREENX
+jsr CHANGEBANK13ROU
+jsr RESTUPDATECOIN
+jsr CHANGEBANK12ROU
+jmp BACKFROMSCREENROU

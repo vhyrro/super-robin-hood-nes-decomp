@@ -1,0 +1,878 @@
+FLASHBLOCK:
+lda EXTRAVARS,X
+bne ENDFLASHBLOCK
+NEWFLASHBLOCK:
+lda (ADDRESS9),Y
+sta TOPLEVVAR1
+sec
+sbc MAPSTRIP
+clc
+adc #16
+cmp #48
+bcs ENDFLASHBLOCK
+iny
+lda (ADDRESS9),Y
+and #31
+sta TOPLEVVAR2
+lda (ADDRESS9),Y
+rol
+iny
+lda (ADDRESS9),Y
+sta TOPLEVVAR3
+sty TEMPY
+lda EXTRAVARS + 1,X
+adc #0
+and #1
+bne TURNBLOCKOFF
+jsr ADDACHANGEDBLOCK1
+jmp ENDFLASHBLOCK
+TURNBLOCKOFF:
+jsr DELETEACHANGEDBLOCK1
+ENDFLASHBLOCK:
+ldy #4
+jsr DECTIMING
+lda #2
+jmp BACKFROMROU
+STANDGUARD:
+jsr CHECKIFEXTRAON
+bne @_1
+jmp GUARDTURNEDOFF
+@_1:
+ldy #3
+lda (ADDRESS9),Y
+sec
+sbc MAPSTRIP
+clc
+adc #8
+cmp #34
+bcc @_2
+jmp VERYENDSTANDGUARD
+@_2:
+lda (ADDRESS9),Y
+jsr MULTSTRIPBY16
+sta ADDRESS7
+ldx EXTRAVARPOINTER
+lda EXTRAVARS,X
+bne ENDSTANDGUARD
+ldy #6
+lda (ADDRESS9),Y
+sta TEMP
+ldy #4
+lda (ADDRESS9),Y
+clc
+adc #($EA)
+bit TEMP
+bpl @_3
+clc
+adc #($F9)
+@_3:
+iny
+jsr SHOOTARROW
+lda #THEMFIRINGFX
+jsr SOUNDFX
+ldx EXTRAVARPOINTER
+lda EXTRAVARS + 2,X
+clc
+adc #64
+sta EXTRAVARS + 2,X
+ENDSTANDGUARD:
+PRINTTHEGUARD:
+lda ADDRESS7
+sec
+sbc SCRXL
+sta ADDRESS8
+lda ADDRESS7 + 1
+sbc SCRXH
+sta XCOORDH
+bne @_3
+jsr PICKUPCOLLISION1
+bcs @_3
+lda ROBININVINC
+bne @_3
+lda #1
+sta EXTRAVARS + 2,X
+lda #3
+jsr SUBFROMHEARTS
+jmp @_11
+@_3:
+lda EXTRAVARS + 2,X
+and #15
+tay
+bne @_8
+ldy #6
+lda (ADDRESS9),Y
+and #15
+sta EXTRAVARS + 2,X
+bne @_3
+@_8:
+lda GUARDCOLOURS,Y
+sta SPRITECOLOUR
+lda ARROWCOUNTER
+beq @_1
+jsr COLLIDEWITHARROW
+bcs @_1
+ldx #0
+jsr TAKEARROWOFFROU
+@_11:
+ldx EXTRAVARPOINTER
+dec EXTRAVARS + 2,X
+@_2:
+ldy #4
+lda (ADDRESS9),Y
+sta ADDRESS8 + 1
+lda EXTRAVARS + 2,X
+and #15
+bne @_5
+jsr TURNOFFEXTRA
+lda #5
+jsr STARTSTARS
+lda #KILLTHEMTOTALLYFX
+jsr SOUNDFX
+lda #69
+jsr ADDTOSCORE
+jmp @_1
+@_5:
+lda #4
+jsr STARTSTARS
+lda #66
+jsr ADDTOSCORE
+lda #KILLTHEMFX
+jsr SOUNDFX
+@_1:
+ldx EXTRAVARPOINTER
+lda EXTRAVARS + 2,X
+and #240
+beq @_9
+lda EXTRAVARS + 2,X
+clc
+adc #($F0)
+sta EXTRAVARS + 2,X
+lda #2
+@_9:
+sta TEMP2
+ldy #4
+lda (ADDRESS9),Y
+sta TEMP
+iny
+lda (ADDRESS9),Y
+asl
+php
+iny
+lda (ADDRESS9),Y
+asl
+lda #GUARD
+adc #0
+clc
+adc TEMP2
+plp
+ldx ADDRESS8
+ldy TEMP
+jsr WINPRINTSPRITEPOSREV
+VERYENDSTANDGUARD:
+ldy #6
+jsr DECTIMING
+GUARDTURNEDOFF:
+lda #3
+jmp BACKFROMROU
+GUARDCOLOURS:
+.byte $FF
+.byte $03
+.byte $01
+.byte $00
+.byte $02
+.byte $02
+.byte $02
+.byte $02
+.byte $02
+COLLIDEWITHARROW:
+ldy #4
+lda (ADDRESS9),Y
+sec
+sbc ARROWY
+cmp #32
+bcs NOTCOLLIDEWITHARROW
+COLLIDEBATWITHARROW:
+lda ADDRESS7
+sec
+sbc ARROWXL
+sta TEMP
+lda ADDRESS7 + 1
+sbc ARROWXH
+tax
+lda TEMP
+clc
+adc #12
+bcc @_2
+inx
+@_2:
+cpx #0
+bne @_1
+cmp #24
+@_1:
+NOTCOLLIDEWITHARROW:
+rts
+PLATFORMH:
+iny
+lda (ADDRESS9),Y
+sec
+sbc SCRXL
+iny
+lda (ADDRESS9),Y
+sbc SCRXH
+clc
+adc #1
+bmi ENDPLATFORMH
+iny
+lda (ADDRESS9),Y
+sec
+sbc SCRXL
+iny
+lda (ADDRESS9),Y
+sbc SCRXH
+cmp #3
+bcs ENDPLATFORMH
+jsr MOVEPLATFORMH
+ldx EXTRAVARPOINTER
+COLLIDEPLATWITHROBIN:
+lda XCOORDH
+bne ENDPLATFORMH
+jsr COLLPLATWITHROB
+bcs ENDPLATFORMH
+lda EXTRAVARS + 3,X
+beq @_3
+bmi @_2
+inc ROBINXL
+bne @M820__1
+inc ROBINXL + 1
+@M820__1:
+jmp @_3
+@_2:
+dec ROBINXL
+pha
+lda #255
+cmp ROBINXL
+bne @M821__1
+dec ROBINXL + 1
+@M821__1:
+pla
+@_3:
+lda OROBINXL
+cmp ROBINXL
+beq PLATNOTMOVING
+bcc PLATMOVINGRIGHT
+jsr FINDWALLLEFT
+beq PLATNOTMOVING
+jsr RESTOREX
+beq PLATNOTMOVING
+PLATMOVINGRIGHT:
+jsr FINDWALLRIGHT
+beq PLATNOTMOVING
+jsr RESTOREX
+PLATNOTMOVING:
+jsr ROBINJUMPOFFPLATFORM
+ENDPLATFORMH:
+lda #4
+jmp BACKFROMROU
+COLLPLATWITHROB:
+lda EXTRAVARS + 2,X
+sec
+sbc ROBINY
+clc
+adc #4
+cmp #6
+bcs @_1
+lda ADDRESS7
+sec
+sbc ROBINONSCRX
+clc
+adc #14
+cmp #28
+@_1:
+rts
+CHECKIFPLATON:
+lda EXTRAVARS + 3,X
+bne @_1
+ldy #3
+lda (ADDRESS9),Y
+sta EXTRAVARS + 0,X
+iny
+lda (ADDRESS9),Y
+sta EXTRAVARS + 1,X
+ldy #7
+lda (ADDRESS9),Y
+sta EXTRAVARS + 2,X
+ldy #2
+jsr CHECKIFEXTRAON
+ldx EXTRAVARPOINTER
+cmp #0
+bne @_2
+lda #1
+sta EXTRAVARS + 3,X
+@_1:
+rts
+@_2:
+lda #0
+rts
+MOVEPLATFORMH:
+jsr CHECKIFPLATON
+beq PRINTPLATFORM
+@_1:
+bmi PLATHMINUS
+ldy #5
+inc EXTRAVARS + 0,X
+bne @_2
+inc EXTRAVARS + 1,X
+@_2:
+jmp MOVEDPLATH
+PLATHMINUS:
+ldy #3
+dec EXTRAVARS + 0,X
+lda EXTRAVARS + 0,X
+cmp #255
+bne MOVEDPLATH
+dec EXTRAVARS + 1,X
+MOVEDPLATH:
+lda EXTRAVARS + 0,X
+cmp (ADDRESS9),Y
+bne PRINTPLATFORM
+iny
+lda EXTRAVARS + 1,X
+cmp (ADDRESS9),Y
+bne PRINTPLATFORM
+REVERSEPLATDIR:
+lda EXTRAVARS + 3,X
+eor #255
+sta EXTRAVARS + 3,X
+PRINTPLATFORM:
+lda EXTRAVARS + 0,X
+sec
+sbc SCRXL
+sta ADDRESS7
+lda EXTRAVARS + 1,X
+sbc SCRXH
+sta XCOORDH
+ldy EXTRAVARS + 2,X
+sty ADDRESS7 + 1
+ldx ADDRESS7
+lda #PLATFORM
+jmp WINPRINTSPRITE
+PLATFORMV:
+iny
+lda (ADDRESS9),Y
+sec
+sbc SCRXL
+iny
+lda (ADDRESS9),Y
+sbc SCRXH
+clc
+adc #1
+cmp #3
+bcs ENDPLATFORMV
+jsr MOVEPLATFORMV
+ldx EXTRAVARPOINTER
+COLLIDEPLATWITHROBINV:
+lda XCOORDH
+bne ENDPLATFORMV
+jsr COLLPLATWITHROB
+bcs ENDPLATFORMV
+jsr ROBINJUMPOFFPLATFORM
+ENDPLATFORMV:
+lda #4
+jmp BACKFROMROU
+MOVEPLATFORMV:
+lda COUNTER
+and #1
+bne PRINTPLATFORM
+jsr CHECKIFPLATON
+beq PRINTPLATFORM
+@_1:
+bmi PLATHMINUSV
+ldy #6
+inc EXTRAVARS + 2,X
+bne MOVEDPLATHV
+PLATHMINUSV:
+ldy #7
+dec EXTRAVARS + 2,X
+MOVEDPLATHV:
+lda EXTRAVARS + 2,X
+cmp (ADDRESS9),Y
+beq REVERSEPLATDIR
+bne PRINTPLATFORM
+ROBINJUMPOFFPLATFORM:
+lda ROBINGRAVITY
+cmp #128
+beq @_4
+cmp #0
+bmi ENDJUMPOFFPLATFORM
+@_4:
+lda #0
+sta ROBINJUMPING
+lda ADDRESS7 + 1
+sta ROBINY
+lda #128
+sta ROBINGRAVITY
+lda PAD
+and #AMASK
+beq ENDJUMPOFFPLATFORM
+jmp JUMPINGOK
+ENDJUMPOFFPLATFORM:
+rts
+KEYROU:
+jsr CHECKIFEXTRAON
+beq @_2
+ldy #3
+lda (ADDRESS9),Y
+sec
+sbc MAPSTRIP
+cmp #18
+bcs @_2
+lda (ADDRESS9),Y
+jsr MULTSTRIPBY16SUB
+jsr PICKUPCOLLISION1
+bcs @_1
+sty ADDRESS8 + 1
+ldy #3
+lda (ADDRESS9),Y
+tay
+lda TIMES16LO,Y
+sta ADDRESS7
+lda TIMES16HI,Y
+sta ADDRESS7 + 1
+lda #3
+jsr STARTSTARS
+lda #49
+jsr ADDTOSCORE
+lda #69
+jsr ADDTOSCORE
+jsr TURNOFFEXTRA
+lda #PICKUPKEYFX
+jsr SOUNDFX
+ldy #5
+lda (ADDRESS9),Y
+beq @_2
+cmp #255 - NOOFDOORS
+bcs @_3
+jsr TURNOFFDOOR
+jmp @_2
+@_3:
+jsr OPENADOOR
+jmp @_2
+@_1:
+lda XCOORDH
+bne @_2
+lda #1
+sta TEMP
+lda COUNTER
+lsr
+lsr
+and #3
+sta TEMP
+ldx ADDRESS8
+lda #155
+jsr POKESPRITE2BY2
+@_2:
+jmp BACKFROMROUNOVARS
+UPDATESPITTERS:
+lda COUNTER
+asl
+asl
+asl
+asl
+and #128 + 64
+clc
+adc #3
+sta TEMP
+ldx #NOOFSPITTERS - 1
+LOOPSPIT:
+stx TEMP8
+lda SPITTERY,X
+beq ENDLOOPSPIT
+inc SPITTERY,X
+inc SPITTERY,X
+lda SPITTERY,X
+cmp #220
+bcs TAKESPITOFF1
+ldy #2
+lda SPITTERDIR,X
+bpl @_1
+ldy #($FE)
+@_1:
+tya
+clc
+adc SPITTERXL,X
+sta SPITTERXL,X
+lda SPITTERXH,X
+adc SPITTERDIR,X
+sta SPITTERXH,X
+@_5:
+lda SPITTERXL,X
+sec
+sbc SCRXL
+sta TEMP9
+lda SPITTERXH,X
+sbc SCRXH
+bne ENDLOOPSPIT
+lda SPITTERY,X
+sta ADDRESS7
+clc
+adc #YDISPLACE
+tay
+ldx TEMP9
+lda #153
+jsr POKESPRITE
+ldy ADDRESS7
+ldx TEMP9
+jsr CHECKCHRCOLLISION
+bcc ENDLOOPSPIT
+TAKESPITTEROFF:
+ldx TEMP8
+TAKESPITOFF1:
+lda #0
+sta SPITTERY,X
+SPITTERNOTHITROBIN:
+ENDLOOPSPIT:
+ldx TEMP8
+dex
+bpl LOOPSPIT
+rts
+CHECKCHRCOLLISION:
+txa
+sec
+sbc ROBINONSCRX
+clc
+adc #10
+cmp #20
+bcs SPITNOCOLLISION
+tya
+NOWCHRCHECKY:
+sec
+sbc ROBINY
+bcs SPITNOCOLLISION
+tya
+sec
+sbc ROBINHEIGHT
+bcc SPITNOCOLLISION
+lda ROBININVINC
+bne SPITNOCOLLISION
+lda #1
+jsr SUBFROMHEARTS
+sec
+rts
+SPITNOCOLLISION:
+clc
+rts
+CANONROU:
+lda (ADDRESS9),Y
+sec
+sbc MAPSTRIP
+clc
+adc #8
+cmp #34
+bcs VERYENDCANON
+@_3:
+lda (ADDRESS9),Y
+jsr MULTSTRIPBY16
+sta ADDRESS7
+lda EXTRAVARS,X
+bne ENDCANON
+ldy #3
+lda (ADDRESS9),Y
+iny
+jsr SHOOTARROW
+lda #2
+sta ARROWCANON,X
+ENDCANON:
+lda ADDRESS7
+sec
+sbc SCRXL
+tax
+lda ADDRESS7 + 1
+sbc SCRXH
+sta XCOORDH
+ldy #3
+lda (ADDRESS9),Y
+sta TEMP
+iny
+lda (ADDRESS9),Y
+asl
+lda #CANON
+ldy TEMP
+jsr WINPRINTSPRITEPOSREV
+VERYENDCANON:
+ldy #4
+jsr DECTIMING
+lda #2
+jmp BACKFROMROU
+SECRETROU:
+jsr CHECKIFEXTRAON
+beq @_2
+ldy #3
+lda (ADDRESS9),Y
+sec
+sbc MAPSTRIP
+cmp #18
+bcs @_2
+lda (ADDRESS9),Y
+jsr MULTSTRIPBY16SUB
+jsr PICKUPCOLLISION1
+bcs @_1
+jsr TURNOFFEXTRA
+ldy #5
+lda (ADDRESS9),Y
+tay
+and #7
+tax
+tya
+lsr
+lsr
+lsr
+tay
+lda SECRET,Y
+eor BITPATTERN,X
+sta SECRET,Y
+ldy #5
+lda (ADDRESS9),Y
+jsr TURNONSECRET
+jmp @_2
+@_1:
+@_2:
+jmp BACKFROMROUNOVARS
+DOALLSECRETS:
+lda #23
+SECRETLOOP:
+pha
+tay
+and #7
+tax
+tya
+lsr
+lsr
+lsr
+tay
+lda SECRET,Y
+and BITPATTERN,X
+beq @_1
+pla
+pha
+jsr TURNONSECRET
+@_1:
+pla
+sec
+sbc #1
+bpl SECRETLOOP
+rts
+TURNONSECRET:
+asl
+tax
+jsr CHANGEBANK13ROU
+lda SECRETTABLE,X
+sta ADDRESS
+lda SECRETTABLE + 1,X
+sta ADDRESS + 1
+lda #0
+DOSECRET:
+pha
+tay
+jsr CHANGEBANK13ROU
+lda (ADDRESS),Y
+bpl @_1
+pla
+jsr CHANGEBANK12ROU
+rts
+@_1:
+cmp MAPNO
+bne @_2
+iny
+lda (ADDRESS),Y
+sta TOPLEVVAR1
+iny
+lda (ADDRESS),Y
+sta TOPLEVVAR2
+iny
+lda (ADDRESS),Y
+sta TOPLEVVAR3
+jsr CHANGEBANK12ROU
+jsr ADDACHANGEDBLOCK1
+@_2:
+pla
+clc
+adc #4
+jmp DOSECRET
+MARIONROU:
+ldy #3
+lda (ADDRESS9),Y
+jsr MULTSTRIPBY16SUB
+@_2:
+lda EXTRAVARS,X
+cmp #6 * 32 + 1
+beq @_1
+inc EXTRAVARS,X
+and #31
+bne @_1
+lda EXTRAVARS,X
+lsr
+lsr
+lsr
+lsr
+lsr
+cmp #6
+bne @_3
+lda CHANGEDBLOCKSPOINTER
+cmp #18
+bne @_1
+ldy #6
+bne @_4
+@_3:
+tay
+lda TREASURES,Y
+bne @_1
+@_4:
+sty TEMP
+lda #12
+sec
+sbc TEMP
+tay
+ldx #13
+lda #32
+jsr ADDACHANGEDBLOCK
+@_1:
+CHECKROBINANIM:
+ldx EXTRAVARPOINTER
+lda EXTRAVARS + 1,X
+bne ALREADYANIM
+lda ROBINY
+cmp #95
+bne @_2
+lda #2
+jsr STARTTUNE
+ldx EXTRAVARPOINTER
+ldy #NOOFONSCREENS - 1
+lda #0
+sta EXTRASON + 157 / 8
+@_1:
+sta ONSCREENROU,Y
+dey
+bpl @_1
+inc EXTRAVARS + 1,X
+@_2:
+jmp PRINTMARION
+ALREADYANIM:
+lda EXTRAVARS + 1,X
+cmp #150
+bne @_1
+jmp FIREWORKDISPLAY
+@_1:
+inc EXTRAVARS + 1,X
+PRINTROBINEND:
+lda MINMAP
+cmp #255
+beq @_11
+lda #66
+jsr ADDTOSCORE
+lda #85
+jsr ADDTOSCORE
+@_11:
+lda #200
+sta ROBININVINC
+lda #0
+sta ROBINJUMPING
+sta ROBINLADDER
+lda EXTRAVARS + 1,X
+bmi @_3
+lda #200
+sec
+sbc EXTRAVARS + 1,X
+bmi @_1
+@_3:
+lda #128
+@_1:
+sta ROBINXL
+lda #($FF)
+sta OLEFTRIGHT
+lda #0
+sta ROBINFIRING
+sta ROBINCROUCH
+lda EXTRAVARS + 1,X
+bmi @_2
+cmp #55
+bcs @_4
+lda EXTRAVARS + 1,X
+lsr
+lsr
+lsr
+and #7
+sta ROBINANIM
+jmp @_5
+@_4:
+jsr DOHEART
+lda #254
+sta ROBINCROUCH
+@_2:
+lda #255
+sta ROBINANIM
+@_5:
+jsr CHANGEBANK13ROU
+jsr PRINTROBIN1
+jsr CHANGEBANK12ROU
+lda ROBINXL
+sta OROBINXL
+PRINTMARION:
+ldx #128 - 32 + 10
+ldy #56
+lda #MARION
+jsr PRINTSPRITE
+lda #3
+jmp BACKFROMROU
+FIREWORKDISPLAY:
+inc EXTRAVARS + 2,X
+lda EXTRAVARS + 2,X
+cmp #256 - 7
+bne @_3
+lda #253
+sta FADECOUNTER
+sta COMPLETEDGAME
+@_3:
+lda COUNTER
+and #254
+clc
+adc #1
+sta COUNTER
+ldy #4
+lda HEARTSTABLE
+beq @_2
+iny
+lda HEARTSTABLE + 16
+bne @_1
+@_2:
+lda SEED + 1
+and #127
+clc
+adc #64
+sta ADDRESS8 + 1
+lda #0
+sta ADDRESS7 + 1
+lda SEED + 2
+and #127
+clc
+adc #64
+sta ADDRESS7
+tya
+jsr STARTSTARS
+ldx EXTRAVARPOINTER
+@_1:
+jmp PRINTROBINEND
+DOHEART:
+lda #12
+sta COINNUM
+lda #8
+sta COINNUMX
+lda #65
+sta COINNUMY
+lda #64
+sta COINNUMCOUNT
+rts
+REDEFINEWATERBANK:
+jsr CHANGEBANK13ROU
+jsr REDEFINEWATER
+jsr CHANGEBANK12ROU
+jmp BACKFROMROUNOVARS

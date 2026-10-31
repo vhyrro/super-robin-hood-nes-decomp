@@ -1,0 +1,1238 @@
+IRQ_SETTING .set 15
+ZERO_PAGE_START .set ZLIM
+NORM_PAGE_START .set VARLIM
+TEMPA = ZLIM
+ZLIM .set ZLIM + 2
+TEMPB = ZLIM
+ZLIM .set ZLIM + 2
+TEMPC = ZLIM
+ZLIM .set ZLIM + 2
+TEMP_LO = ZLIM
+ZLIM .set ZLIM + 1
+TEMP_HI = ZLIM
+ZLIM .set ZLIM + 1
+YTEMP = ZLIM
+ZLIM .set ZLIM + 2
+VAR_START = VARLIM
+VARLIM .set VARLIM + 1
+GAV_COUNTER = VAR_START
+VOICE1 = VARLIM
+VARLIM .set VARLIM + 1
+VOICE2 = VARLIM
+VARLIM .set VARLIM + 1
+VOICE3 = VARLIM
+VARLIM .set VARLIM + 1
+VOICE4 = VARLIM
+VARLIM .set VARLIM + 1
+DELAY_SMALL1 = VARLIM
+VARLIM .set VARLIM + 1
+DELAY_SMALL2 = VARLIM
+VARLIM .set VARLIM + 1
+DELAY_SMALL3 = VARLIM
+VARLIM .set VARLIM + 1
+DELAY_SMALL4 = VARLIM
+VARLIM .set VARLIM + 1
+REVERB_COUNT1 = VARLIM
+VARLIM .set VARLIM + 1
+REVERB_COUNT2 = VARLIM
+VARLIM .set VARLIM + 1
+REVERB_COUNT3 = VARLIM
+VARLIM .set VARLIM + 1
+REVERB_COUNT4 = VARLIM
+VARLIM .set VARLIM + 1
+ECHO_HOLD1 = VARLIM
+VARLIM .set VARLIM + 1
+ECHO_HOLD2 = VARLIM
+VARLIM .set VARLIM + 1
+ECHO_HOLD3 = VARLIM
+VARLIM .set VARLIM + 1
+ECHO_HOLD4 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_DELAY1 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_DELAY2 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_DELAY3 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_DELAY4 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PROG1 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PROG2 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PROG3 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PROG4 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_COUNT1 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_COUNT2 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_COUNT3 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_COUNT4 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PHASE1 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PHASE2 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PHASE3 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_PHASE4 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_FREQ1 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_FREQ2 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_FREQ3 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_FREQ4 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_AMOUNT1 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_AMOUNT2 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_AMOUNT3 = VARLIM
+VARLIM .set VARLIM + 1
+WOB_AMOUNT4 = VARLIM
+VARLIM .set VARLIM + 1
+SPECIAL_THUD1 = VARLIM
+VARLIM .set VARLIM + 1
+SPECIAL_THUD2 = VARLIM
+VARLIM .set VARLIM + 1
+SPECIAL_THUD3 = VARLIM
+VARLIM .set VARLIM + 1
+SPECIAL_THUD4 = VARLIM
+VARLIM .set VARLIM + 1
+VOLUME1 = VARLIM
+VARLIM .set VARLIM + 1
+VOLUME2 = VARLIM
+VARLIM .set VARLIM + 1
+VOLUME3 = VARLIM
+VARLIM .set VARLIM + 1
+VOLUME4 = VARLIM
+VARLIM .set VARLIM + 1
+NOTE1 = VARLIM
+VARLIM .set VARLIM + 1
+NOTE2 = VARLIM
+VARLIM .set VARLIM + 1
+NOTE3 = VARLIM
+VARLIM .set VARLIM + 1
+NOTE4 = VARLIM
+VARLIM .set VARLIM + 1
+OLD_NOTE1 = VARLIM
+VARLIM .set VARLIM + 1
+OLD_NOTE2 = VARLIM
+VARLIM .set VARLIM + 1
+OLD_NOTE3 = VARLIM
+VARLIM .set VARLIM + 1
+OLD_NOTE4 = VARLIM
+VARLIM .set VARLIM + 1
+LOW_PITCH1 = VARLIM
+VARLIM .set VARLIM + 1
+LOW_PITCH2 = VARLIM
+VARLIM .set VARLIM + 1
+LOW_PITCH3 = VARLIM
+VARLIM .set VARLIM + 1
+LOW_PITCH4 = VARLIM
+VARLIM .set VARLIM + 1
+HIGH_PITCH1 = VARLIM
+VARLIM .set VARLIM + 1
+HIGH_PITCH2 = VARLIM
+VARLIM .set VARLIM + 1
+HIGH_PITCH3 = VARLIM
+VARLIM .set VARLIM + 1
+HIGH_PITCH4 = VARLIM
+VARLIM .set VARLIM + 1
+PHASE1 = VARLIM
+VARLIM .set VARLIM + 1
+PHASE2 = VARLIM
+VARLIM .set VARLIM + 1
+PHASE3 = VARLIM
+VARLIM .set VARLIM + 1
+PHASE4 = VARLIM
+VARLIM .set VARLIM + 1
+INSTRUMENT1 = VARLIM
+VARLIM .set VARLIM + 1
+INSTRUMENT2 = VARLIM
+VARLIM .set VARLIM + 1
+INSTRUMENT3 = VARLIM
+VARLIM .set VARLIM + 1
+INSTRUMENT4 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_TONE1 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_TONE2 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_TONE3 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_TONE4 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_DELAY1 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_DELAY2 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_DELAY3 = VARLIM
+VARLIM .set VARLIM + 1
+TIN_DELAY4 = VARLIM
+VARLIM .set VARLIM + 1
+MACRO_COUNT1 = VARLIM
+VARLIM .set VARLIM + 1
+MACRO_COUNT2 = VARLIM
+VARLIM .set VARLIM + 1
+MACRO_COUNT3 = VARLIM
+VARLIM .set VARLIM + 1
+MACRO_COUNT4 = VARLIM
+VARLIM .set VARLIM + 1
+CHORD_SHAPE1 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_WAIT1 = CHORD_SHAPE1
+CHORD_SHAPE2 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_WAIT2 = CHORD_SHAPE2
+CHORD_SHAPE3 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_WAIT3 = CHORD_SHAPE3
+CHORD_SHAPE4 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_WAIT4 = CHORD_SHAPE4
+GLISS_NEW_NOTE1 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_NEW_NOTE2 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_NEW_NOTE3 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_NEW_NOTE4 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_RATE1 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_RATE2 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_RATE3 = VARLIM
+VARLIM .set VARLIM + 1
+GLISS_RATE4 = VARLIM
+VARLIM .set VARLIM + 1
+CHORD_COUNTER = VARLIM
+VARLIM .set VARLIM + 1
+MAIN_COUNTER = VARLIM
+VARLIM .set VARLIM + 2
+VAR_END = VARLIM
+MACRO_POINT1 = VARLIM
+VARLIM .set VARLIM + 2
+MACRO_POINT2 = VARLIM
+VARLIM .set VARLIM + 2
+MACRO_POINT3 = VARLIM
+VARLIM .set VARLIM + 2
+MACRO_POINT4 = VARLIM
+VARLIM .set VARLIM + 2
+SAVE_MACRO_POINT1 = VARLIM
+VARLIM .set VARLIM + 2
+SAVE_MACRO_POINT2 = VARLIM
+VARLIM .set VARLIM + 2
+SAVE_MACRO_POINT3 = VARLIM
+VARLIM .set VARLIM + 2
+SAVE_MACRO_POINT4 = VARLIM
+VARLIM .set VARLIM + 2
+TUNE = VARLIM
+VARLIM .set VARLIM + 1
+TEMPO = VARLIM
+VARLIM .set VARLIM + 1
+TRANSPOSE_VAR = VARLIM
+VARLIM .set VARLIM + 1
+DELAY_MAIN = VARLIM
+VARLIM .set VARLIM + 1
+.byte $0D
+jmp START_MUSIC
+jmp PLAY_MUSIC
+START_MUSIC:
+sta TUNE
+sec
+sbc #1
+sta TEMPA
+asl
+asl
+adc TEMPA
+asl
+tay
+lda INDEX
+sta TEMPA
+lda INDEX + 1
+sta TEMPA + 1
+lda (TEMPA),Y
+sta TRANSPOSE_VAR
+iny
+lda (TEMPA),Y
+sta TEMPO
+ldx #0
+@LOOP:
+iny
+lda (TEMPA),Y
+sta MACRO_POINT1,X
+sta SAVE_MACRO_POINT1,X
+inx
+cpx #8
+bcc @LOOP
+TRIGGER:
+ldy #VAR_END - VAR_START
+lda #0
+@LOOP2:
+sta VAR_START - 1,Y
+dey
+bne @LOOP2
+lda #IRQ_SETTING
+sta 16405
+lda TEMPO
+sec
+sbc #1
+sta DELAY_MAIN
+ldx #0
+jsr NEW_MACRO
+ldx #1
+jsr NEW_MACRO
+ldx #2
+jsr NEW_MACRO
+ldx #3
+jmp NEW_MACRO
+PLAY_MUSIC:
+inc GAV_COUNTER
+lda TUNE
+bne @GO
+rts
+@GO:
+lda VOICE1
+beq @_2B
+dec VOICE1
+@_2B:
+lda VOICE2
+beq @_2C
+dec VOICE2
+@_2C:
+lda VOICE3
+beq @_2D
+dec VOICE3
+@_2D:
+lda VOICE4
+beq @_2E
+dec VOICE4
+@_2E:
+inc MAIN_COUNTER
+jsr DELAY_BIT
+lda MAIN_COUNTER
+lsr
+bcc @FX_ONLY
+jsr DELAY_BIT
+@FX_ONLY:
+jmp ADSR
+DELAY_BIT:
+inc DELAY_MAIN
+lda DELAY_MAIN
+cmp TEMPO
+bne @NO
+lda #0
+sta DELAY_MAIN
+jmp DO_VOICES
+@NO:
+rts
+ADSR:
+ldx #0
+@LOOP:
+lda INSTRUMENT1,X
+sta YTEMP + 1
+txa
+asl
+asl
+tay
+sty YTEMP
+cpx #2
+beq @TRIANGLE
+lda VOICE1,X
+bne @CHANNEL_IS_OFF
+lda VOLUME1,X
+lsr
+lsr
+lsr
+lsr
+ora #48
+ora TIN_TONE1,X
+sta 16384,Y
+@CHANNEL_IS_OFF:
+ldy YTEMP + 1
+lda REVERB_COUNT1,X
+bne @SKIP_ADSR
+lda PHASE1,X
+beq @ATTACK
+cmp #1
+beq @DECAY
+bne @SUSTAIN
+@ATTACK:
+lda VOLUME1,X
+clc
+adc INSTRUMENTS + 1,Y
+bcs @TOP
+cmp INSTRUMENTS + 2,Y
+bcc @NO_TOP
+@TOP:
+lda INSTRUMENTS + 2,Y
+inc PHASE1,X
+@NO_TOP:
+sta VOLUME1,X
+jmp @CONTINUE
+@DECAY:
+lda VOLUME1,X
+sec
+sbc INSTRUMENTS + 3,Y
+bcc @BOT
+cmp INSTRUMENTS + 4,Y
+bcs @NO_BOT
+@BOT:
+lda INSTRUMENTS + 4,Y
+inc PHASE1,X
+@NO_BOT:
+sta VOLUME1,X
+beq @JJJ_IT
+jmp @CONTINUE
+@SUSTAIN:
+lda INSTRUMENTS + 4,Y
+bne @NEQ
+@JJJ_IT:
+jmp @NO_HIGH
+@NEQ:
+sta VOLUME1,X
+@SKIP_ADSR:
+@TRIANGLE:
+@CONTINUE:
+cpx #2
+bcs @SPECIAL
+@J_NO_SPECIAL:
+jmp @NO_SPECIAL
+@SPECIAL:
+lda SPECIAL_THUD1,X
+beq @J_NO_SPECIAL
+cpx #3
+bne @NOT_WHITE_NOISE
+ldy YTEMP
+lda VOICE1,X
+bne @CHANNEL_IS_OFF2
+lda LOW_PITCH1,X
+clc
+adc #199
+sta LOW_PITCH1,X
+sta 16386,Y
+@CHANNEL_IS_OFF2:
+dec SPECIAL_THUD1,X
+bne @GET_Y_BIT
+lda #0
+sta VOLUME1,X
+lda #2
+sta PHASE1,X
+bne @GET_Y_BIT
+@NOT_WHITE_NOISE:
+cmp #255
+bne @N_DOOF
+ldy YTEMP
+lda #35
+jsr SUB_VOICE
+lda HIGH_PITCH1,X
+cmp #2
+bcc @GET_Y_BIT
+lda #0
+sta SPECIAL_THUD1,X
+sta VOLUME1,X
+lda VOICE1,X
+bne @CHANNEL_IS_OFF3
+sta 16384,Y
+lda #6
+sta 16386,Y
+lda #174
+sta 16387,Y
+bne @GET_Y_BIT
+@N_DOOF:
+dec SPECIAL_THUD1,X
+bne @NO_SPECIAL
+lda #255
+sta SPECIAL_THUD1,X
+ldy YTEMP + 1
+lda INSTRUMENTS + 11,Y
+tay
+lda TABLO,Y
+sta LOW_PITCH1,X
+lda TABHI,Y
+sta HIGH_PITCH1,X
+ldy YTEMP
+lda VOICE1,X
+bne @CHANNEL_IS_OFF4
+lda LOW_PITCH1,X
+sta 16386,Y
+lda HIGH_PITCH1,X
+sta 16387,Y
+lda #32
+sta 16384,Y
+@CHANNEL_IS_OFF3:
+@CHANNEL_IS_OFF4:
+@GET_Y_BIT:
+ldy YTEMP + 1
+@NO_SPECIAL:
+lda INSTRUMENTS + 10,Y
+beq @NO_REVERB
+sta 255
+lsr
+sta 254
+inc REVERB_COUNT1,X
+lda REVERB_COUNT1,X
+cmp 255
+bne @N0
+lda #0
+sta REVERB_COUNT1,X
+@N0:
+bne @N3
+lda ECHO_HOLD1,X
+sta VOLUME1,X
+jmp @NEXT
+@N3:
+cmp 254
+beq @ON1
+bcs @ON2
+bcc @NEXT
+@ON1:
+lda VOLUME1,X
+sta ECHO_HOLD1,X
+@ON2:
+lda #0
+sta VOLUME1,X
+@NEXT:
+ldy YTEMP + 1
+@ON:
+@NO_REVERB:
+ldy YTEMP + 1
+lda INSTRUMENTS + 5,Y
+and #240
+beq @ONE_OFF
+lsr
+lsr
+lsr
+lsr
+asl
+sta TEMPA
+inc TIN_DELAY1,X
+lda TIN_DELAY1,X
+cmp TEMPA
+bcc @STOPED
+lda #0
+sta TIN_DELAY1,X
+beq @INC_TINNY
+@ONE_OFF:
+lda TIN_TONE1,X
+asl
+rol
+rol
+sta TEMPA
+lda INSTRUMENTS + 5,Y
+and #3
+cmp TEMPA
+beq @STOPED
+@INC_TINNY:
+lda TIN_TONE1,X
+clc
+adc #64
+bcc @OK
+lda #0
+@OK:
+sta TIN_TONE1,X
+@STOPED:
+lda CHORD_SHAPE1,X
+ora GLISS_RATE1,X
+bne @NO_WOB
+ldy YTEMP + 1
+lda WOB_DELAY1,X
+cmp INSTRUMENTS + 6,Y
+beq @WOBBLE_READY
+inc WOB_DELAY1,X
+bne @NO_WOB
+@WOBBLE_READY:
+lda WOB_AMOUNT1,X
+sta TEMPA
+ldy YTEMP
+lda WOB_PHASE1,X
+beq @UP_WOB
+cmp #1
+beq @DOWN_WOB
+lda TEMPA
+jsr ADD_VOICE
+lda WOB_FREQ1,X
+jsr DO_WOB_CHECK
+jmp @NO_WOB
+@UP_WOB:
+lda TEMPA
+jsr ADD_VOICE
+lda WOB_FREQ1,X
+jsr DO_WOB_CHECK
+jmp @NO_WOB
+@DOWN_WOB:
+lda TEMPA
+jsr SUB_VOICE
+lda WOB_FREQ1,X
+asl
+jsr DO_WOB_CHECK
+@NO_WOB:
+lda GLISS_RATE1,X
+bne @GLISS
+jmp @NO_GLISS
+@GLISS:
+ldy GLISS_WAIT1,X
+beq @EQ
+dec GLISS_WAIT1,X
+jmp @NO_CHORDS
+@EQ:
+lsr
+sta TEMPA
+bcc @NO_HALF
+lda MAIN_COUNTER
+and #1
+beq @NO_HALF
+inc TEMPA
+@NO_HALF:
+ldy YTEMP
+lda GLISS_NEW_NOTE1,X
+cmp NOTE1,X
+bcs @GO_UP
+lda TEMPA
+jsr SUB_VOICE
+ldy GLISS_NEW_NOTE1,X
+lda TABLO,Y
+sta TEMPA
+lda TABHI,Y
+sta TEMPA + 1
+cmp HIGH_PITCH1,X
+beq @TEST_LOW
+bcs @J_NO
+bcc @HIT
+@TEST_LOW:
+lda TEMPA
+cmp LOW_PITCH1,X
+beq @HIT
+bcs @J_NO
+@HIT:
+lda #0
+sta GLISS_RATE1,X
+sta GLISS_WAIT1,X
+ldy YTEMP
+lda TEMPA + 1
+cmp HIGH_PITCH1,X
+beq @SEMI_REWRITE
+lda TEMPA + 1
+sta HIGH_PITCH1,X
+ldy VOICE1,X
+bne @CHANNEL_IS_OFF5
+sta 16387,Y
+@CHANNEL_IS_OFF5:
+@SEMI_REWRITE:
+lda TEMPA
+sta LOW_PITCH1,X
+ldy VOICE1,X
+bne @CHANNEL_IS_OFF6
+sta 16386,Y
+@CHANNEL_IS_OFF6:
+@J_NO:
+jmp @NO_CHORDS
+@GO_UP:
+lda TEMPA
+jsr ADD_VOICE
+ldy GLISS_NEW_NOTE1,X
+lda TABLO,Y
+sta TEMPA
+lda TABHI,Y
+sta TEMPA + 1
+cmp HIGH_PITCH1,X
+beq @TEST_LOW2
+bcc @NO_CHORDS
+bcs @HIT
+@TEST_LOW2:
+lda TEMPA
+cmp LOW_PITCH1,X
+bcs @HIT
+jmp @NO_CHORDS
+@NO_GLISS:
+lda CHORD_SHAPE1,X
+beq @NO_CHORDS
+lda CHORD_COUNTER
+beq @CHORD1
+cmp #1
+beq @CHORD2
+@CHORD3:
+lda CHORD_SHAPE1,X
+and #15
+clc
+adc OLD_NOTE1,X
+jmp @BLIP_NOTE
+@CHORD1:
+lda OLD_NOTE1,X
+jmp @BLIP_NOTE
+@CHORD2:
+lda CHORD_SHAPE1,X
+lsr
+lsr
+lsr
+lsr
+clc
+adc OLD_NOTE1,X
+@BLIP_NOTE:
+tay
+lda TABLO,Y
+sta LOW_PITCH1,X
+lda TABHI,Y
+sta HIGH_PITCH1,X
+ldy YTEMP
+lda VOICE1,X
+bne @VOICE_OFF
+lda LOW_PITCH1,X
+sta 16386,Y
+lda HIGH_PITCH1,X
+sta 16387,Y
+@VOICE_OFF:
+@NO_CHORDS:
+@NO_HIGH:
+inx
+cpx #4
+bcs @NO_LOOP
+jmp @LOOP
+@NO_LOOP:
+inc CHORD_COUNTER
+lda CHORD_COUNTER
+cmp #3
+bcc @NO_CH
+lda #0
+sta CHORD_COUNTER
+@NO_CH:
+rts
+DO_WOB_CHECK:
+ldy YTEMP + 1
+sta TEMPB
+inc WOB_COUNT1,X
+lda WOB_COUNT1,X
+cmp TEMPB
+bcc @NO
+lda #0
+sta WOB_COUNT1,X
+inc WOB_PHASE1,X
+lda WOB_PHASE1,X
+cmp #3
+bcc @NO
+lda #0
+sta WOB_PHASE1,X
+lda WOB_AMOUNT1,X
+cmp INSTRUMENTS + 9,Y
+bcs @NO
+adc INSTRUMENTS + 8,Y
+sta WOB_AMOUNT1,X
+cmp INSTRUMENTS + 9,Y
+bcc @NO
+lda INSTRUMENTS + 9,Y
+sta WOB_AMOUNT1,X
+@NO:
+rts
+SUB_VOICE:
+clc
+adc LOW_PITCH1,X
+sta LOW_PITCH1,X
+bcc @STORE_LOW
+inc HIGH_PITCH1,X
+lda VOICE1,X
+bne @CHANNEL_IS_OFF8
+lda HIGH_PITCH1,X
+sta 16387,Y
+@STORE_LOW:
+lda VOICE1,X
+bne @CHANNEL_IS_OFF8
+lda LOW_PITCH1,X
+sta 16386,Y
+@CHANNEL_IS_OFF8:
+rts
+ADD_VOICE:
+sta TEMPB
+lda LOW_PITCH1,X
+sec
+sbc TEMPB
+sta LOW_PITCH1,X
+bcs @STORE_LOW
+dec HIGH_PITCH1,X
+lda VOICE1,X
+bne @CHANNEL_IS_OFF7
+lda HIGH_PITCH1,X
+sta 16387,Y
+@STORE_LOW:
+lda VOICE1,X
+bne @CHANNEL_IS_OFF7
+lda LOW_PITCH1,X
+sta 16386,Y
+@CHANNEL_IS_OFF7:
+rts
+NEW_MACRO:
+txa
+asl
+tay
+lda MACRO_POINT1,Y
+clc
+adc #2
+sta MACRO_POINT1,Y
+bcc @NO_HIGH
+lda MACRO_POINT1 + 1,Y
+adc #0
+sta MACRO_POINT1 + 1,Y
+@NO_HIGH:
+lda MACRO_POINT1 + 1,Y
+sta TEMP_HI
+lda MACRO_POINT1,Y
+sta TEMP_LO
+ldy #1
+lda (TEMP_LO),Y
+bne @NO_STOP_TUNE
+cpx #0
+bne @NO_CHANNEL_0
+dey
+lda (TEMP_LO),Y
+beq @STOP_TUNE
+sec
+sbc #1
+asl
+sta TEMPA
+ldx #0
+@LOOP1:
+lda SAVE_MACRO_POINT1 + 1,X
+sta MACRO_POINT1 + 1,X
+lda SAVE_MACRO_POINT1,X
+clc
+adc TEMPA
+sta MACRO_POINT1,X
+bcc @NO_HIGH_2
+inc MACRO_POINT1 + 1,X
+@NO_HIGH_2:
+inx
+inx
+cpx #8
+bcc @LOOP1
+jsr TRIGGER
+pla
+pla
+rts
+@STOP_TUNE:
+lda #0
+sta 16405
+sta TUNE
+sec
+rts
+@NO_CHANNEL_0:
+@NO_STOP_TUNE:
+ldy #0
+lda (TEMP_LO),Y
+sta TEMPB
+iny
+lda (TEMP_LO),Y
+sta TEMPB + 1
+dey
+lda (TEMPB),Y
+sta INSTRUMENT1,X
+lda #1
+sta MACRO_COUNT1,X
+lda #32
+cpx #2
+bcs @NOT_ON_WN
+clc
+adc TRANSPOSE_VAR
+@NOT_ON_WN:
+sta NOTE1,X
+lda #0
+sta DELAY_SMALL1,X
+clc
+rts
+DO_VOICES:
+ldx #0
+@LOOP:
+dec DELAY_SMALL1,X
+bmi @YES
+jmp @NEXT_VOICE
+@YES:
+txa
+asl
+tay
+lda MACRO_POINT1,Y
+sta TEMP_LO
+lda MACRO_POINT1 + 1,Y
+sta TEMP_HI
+lda #0
+sta CHORD_SHAPE1,X
+sta CHORD_COUNTER
+sta GLISS_RATE1,X
+sta SPECIAL_THUD1,X
+tay
+lda (TEMP_LO),Y
+pha
+iny
+lda (TEMP_LO),Y
+sta TEMP_HI
+pla
+sta TEMP_LO
+ldy MACRO_COUNT1,X
+inc MACRO_COUNT1,X
+lda (TEMP_LO),Y
+cmp #1
+bne @NO_NEW
+jsr NEW_MACRO
+bcc @YES
+jmp @NO_LOOP
+@NO_NEW:
+pha
+lsr
+lsr
+lsr
+sta TEMPA
+pla
+and #7
+sec
+sbc #1
+sta DELAY_SMALL1,X
+bcs @N_LARGE_DELAYNOTE
+lda TEMPA
+sta DELAY_SMALL1,X
+@NEW_INSTRUMENT_RELOOP:
+iny
+inc MACRO_COUNT1,X
+lda (TEMP_LO),Y
+pha
+and #63
+sta TEMPC
+clc
+adc #9
+cpx #3
+beq @NOT_ON_WN
+adc TRANSPOSE_VAR
+@NOT_ON_WN:
+sta NOTE1,X
+sta OLD_NOTE1,X
+pla
+asl
+rol
+rol
+and #3
+beq @NO_CHORD
+cmp #2
+beq @CHORDS_ON
+cmp #1
+beq @GLISSANDO
+lda TEMPC
+asl
+clc
+adc TEMPC
+asl
+asl
+sta INSTRUMENT1,X
+jmp @NEW_INSTRUMENT_RELOOP
+@GLISSANDO:
+iny
+inc MACRO_COUNT1,X
+lda (TEMP_LO),Y
+clc
+adc TRANSPOSE_VAR
+sta GLISS_NEW_NOTE1,X
+iny
+inc MACRO_COUNT1,X
+lda (TEMP_LO),Y
+sta GLISS_WAIT1,X
+iny
+inc MACRO_COUNT1,X
+lda (TEMP_LO),Y
+sta GLISS_RATE1,X
+jmp @NO_CHORD
+@CHORDS_ON:
+iny
+inc MACRO_COUNT1,X
+lda (TEMP_LO),Y
+sta CHORD_SHAPE1,X
+@NO_CHORD:
+jmp @SORT_DELAY
+@N_LARGE_DELAYNOTE:
+lda TEMPA
+sec
+sbc #16
+clc
+adc NOTE1,X
+sta NOTE1,X
+sta OLD_NOTE1,X
+@SORT_DELAY:
+lda #0
+sta REVERB_COUNT1,X
+sta WOB_DELAY1,X
+sta WOB_PHASE1,X
+sta WOB_COUNT1,X
+lda #1
+sta WOB_AMOUNT1,X
+ldy INSTRUMENT1,X
+lda INSTRUMENTS + 7,Y
+sta WOB_FREQ1,X
+lda INSTRUMENTS + 6,Y
+bne @DEL_WOB
+lda INSTRUMENTS + 9,Y
+sta WOB_AMOUNT1,X
+@DEL_WOB:
+ldy INSTRUMENT1,X
+lda INSTRUMENTS + 11,Y
+beq @NO_THUD
+cpx #3
+beq @WHITE_NOISE
+lda #2
+@WHITE_NOISE:
+sta SPECIAL_THUD1,X
+@NO_THUD:
+lda INSTRUMENTS + 5,Y
+and #12
+asl
+asl
+asl
+asl
+sta TIN_TONE1,X
+lda #0
+sta TIN_DELAY1,X
+ldy INSTRUMENT1,X
+lda INSTRUMENTS,Y
+sta VOLUME1,X
+ldy NOTE1,X
+lda TABLO,Y
+sta LOW_PITCH1,X
+lda TABHI,Y
+sta HIGH_PITCH1,X
+lda #0
+sta PHASE1,X
+txa
+asl
+asl
+tay
+lda VOICE1,X
+bne @CHANNEL_IS_OFF
+lda #1
+sta 16385,Y
+lda LOW_PITCH1,X
+sta 16386,Y
+lda HIGH_PITCH1,X
+sta 16387,Y
+cpx #2
+bne @NO_TRIANGLE
+ldy INSTRUMENT1,X
+lda INSTRUMENTS + 1,Y
+pha
+txa
+asl
+asl
+tay
+pla
+sta 16384,Y
+@CHANNEL_IS_OFF:
+@NO_TRIANGLE:
+@NEXT_VOICE:
+inx
+cpx #4
+bcs @NO_LOOP
+jmp @LOOP
+@NO_LOOP:
+rts
+TABLO:
+.byte <(1710)
+.byte <(1614)
+.byte <(1523)
+.byte <(1438)
+.byte <(1357)
+.byte <(1281)
+.byte <(1209)
+.byte <(1141)
+.byte <(1077)
+.byte <(1016)
+.byte <(959)
+.byte <(905)
+.byte <(1710 / 2)
+.byte <(1614 / 2)
+.byte <(1523 / 2)
+.byte <(1438 / 2)
+.byte <(1357 / 2)
+.byte <(1281 / 2)
+.byte <(1209 / 2)
+.byte <(1141 / 2)
+.byte <(1077 / 2)
+.byte <(1016 / 2)
+.byte <(959 / 2)
+.byte <(905 / 2)
+.byte <(1710 / 4)
+.byte <(1614 / 4)
+.byte <(1523 / 4)
+.byte <(1438 / 4)
+.byte <(1357 / 4)
+.byte <(1281 / 4)
+.byte <(1209 / 4)
+.byte <(1141 / 4)
+.byte <(1077 / 4)
+.byte <(1016 / 4)
+.byte <(959 / 4)
+.byte <(905 / 4)
+.byte <(1710 / 8)
+.byte <(1614 / 8)
+.byte <(1523 / 8)
+.byte <(1438 / 8)
+.byte <(1357 / 8)
+.byte <(1281 / 8)
+.byte <(1209 / 8)
+.byte <(1141 / 8)
+.byte <(1077 / 8)
+.byte <(1016 / 8)
+.byte <(959 / 8)
+.byte <(905 / 8)
+.byte <(1710 / 16)
+.byte <(1614 / 16)
+.byte <(1523 / 16)
+.byte <(1438 / 16)
+.byte <(1357 / 16)
+.byte <(1281 / 16)
+.byte <(1209 / 16)
+.byte <(1141 / 16)
+.byte <(1077 / 16)
+.byte <(1016 / 16)
+.byte <(959 / 16)
+.byte <(905 / 16)
+.byte <(1710 / 32)
+.byte <(1614 / 32)
+.byte <(1523 / 32)
+.byte <(1438 / 32)
+.byte <(1357 / 32)
+.byte <(1281 / 32)
+.byte <(1209 / 32)
+.byte <(1141 / 32)
+.byte <(1077 / 32)
+.byte <(1016 / 32)
+.byte <(959 / 32)
+.byte <(905 / 32)
+.byte <(1710 / 64)
+.byte <(1614 / 64)
+.byte <(1523 / 64)
+.byte <(1438 / 64)
+.byte <(1357 / 64)
+.byte <(1281 / 64)
+.byte <(1209 / 64)
+.byte <(1141 / 64)
+.byte <(1077 / 64)
+.byte <(1016 / 64)
+.byte <(959 / 64)
+.byte <(905 / 64)
+.byte <(1710 / 128)
+.byte <(1614 / 128)
+.byte <(1523 / 128)
+.byte <(1438 / 128)
+.byte <(1357 / 128)
+.byte <(1281 / 128)
+.byte <(1209 / 128)
+.byte <(1141 / 128)
+.byte <(1077 / 128)
+.byte <(1016 / 128)
+.byte <(959 / 128)
+.byte <(905 / 128)
+TABHI:
+.byte >(1710)
+.byte >(1614)
+.byte >(1523)
+.byte >(1438)
+.byte >(1357)
+.byte >(1281)
+.byte >(1209)
+.byte >(1141)
+.byte >(1077)
+.byte >(1016)
+.byte >(959)
+.byte >(905)
+.byte >(1710 / 2)
+.byte >(1614 / 2)
+.byte >(1523 / 2)
+.byte >(1438 / 2)
+.byte >(1357 / 2)
+.byte >(1281 / 2)
+.byte >(1209 / 2)
+.byte >(1141 / 2)
+.byte >(1077 / 2)
+.byte >(1016 / 2)
+.byte >(959 / 2)
+.byte >(905 / 2)
+.byte >(1710 / 4)
+.byte >(1614 / 4)
+.byte >(1523 / 4)
+.byte >(1438 / 4)
+.byte >(1357 / 4)
+.byte >(1281 / 4)
+.byte >(1209 / 4)
+.byte >(1141 / 4)
+.byte >(1077 / 4)
+.byte >(1016 / 4)
+.byte >(959 / 4)
+.byte >(905 / 4)
+.byte >(1710 / 8)
+.byte >(1614 / 8)
+.byte >(1523 / 8)
+.byte >(1438 / 8)
+.byte >(1357 / 8)
+.byte >(1281 / 8)
+.byte >(1209 / 8)
+.byte >(1141 / 8)
+.byte >(1077 / 8)
+.byte >(1016 / 8)
+.byte >(959 / 8)
+.byte >(905 / 8)
+.byte >(1710 / 16)
+.byte >(1614 / 16)
+.byte >(1523 / 16)
+.byte >(1438 / 16)
+.byte >(1357 / 16)
+.byte >(1281 / 16)
+.byte >(1209 / 16)
+.byte >(1141 / 16)
+.byte >(1077 / 16)
+.byte >(1016 / 16)
+.byte >(959 / 16)
+.byte >(905 / 16)
+.byte >(1710 / 32)
+.byte >(1614 / 32)
+.byte >(1523 / 32)
+.byte >(1438 / 32)
+.byte >(1357 / 32)
+.byte >(1281 / 32)
+.byte >(1209 / 32)
+.byte >(1141 / 32)
+.byte >(1077 / 32)
+.byte >(1016 / 32)
+.byte >(959 / 32)
+.byte >(905 / 32)
+.byte >(1710 / 64)
+.byte >(1614 / 64)
+.byte >(1523 / 64)
+.byte >(1438 / 64)
+.byte >(1357 / 64)
+.byte >(1281 / 64)
+.byte >(1209 / 64)
+.byte >(1141 / 64)
+.byte >(1077 / 64)
+.byte >(1016 / 64)
+.byte >(959 / 64)
+.byte >(905 / 64)
+.byte >(1710 / 128)
+.byte >(1614 / 128)
+.byte >(1523 / 128)
+.byte >(1438 / 128)
+.byte >(1357 / 128)
+.byte >(1281 / 128)
+.byte >(1209 / 128)
+.byte >(1141 / 128)
+.byte >(1077 / 128)
+.byte >(1016 / 128)
+.byte >(959 / 128)
+.byte >(905 / 128)
+END_OF_CODE:
+INDEX:
+.word 34774
+.segment "PRG13B"
+INSTRUMENTS:
+ADSASD:
+.incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/DATA3"
+ASDA = * - 32769
+AA .set 65517

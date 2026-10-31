@@ -1,0 +1,11 @@
+; Bank 13 module
+.include "bank13/macros_mus.s"
+.include "bank13/jonsbit_mus.s"
+.include "bank13/music1_mus.s"
+.include "bank13/hiscore_rou.s"
+.include "bank13/title_rou.s"
+.include "bank13/soundfx_rou.s"
+.include "bank13/newbits_rou.s"
+.include "bank13/explode_rou.s"
+.include "bank13/prtrobin_rou.s"
+.include "bank13/bank13_pds.s"

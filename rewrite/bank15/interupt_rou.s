@@ -1,0 +1,146 @@
+CM_NMI:
+bit CM_FLAGS
+bmi INTERUPT
+inc CM_FRAMES
+bit 8194
+rti
+INTERUPT:
+pha
+txa
+pha
+tya
+pha
+lda INTERON
+beq DONTDOINTERUPT
+lda FINISHEDLOOP
+bne @_1
+jsr FADEUPCOLOURS
+jsr EMPTYPRINTBUFFER
+@_1:
+jsr EMPTYBLOCKBUFFER
+lda X_SCROLL
+sta _SCROLLCON
+lda Y_SCROLL
+sta _SCROLLCON
+lda CONTROL0
+sta _CONTROL0
+lda CONTROL1
+sta _CONTROL1
+lda FINISHEDLOOP
+bne @_4
+jsr SENDSPRITEBLOCK
+@_4:
+jsr DOINTERPAUSE
+jsr READKEYPADS
+lda #13
+sta BANK_TBL + 13
+jsr FX_PLAY
+lda BANKNO
+jsr CHANGEBANKROU1
+DONTDOINTERUPT:
+lda PAUSE
+bne @_1
+lda #13
+sta BANK_TBL + 13
+jsr PLAY_MUSIC
+lda BANKNO
+jsr CHANGEBANKROU1
+@_1:
+pla
+tay
+pla
+tax
+lda #128
+sta FLYFLAG
+pla
+rti
+DOINTERPAUSE:
+lda PAUSE
+bne INPAUSEMODE
+PAUSENOTON:
+lda FINISHEDLOOP
+bne @_1
+inc COUNTER
+@_2:
+jsr CLEARSPRITEBLOCK
+jsr RANDOM
+@_1:
+INPAUSEMODE:
+rts
+SETFADE:
+stx ADDRESS
+sty ADDRESS + 1
+lda #3
+sta FADECOUNTER
+ldy #0
+@_1:
+lda (ADDRESS),Y
+sta FADECOLOURS,Y
+iny
+cpy #32
+bne @_1
+ldy #0
+jmp ALLBLACK
+FADEUPCOLOURS:
+lda FADECOUNTER
+beq ENDFADE
+ldx #63
+stx _VRAMADDR
+ldy #0
+sty _VRAMADDR
+cmp #0
+bmi BACKTOBLACK
+tax
+lda FADEMASKS,X
+sta FADETEMP
+lda FADECOUNTER
+beq DOFADELP
+dec FADECOUNTER
+DOFADELP:
+lda FADECOLOURS,Y
+and FADETEMP
+sta _VRAMDATA
+iny
+cpy #32
+bne DOFADELP
+ENDFADE:
+rts
+BACKTOBLACK:
+inc FADECOUNTER
+lda FADECOUNTER
+cmp #255
+beq ALLBLACK1
+eor #255
+clc
+adc #1
+tax
+lda FADE1MASKS,X
+sta FADETEMP
+jmp DOFADELP
+ALLBLACK:
+asl FLYFLAG
+@M743__1:
+bit FLYFLAG
+bpl @M743__1
+ldx #63
+stx _VRAMADDR
+ldy #0
+sty _VRAMADDR
+ALLBLACK1:
+lda #14
+ALLBLACKLP:
+sta _VRAMDATA
+iny
+cpy #32
+bne ALLBLACKLP
+rts
+FADEMASKS:
+.byte $FF
+.byte $3F
+.byte $1F
+.byte $0F
+FADE1MASKS:
+.byte $00
+.byte $0F
+.byte $1F
+.byte $3F

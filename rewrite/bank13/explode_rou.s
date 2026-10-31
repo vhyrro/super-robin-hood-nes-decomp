@@ -1,0 +1,367 @@
+ROBINHEARTS:
+lda ROBINY
+clc
+adc #($EE)
+sta HEARTSTABLE + 2,X
+lda ROBINXL
+sec
+sbc #4
+sta HEARTSTABLE + 0,X
+lda ROBINXH
+sbc #0
+sta HEARTSTABLE + 1,X
+rts
+UPDATEHEARTS:
+ldx #0
+MOREHEARTS:
+stx HTEMPXREG
+lda HEARTSTABLE,X
+ora HEARTSTABLE + 1,X
+beq ENDHEARTS
+UPDATEHEARTSLP:
+lda HEARTSTABLE + 5,X
+bpl @_1
+jsr ROBINHEARTS
+@_1:
+lda HEARTSTABLE,X
+sec
+sbc SCRXL
+sta HEARTXL
+lda HEARTSTABLE + 1,X
+sbc SCRXH
+sta HEARTXH
+lda HEARTSTABLE + 2,X
+sta HEARTY
+lda HEARTSTABLE + 3,X
+sta HTEMPCHR
+lda HEARTSTABLE + 4,X
+lsr
+lsr
+lsr
+lsr
+sta HTEMPCOL
+lda HEARTSTABLE + 4,X
+and #15
+sta NOOFHPARAS
+lda HEARTSTABLE + 5,X
+and #31
+sta HTEMPROU
+DOEACHHEART:
+ldy HTEMPROU
+lda EXPLODEROUBITSL,Y
+sta ADDRESS
+lda EXPLODEROUBITSH,Y
+sta ADDRESS + 1
+jmp (ADDRESS)
+BACKFROMHEARTROU:
+@_1:
+jsr PRINTCIRCLEOFHEARTS
+BACKFROMHEARTROU1:
+inx
+inx
+dec NOOFHPARAS
+bne DOEACHHEART
+ENDHEARTS:
+lda HTEMPXREG
+clc
+adc #16
+tax
+cmp #48
+bne MOREHEARTS
+rts
+SPINANDINC:
+dec HEARTSTABLE + 7,X
+JUSTINC:
+jsr INCHEARTS4
+FINHEARTS1:
+bne BACKFROMHEARTROU
+FINHEARTS:
+ldy HTEMPXREG
+lda #0
+sta HEARTSTABLE,Y
+sta HEARTSTABLE + 1,Y
+jmp BACKFROMHEARTROU1
+LARGEEXPFORGUARD:
+jsr INCHEARTS4
+bpl BACKFROMHEARTROU
+bmi FINHEARTS
+SMALLEXPFORGUARD:
+jsr INCHEARTS3
+lda HEARTSTABLE + 6,X
+cmp #64
+bcc BACKFROMHEARTROU
+bcs FINHEARTS
+EXPLODEHEARTS:
+ldy NOOFHPARAS
+lda EXPSIZETABLE,Y
+clc
+adc HEARTSTABLE + 6,X
+sta HEARTSTABLE + 6,X
+bcc BACKFROMHEARTROU
+bcs FINHEARTS
+EXPSIZETABLE:
+.byte $01
+.byte $02
+.byte $03
+.byte $04
+.byte $05
+.byte $06
+SPININSTARS:
+dec HEARTSTABLE + 7,X
+lda HEARTSTABLE + 6,X
+clc
+adc #($FA)
+sta HEARTSTABLE + 6,X
+jmp FINHEARTS1
+EXPLODEHEARTSL:
+dec HEARTSTABLE + 7,X
+ldy NOOFHPARAS
+lda ROBININVINC
+cmp #170 - 50
+bcc @_1
+lda EXPSIZETABLE,Y
+clc
+adc HEARTSTABLE + 6,X
+sta HEARTSTABLE + 6,X
+jmp BACKFROMHEARTROU
+@_1:
+lda HEARTSTABLE + 6,X
+sec
+sbc EXPSIZETABLE,Y
+sta HEARTSTABLE + 6,X
+bmi FINHEARTS
+jmp BACKFROMHEARTROU
+INCHEARTS4:
+inc HEARTSTABLE + 6,X
+INCHEARTS3:
+inc HEARTSTABLE + 6,X
+INCHEARTS2:
+inc HEARTSTABLE + 6,X
+INCHEARTS1:
+inc HEARTSTABLE + 6,X
+rts
+GETVALUE:
+and #63
+tay
+lda SINCOSTABLE,Y
+bit HTEMPANGLE
+bvc WASPOS
+jsr WASPOS
+eor #255
+clc
+adc #1
+dey
+rts
+WASPOS:
+sta TEMP
+lda HTEMPSIZE
+sta ADDRESS
+ldy #8
+lda #0
+sta ADDRESS + 1
+sta ADDRESS1
+sta ADDRESS1 + 1
+MULTLP:
+lsr TEMP
+bcc NOADD
+lda ADDRESS1
+clc
+adc ADDRESS
+sta ADDRESS1
+lda ADDRESS1 + 1
+adc ADDRESS + 1
+sta ADDRESS1 + 1
+NOADD:
+asl ADDRESS
+rol ADDRESS + 1
+dey
+bne MULTLP
+lda ADDRESS1 + 1
+rts
+PUTSPINHEART:
+lda HTEMPPRTY
+sta SPRITEBLOCK + 0,Y
+lda HTEMPCHR
+sta SPRITEBLOCK + 1,Y
+lda HTEMPCOL
+sta SPRITEBLOCK + 2,Y
+iny
+iny
+iny
+iny
+rts
+PRINTCIRCLEOFHEARTS:
+lda HEARTSTABLE + 6,X
+sta HTEMPSIZE
+lda HEARTSTABLE + 7,X
+and #127
+sta HTEMPANGLE
+jsr GETVALUE
+sty XMINUS
+asl
+sta HTEMPX
+lda HTEMPANGLE
+clc
+adc #32
+and #127
+sta HTEMPANGLE
+jsr GETVALUE
+sty YMINUS
+asl
+sta HTEMPY
+ldy SPRITEBLOCKPOINTER
+bne @_29
+rts
+@_29:
+lda HEARTXL
+clc
+adc HTEMPX
+sta SPRITEBLOCK + 3,Y
+lda HEARTXH
+adc XMINUS
+bne @_1
+lda HEARTY
+clc
+adc HTEMPY
+sta HTEMPPRTY
+lda #0
+adc YMINUS
+bne @_1
+jsr PUTSPINHEART
+beq NOMOREHEARTS
+@_1:
+lda HEARTXL
+clc
+adc HTEMPY
+sta SPRITEBLOCK + 3,Y
+lda HEARTXH
+adc YMINUS
+bne @_2
+lda HEARTY
+sec
+sbc HTEMPX
+sta HTEMPPRTY
+lda #0
+sbc XMINUS
+bne @_2
+jsr PUTSPINHEART
+beq NOMOREHEARTS
+@_2:
+lda HEARTXL
+sec
+sbc HTEMPY
+sta SPRITEBLOCK + 3,Y
+lda HEARTXH
+sbc YMINUS
+bne @_3
+lda HEARTY
+clc
+adc HTEMPX
+sta HTEMPPRTY
+lda #0
+adc XMINUS
+bne @_3
+jsr PUTSPINHEART
+beq NOMOREHEARTS
+@_3:
+lda HEARTXL
+sec
+sbc HTEMPX
+sta SPRITEBLOCK + 3,Y
+lda HEARTXH
+sbc XMINUS
+bne @_4
+lda HEARTY
+sec
+sbc HTEMPY
+sta HTEMPPRTY
+lda #0
+sbc YMINUS
+bne @_4
+jsr PUTSPINHEART
+@_4:
+NOMOREHEARTS:
+sty SPRITEBLOCKPOINTER
+rts
+SINCOSTABLE:
+.byte $00
+.byte $03
+.byte $06
+.byte $09
+.byte $0C
+.byte $0F
+.byte $12
+.byte $15
+.byte $18
+.byte $1B
+.byte $1E
+.byte $21
+.byte $24
+.byte $26
+.byte $29
+.byte $2B
+.byte $2D
+.byte $2F
+.byte $31
+.byte $33
+.byte $35
+.byte $37
+.byte $38
+.byte $3A
+.byte $3B
+.byte $3C
+.byte $3D
+.byte $3E
+.byte $3E
+.byte $3F
+.byte $3F
+.byte $40
+.byte $40
+.byte $40
+.byte $3F
+.byte $3F
+.byte $3E
+.byte $3E
+.byte $3D
+.byte $3C
+.byte $3B
+.byte $3A
+.byte $38
+.byte $37
+.byte $35
+.byte $33
+.byte $31
+.byte $2F
+.byte $2D
+.byte $2B
+.byte $29
+.byte $26
+.byte $24
+.byte $21
+.byte $1E
+.byte $1B
+.byte $18
+.byte $15
+.byte $12
+.byte $0F
+.byte $0C
+.byte $09
+.byte $06
+.byte $03
+.byte $00
+EXPLODEROUBITSL:
+.byte <(EXPLODEHEARTSL)
+.byte <(EXPLODEHEARTS)
+.byte <(SPINANDINC)
+.byte <(SPININSTARS)
+.byte <(JUSTINC)
+.byte <(SMALLEXPFORGUARD)
+.byte <(LARGEEXPFORGUARD)
+EXPLODEROUBITSH:
+.byte >(EXPLODEHEARTSL)
+.byte >(EXPLODEHEARTS)
+.byte >(SPINANDINC)
+.byte >(SPININSTARS)
+.byte >(JUSTINC)
+.byte >(SMALLEXPFORGUARD)
+.byte >(LARGEEXPFORGUARD)
