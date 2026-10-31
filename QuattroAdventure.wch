@@ -1,40 +1,84 @@
 SystemID NES
-0307	b	u	0	RAM	X sub position - "robindx"
+0307	b	u	0	RAM	X subpixel position - "robindx"
 0308	w	u	0	RAM	X position - "robinxl", "robinxh"
 030A	b	u	0	RAM	Y position - "robiny"
-0311	b	u	0	RAM	X speed - "runcount"
-0318	b	s	0	RAM	Y speed - "robingravity"
-0	S	_	1		
 030B	b	u	0	RAM	Screen relative X position - "robinonscrx"
-030C	b	s	0	RAM	State - "leftright"
-030D	b	s	0	RAM	Old state - "oleftright"
+030C	b	s	0	RAM	Input direction - "leftright"
+030D	b	s	0	RAM	Facing direction - "oleftright"
 030E	w	u	0	RAM	Old X position - "orobinxl", "orobinxh"
 0310	b	u	0	RAM	Old Y position - "orobiny"
-0312	b	u	0	RAM	Title screen value - "robindir"
+0311	b	u	0	RAM	X speed - "runcount"
 0313	b	u	0	RAM	Running animation - "robinanim"
 0314	b	u	0	RAM	Firing animation - "robinfiring"
 0315	b	u	0	RAM	Crouching animation - "robincrouch"
-0316	b	u	0	RAM	Height - "robinheight"
+0316	b	u	0	RAM	Body height / crouch state - "robinheight"
 0317	b	u	0	RAM	Is jumping - "robinjumping"
+0318	b	s	0	RAM	Y speed - "robingravity"
 0319	b	u	0	RAM	Face animation - "robinlook"
 031A	b	u	0	RAM	On ladder - "robinladder"
 031B	b	u	0	RAM	Ladder reclimb timer - "robinladdercounter"
 031C	b	u	0	RAM	Invincibility timer - "robininvinc"
-031D	b	u	0	RAM	"robinbehind" - unknown
+031D	b	u	0	RAM	Block ID behind Robin - "robinbehind"
 031E	b	u	0	RAM	On first jump frame - "robinjustjumped"
 031F	w	u	0	RAM	Respawn X - "oldxl", "oldxh"
 0321	b	u	0	RAM	Respawn Y - "oldy"
 0322	b	u	0	RAM	Respawn on ladder - "oldladder"
 0323	b	u	0	RAM	Death countdown - "killed"
 0324	w	u	0	RAM	Arrow kill X position - "deadarrowx"
-0325	b	u	0	RAM	Arrow kill Y position - "deadarrowy"
-0326	b	u	0	RAM	Used arrow timer - "deadarrowcount"
+0326	b	u	0	RAM	Arrow kill Y position - "deadarrowy"
+0327	b	u	0	RAM	Used arrow timer - "deadarrowcount"
 0	S	_	1		
-0009	b	u	0	RAM	Vertical screen scroll
-000A	b	u	0	RAM	Horizontal screen scroll
-0042	b	u	0	RAM	Room ID
-0048	b	u	0	RAM	Life count
-0049	b	u	0	RAM	Heart count
-0640	d	u	0	RAM	Key data bitfield
-0650	d	u	0	RAM	Enemy data bitfield
-
+003B	w	u	0	RAM	Scroll X position - "scrxl", "scrxh"
+003D	b	u	0	RAM	Leftmost visible map strip - "mapstrip"
+0305	b	u	0	RAM	Minimum map strip - "minmap"
+0306	b	u	0	RAM	Maximum map strip - "maxmap"
+0042	b	u	0	RAM	Map / room ID - "mapno"
+0040	w	u	0	RAM	Map data pointer - "mappointer"
+0009	b	u	0	RAM	Vertical PPU scroll - "y.scroll"
+000A	b	u	0	RAM	Horizontal PPU scroll - "x.scroll"
+0047	b	u	0	RAM	Scroll edge - "scrolldir"
+0	S	_	1		
+032B	b	u	0	RAM	Spawn animation timer - "juststartedlife"
+032D	b	u	0	RAM	In-game flag - "ingame"
+0048	b	u	0	RAM	Life count - "lives"
+0049	b	u	0	RAM	Heart count - "hearts"
+004A	b	u	0	RAM	Heart refill timer - "heartcounter"
+03A8	b	u	0	RAM	Game completed flag - "completedgame"
+032E	b	u	0	RAM	Treasures left - area 1
+032F	b	u	0	RAM	Treasures left - area 2
+0330	b	u	0	RAM	Treasures left - area 3
+0331	b	u	0	RAM	Treasures left - area 4
+0332	b	u	0	RAM	Treasures left - area 5
+0333	b	u	0	RAM	Treasures left - area 6
+0575	d	u	0	RAM	Score digits 0-3 - packed BCD - "score"
+0579	w	u	0	RAM	Score digits 4-5 - packed BCD - "score"
+057B	b	u	0	RAM	Score carry byte - "score"
+0	S	_	1		
+0004	w	u	0	RAM	RNG seed - low bytes - "seed"
+0006	b	u	0	RAM	RNG seed - high byte - "seed"
+0007	b	u	0	RAM	Controller buttons - current frame - "pad"
+0008	b	u	0	RAM	Controller buttons - previous frame - "debounce"
+0010	b	u	0	RAM	Frame counter / RNG input - "counter"
+0044	b	u	0	RAM	Pause flag - "pause"
+0045	b	u	0	RAM	Pause suppression flag - "dontpause"
+004D	b	u	0	RAM	Fade / cutscene timer - "fadecounter"
+0	S	_	1		
+0660	b	u	0	RAM	Secret flags 0-7 - bit 7 = secret 0, bit 0 = secret 7
+0661	b	u	0	RAM	Secret flags 8-15 - bit 1 = secret 14 (first cheat)
+0662	b	u	0	RAM	Secret flags 16-23 - bit 1 = secret 22 (beginning warp)
+0	S	_	1		
+0328	b	u	0	RAM	Door animation active - "animatedoor"
+0329	b	u	0	RAM	Door animation X - "doorx"
+032A	b	u	0	RAM	Door animation Y - "doory"
+0481	d	u	0	RAM	On-screen object slots 0-3 - "onscreenrou"
+0485	d	u	0	RAM	On-screen object slots 4-7 - "onscreenrou"
+0489	d	u	0	RAM	On-screen object slots 8-11 - "onscreenrou"
+048D	d	u	0	RAM	On-screen object slots 12-15 - "onscreenrou"
+0640	d	u	0	RAM	Active objects 0-31 - "extrason"
+0644	d	u	0	RAM	Active objects 32-63 - "extrason"
+0648	d	u	0	RAM	Active objects 64-95 - "extrason"
+064C	d	u	0	RAM	Active objects 96-127 - "extrason"
+0650	d	u	0	RAM	Active objects 128-159 - "extrason"
+0654	d	u	0	RAM	Active objects 160-191 - "extrason"
+0658	d	u	0	RAM	Active objects 192-223 - "extrason"
+065C	d	u	0	RAM	Active objects 224-255 - "extrason"
