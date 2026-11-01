@@ -1,4 +1,3 @@
-; Bank 13 module
 .include "bank13/macros_mus.s"
 .include "bank13/jonsbit_mus.s"
 .include "bank13/music1_mus.s"

@@ -791,15 +791,15 @@ tay
 lda SFX_VOICES,Y
 ora SFX_VOLUME,X
 ora SFX_PULSE,X
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 lda SFX_TIME,X
 cmp #255
 bne @nsetup
 dec SFX_TIME,X
 lda SFX_VOICES + 2,Y
-sta 16384 + 2,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 lda SFX_VOICES + 3,Y
-sta 16384 + 3,Y
+sta APU_PULSE_1_LENGTH,Y
 @nsetup:
 @no_fx:
 jsr fx_envelopes
@@ -846,17 +846,17 @@ asl
 asl
 tay
 pla
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 pla
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 cpx #2
 beq @triangle
 lda #48
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 rts
 @triangle:
 lda #0
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 rts
 fx_do:
 lda SFX_ON,X
@@ -876,10 +876,10 @@ sbc #0
 sta SFX_VOICES + 3,Y
 @store_high:
 lda SFX_VOICES + 3,Y
-sta 16384 + 3,Y
+sta APU_PULSE_1_LENGTH,Y
 @store_low:
 lda SFX_VOICES + 2,Y
-sta 16384 + 2,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 rts
 @nfx1:
 cmp #2

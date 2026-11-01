@@ -1,4 +1,3 @@
-; Bank 15 module
 .include "bank15/bank14_pds.s"
 .include "bank15/timings_rou.s"
 .include "bank15/start_rou.s"

@@ -163,7 +163,7 @@ sta MUSIC_VARIABLES_START - 1,Y
 dey
 bne @loop2
 lda #MUSIC_IRQ_SETTING
-sta 16405
+sta APU_STATUS_REGISTER
 lda MUSIC_TEMPO
 sec
 sbc #1
@@ -237,7 +237,7 @@ lsr
 lsr
 ora #48
 ora MUSIC_TIN_TONE_1,X
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 @channel_is_off:
 ldy MUSIC_TEMP_Y + 1
 lda MUSIC_REVERB_COUNT_1,X
@@ -300,7 +300,7 @@ lda MUSIC_LOW_PITCH_1,X
 clc
 adc #199
 sta MUSIC_LOW_PITCH_1,X
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 @channel_is_off2:
 dec MUSIC_SPECIAL_THUD_1,X
 bne @get_y_bit
@@ -323,11 +323,11 @@ sta MUSIC_SPECIAL_THUD_1,X
 sta MUSIC_VOLUME_1,X
 lda MUSIC_VOICE_1,X
 bne @channel_is_off3
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 lda #6
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 lda #174
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 bne @get_y_bit
 @n_doof:
 dec MUSIC_SPECIAL_THUD_1,X
@@ -345,11 +345,11 @@ ldy MUSIC_TEMP_Y
 lda MUSIC_VOICE_1,X
 bne @channel_is_off4
 lda MUSIC_LOW_PITCH_1,X
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 lda MUSIC_HIGH_PITCH_1,X
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 lda #32
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 @channel_is_off3:
 @channel_is_off4:
 @get_y_bit:
@@ -506,14 +506,14 @@ lda MUSIC_TEMP_A + 1
 sta MUSIC_HIGH_PITCH_1,X
 ldy MUSIC_VOICE_1,X
 bne @channel_is_off5
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 @channel_is_off5:
 @semi_rewrite:
 lda MUSIC_TEMP_A
 sta MUSIC_LOW_PITCH_1,X
 ldy MUSIC_VOICE_1,X
 bne @channel_is_off6
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 @channel_is_off6:
 @j_no:
 jmp @no_chords
@@ -568,9 +568,9 @@ ldy MUSIC_TEMP_Y
 lda MUSIC_VOICE_1,X
 bne @voice_off
 lda MUSIC_LOW_PITCH_1,X
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 lda MUSIC_HIGH_PITCH_1,X
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 @voice_off:
 @no_chords:
 @no_high:
@@ -622,12 +622,12 @@ inc MUSIC_HIGH_PITCH_1,X
 lda MUSIC_VOICE_1,X
 bne @channel_is_off8
 lda MUSIC_HIGH_PITCH_1,X
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 @store_low:
 lda MUSIC_VOICE_1,X
 bne @channel_is_off8
 lda MUSIC_LOW_PITCH_1,X
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 @channel_is_off8:
 rts
 add_voice:
@@ -641,12 +641,12 @@ dec MUSIC_HIGH_PITCH_1,X
 lda MUSIC_VOICE_1,X
 bne @channel_is_off7
 lda MUSIC_HIGH_PITCH_1,X
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 @store_low:
 lda MUSIC_VOICE_1,X
 bne @channel_is_off7
 lda MUSIC_LOW_PITCH_1,X
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 @channel_is_off7:
 rts
 new_macro:
@@ -699,7 +699,7 @@ pla
 rts
 @stop_tune:
 lda #0
-sta 16405
+sta APU_STATUS_REGISTER
 sta MUSIC_TUNE
 sec
 rts
@@ -891,11 +891,11 @@ tay
 lda MUSIC_VOICE_1,X
 bne @channel_is_off
 lda #1
-sta 16385,Y
+sta APU_PULSE_1_SWEEP,Y
 lda MUSIC_LOW_PITCH_1,X
-sta 16386,Y
+sta APU_PULSE_1_TIMER_LOW,Y
 lda MUSIC_HIGH_PITCH_1,X
-sta 16387,Y
+sta APU_PULSE_1_LENGTH,Y
 cpx #2
 bne @no_triangle
 ldy MUSIC_INSTRUMENT_1,X
@@ -906,7 +906,7 @@ asl
 asl
 tay
 pla
-sta 16384,Y
+sta APU_PULSE_1_CONTROL,Y
 @channel_is_off:
 @no_triangle:
 @next_voice:

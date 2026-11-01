@@ -28,7 +28,7 @@ doorchr:
 okchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/OKCHR.PP1"
 end_of_bank14_data:
-BANK_14_SIZE = 49151 - end_of_bank14_data
+BANK_14_SIZE = $BFFF - end_of_bank14_data
 bank14_size_word:
 .byte >(BANK_14_SIZE)
 .byte <(BANK_14_SIZE)

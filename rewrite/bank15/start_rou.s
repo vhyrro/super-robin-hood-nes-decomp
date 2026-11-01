@@ -1,3 +1,13 @@
+CIC_LOCK_DELAY_LOW        = $0070
+CIC_LOCK_DELAY_HIGH       = $0071
+CIC_LOCK_ITERATION_COUNTER = $0072
+CIC_LOCK_WRITE_COUNTER    = $07F0
+CIC_LOCK_ADDRESS_1        = $FFF0
+CIC_LOCK_ADDRESS_2        = $FFF1
+CIC_LOCK_BIT_ADDRESS      = $00FF
+CIC_LOCK_BASE_DELAY       = 1631
+CIC_LOCK_WRITE_COUNT      = 4
+
 start:
 sei
 cld
@@ -6,36 +16,36 @@ txs
 LOCK_CHIP_ITERATIONS = 10
 LOCK_CHIP_DELAY_STEP = 128
 lda #LOCK_CHIP_ITERATIONS
-sta 114
-lda #<(1631 + LOCK_CHIP_ITERATIONS / 2 * LOCK_CHIP_DELAY_STEP)
-sta 112
-lda #>(1631 + LOCK_CHIP_ITERATIONS / 2 * LOCK_CHIP_DELAY_STEP)
-sta 113
+sta CIC_LOCK_ITERATION_COUNTER
+lda #<(CIC_LOCK_BASE_DELAY + LOCK_CHIP_ITERATIONS / 2 * LOCK_CHIP_DELAY_STEP)
+sta CIC_LOCK_DELAY_LOW
+lda #>(CIC_LOCK_BASE_DELAY + LOCK_CHIP_ITERATIONS / 2 * LOCK_CHIP_DELAY_STEP)
+sta CIC_LOCK_DELAY_HIGH
 lock_chip_retry:
-lda #4
-sta 2032
+lda #CIC_LOCK_WRITE_COUNT
+sta CIC_LOCK_WRITE_COUNTER
 lock_chip_write_loop:
-sta 65520
+sta CIC_LOCK_ADDRESS_1
 jsr lock_chip_delay
-sta 65521
+sta CIC_LOCK_ADDRESS_2
 jsr lock_chip_delay
-dec 2032
+dec CIC_LOCK_WRITE_COUNTER
 bne lock_chip_write_loop
-lda 112
+lda CIC_LOCK_DELAY_LOW
 sec
 sbc #LOCK_CHIP_DELAY_STEP
-sta 112
+sta CIC_LOCK_DELAY_LOW
 bcs @lock_chip_write_loop_skip_if_carry
-dec 113
+dec CIC_LOCK_DELAY_HIGH
 @lock_chip_write_loop_skip_if_carry:
-dec 114
+dec CIC_LOCK_ITERATION_COUNTER
 bne lock_chip_retry
-sta 65520
+sta CIC_LOCK_ADDRESS_1
 jmp lock_chip_done
 lock_chip_delay:
-ldx 112
-ldy 113
-bit 255
+ldx CIC_LOCK_DELAY_LOW
+ldy CIC_LOCK_DELAY_HIGH
+bit CIC_LOCK_BIT_ADDRESS
 lock_chip_delay_loop:
 dex
 bne lock_chip_delay_loop

@@ -2,7 +2,7 @@ cm_nmi:
 bit CODEMASTERS_FLAGS
 bmi interrupt
 inc CODEMASTERS_FRAME_COUNTER
-bit 8194
+bit PPU_STATUS_REGISTER
 rti
 interrupt:
 pha

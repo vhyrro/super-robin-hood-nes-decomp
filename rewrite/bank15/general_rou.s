@@ -8,15 +8,15 @@ BUTTON_LEFT_MASK = 2
 BUTTON_RIGHT_MASK = 1
 readkeypads:
 ldx #1
-stx 16406
+stx JOYPAD_1_REGISTER
 dex
-stx 16406
+stx JOYPAD_1_REGISTER
 padloop1:
 lda JOYPAD_STATE
 sta JOYPAD_DEBOUNCE
 ldy #8
 padloop2:
-lda 16406
+lda JOYPAD_1_REGISTER
 lsr A
 rol JOYPAD_STATE
 dey
@@ -73,11 +73,11 @@ eor #1
 sta GAME_PAUSED
 beq @checkforpausekey_skip_if_equal
 lda #0
-sta 16405
+sta APU_STATUS_REGISTER
 rts
 @checkforpausekey_skip_if_equal:
 lda #15
-sta 16405
+sta APU_STATUS_REGISTER
 @checkforpausekey_skip_if_equal_2:
 rts
 clearfullspriteblock:
@@ -87,7 +87,7 @@ sendspriteblock:
 lda #0
 sta OAM_ADDRESS_REGISTER
 lda #>(SPRITE_BLOCK_ADDRESS)
-sta 16404
+sta OAM_DMA_REGISTER
 rts
 turnofftune:
 lda #0
@@ -97,7 +97,7 @@ lda CURRENT_BANK
 pha
 jsr change_bank13_routine
 lda #0
-sta 16405
+sta APU_STATUS_REGISTER
 tya
 jsr start_music
 pla

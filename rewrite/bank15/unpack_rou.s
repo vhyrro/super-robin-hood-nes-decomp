@@ -232,7 +232,7 @@ rol TEMP_BYTE_5
 bcc @next
 pp1_gotline:
 lda TEMP_BYTE_4
-sta 8199
+sta PPU_DATA_REGISTER
 ldx TEMP_BYTE_3
 lda TEMP_BYTE_5
 sta PP1_ZERO_BUFFER,X
@@ -241,7 +241,7 @@ bpl pp1_getline
 ldx #7
 @bpl1:
 lda PP1_ZERO_BUFFER,X
-sta 8199
+sta PPU_DATA_REGISTER
 dex
 bpl @bpl1
 dec TEMP_BYTE_1

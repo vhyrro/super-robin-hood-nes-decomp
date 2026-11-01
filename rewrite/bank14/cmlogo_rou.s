@@ -1,5 +1,5 @@
 CODEMASTERS_USE_NMI = 1
-CODEMASTERS_SPRITE_PAGE = 768
+CODEMASTERS_SPRITE_PAGE = $0300
 CODEMASTERS_YEAR = 1993
 CODEMASTERS_SPRITE_Y_POSITION = CODEMASTERS_SPRITE_PAGE
 CODEMASTERS_SPRITE_DATA = CODEMASTERS_SPRITE_PAGE + 1
@@ -22,8 +22,8 @@ CODEMASTERS_ADDRESS_1_HIGH = 17
 CODEMASTERS_UNPACK_BUFFER = 18
 cm_logo:
 ldx #0
-stx 8192
-stx 8193
+stx PPU_CONTROL_REGISTER
+stx PPU_MASK_REGISTER
 ldy #151
 lda CODEMASTERS_FLAGS
 and #63
@@ -53,13 +53,13 @@ sta CODEMASTERS_Y_SCROLL_POSITION,X
 dex
 bpl @in
 lda #32
-sta 8198
+sta PPU_ADDRESS_REGISTER
 ldx #0
-stx 8198
+stx PPU_ADDRESS_REGISTER
 ldy #16
 txa
 @cv0:
-sta 8199
+sta PPU_DATA_REGISTER
 dex
 bne @cv0
 dey
@@ -67,61 +67,61 @@ bne @cv0
 @ab2:
 lda cm_abmap,X
 beq @abdone
-sta 8198
+sta PPU_ADDRESS_REGISTER
 inx
 lda cm_abmap,X
-sta 8198
+sta PPU_ADDRESS_REGISTER
 inx
 ldy cm_abmap,X
 inx
 @ab1:
 lda cm_abmap,X
-sta 8199
+sta PPU_DATA_REGISTER
 inx
 dey
 bne @ab1
 beq @ab2
 @abdone:
 lda #35
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda #232
-sta 8198
+sta PPU_ADDRESS_REGISTER
 ldy #3
 lda #80
 @ab5:
 ldx #8
 @ab6:
-sta 8199
+sta PPU_DATA_REGISTER
 dex
 bne @ab6
 lda #85
 dey
 bne @ab5
 ldy #35
-sty 8198
+sty PPU_ADDRESS_REGISTER
 ldx #194 + 8
-stx 8198
-sta 8199
-sta 8199
-sta 8199
-sta 8199
-sty 8198
+stx PPU_ADDRESS_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sty PPU_ADDRESS_REGISTER
 ldx #205 + 8
-stx 8198
+stx PPU_ADDRESS_REGISTER
 lda #5
-sta 8199
+sta PPU_DATA_REGISTER
 ldx #19
 lda #0
 @csfx:
-sta 16384,X
+sta APU_PULSE_1_CONTROL,X
 dex
 bpl @csfx
 lda #128
-sta 8192
+sta PPU_CONTROL_REGISTER
 cm_loop:
 jsr cm_vblank
 lda #15
-sta 16405
+sta APU_STATUS_REGISTER
 ldx CODEMASTERS_FRAME_COUNTER
 txa
 and #1
@@ -142,18 +142,18 @@ cmp #2
 bcs @n0
 adc CODEMASTERS_TEMP_1
 @n0:
-sta 16398
+sta APU_NOISE_PERIOD
 ldy #0
-sty 16387
+sty APU_PULSE_1_LENGTH
 dey
-sty 16391
-sty 16399
+sty APU_PULSE_2_LENGTH
+sty APU_NOISE_LENGTH
 lda #21
-sta 16396
+sta APU_NOISE_CONTROL
 cpx #CODEMASTERS_NOISE_START
 bcc @cm_loop_skip_if_no_carry
 lda #48
-sta 16386
+sta APU_PULSE_1_TIMER_LOW
 txa
 sec
 sbc #CODEMASTERS_NOISE_START - 8
@@ -165,29 +165,29 @@ bcs @cm_loop_skip_if_carry
 lda #0
 @cm_loop_skip_if_carry:
 ora #16 + 128
-sta 16384
+sta APU_PULSE_1_CONTROL
 cpx #CODEMASTERS_NOISE_LENGTH
 bcc @cm_loop_skip_if_no_carry_2
 lda #16
-sta 16396
+sta APU_NOISE_CONTROL
 bne @cm_loop_skip_if_no_carry_2
 @cm_loop_skip_if_no_carry:
 txa
 lsr
 ora #16 + 128
-sta 16384
-sta 16388
+sta APU_PULSE_1_CONTROL
+sta APU_PULSE_2_CONTROL
 txa
 asl
 asl
 asl
-sta 16386
-sta 16390
+sta APU_PULSE_1_TIMER_LOW
+sta APU_PULSE_2_TIMER_LOW
 lda #2
 clc
 adc CODEMASTERS_TEMP_1
-sta 16387
-sta 16391
+sta APU_PULSE_1_LENGTH
+sta APU_PULSE_2_LENGTH
 @cm_loop_skip_if_no_carry_2:
 lda CODEMASTERS_FRAME_COUNTER
 beq @timeout
@@ -196,13 +196,13 @@ bvc @cm_loop
 cmp #64
 bcc @cm_loop
 ldy #1
-sty 16406
+sty JOYPAD_1_REGISTER
 dey
-sty 16406
+sty JOYPAD_1_REGISTER
 ldy #8
 @j1:
-lda 16406
-ora 16407
+lda JOYPAD_1_REGISTER
+ora JOYPAD_2_REGISTER
 lsr
 bcs @timeout
 dey
@@ -211,9 +211,9 @@ bne @j1
 jmp cm_loop
 @timeout:
 lda #0
-sta 8192
-sta 8193
-sta 16405
+sta PPU_CONTROL_REGISTER
+sta PPU_MASK_REGISTER
+sta APU_STATUS_REGISTER
 lda CODEMASTERS_FLAGS
 ora #128
 sta CODEMASTERS_FLAGS
@@ -225,43 +225,43 @@ cmp CODEMASTERS_FRAME_COUNTER
 beq @cm_wait_frame_change
 ldx #0
 lda #63
-sta 8198
-stx 8198
+sta PPU_ADDRESS_REGISTER
+stx PPU_ADDRESS_REGISTER
 ldy #4
 @p2:
 ldx #7
 @p1:
 lda cm_palette,X
-sta 8199
+sta PPU_DATA_REGISTER
 dex
 bpl @p1
 dey
 bne @p2
 ldx CODEMASTERS_COLOUR_INDEX
 ldy #63
-sty 8198
+sty PPU_ADDRESS_REGISTER
 lda #17
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda cm_colfade,X
 bmi @eof
-sta 8199
+sta PPU_DATA_REGISTER
 lda cm_colfade + 1,X
-sta 8199
+sta PPU_DATA_REGISTER
 lda cm_colfade + 2,X
-sta 8199
-sty 8198
+sta PPU_DATA_REGISTER
+sty PPU_ADDRESS_REGISTER
 ldy #3
-sty 8198
-sta 8199
-sta 8199
-sta 8199
-sta 8199
-sta 8199
+sty PPU_ADDRESS_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
 ldy #63
-sty 8198
+sty PPU_ADDRESS_REGISTER
 ldy #27
-sty 8198
-sta 8199
+sty PPU_ADDRESS_REGISTER
+sta PPU_DATA_REGISTER
 inx
 inx
 inx
@@ -272,25 +272,25 @@ stx CODEMASTERS_COLOUR_INDEX
 @eof:
 cm_strip:
 lda #4
-sta 8192
+sta PPU_CONTROL_REGISTER
 lda #33
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda CODEMASTERS_SPRITE_TILE_ADDRESS_LOW
-sta 8198
+sta PPU_ADDRESS_REGISTER
 inc CODEMASTERS_SPRITE_TILE_ADDRESS_LOW
 ldx CODEMASTERS_SPRITE_TILE_INDEX
 ldy cm_stdata,X
 dey
 bpl @done
 @cm_strip_wait_vram:
-lda 8199
+lda PPU_DATA_REGISTER
 dey
 bmi @cm_strip_wait_vram
 @cm_strip_read_loop:
 inx
 lda cm_stdata,X
 bmi @cm_strip_skip_if_negative
-sta 8199
+sta PPU_DATA_REGISTER
 bpl @cm_strip_read_loop
 @cm_strip_skip_if_negative:
 stx CODEMASTERS_SPRITE_TILE_INDEX
@@ -300,31 +300,31 @@ lda CODEMASTERS_SPRITE_X_POSITION + 32
 cmp #161
 bne @nc
 lda #33
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda #76 + 64
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda #8
-sta 8199
+sta PPU_DATA_REGISTER
 lda #244 + 64 - 256
 sta CODEMASTERS_ADDRESS_1_LOW
 ldy #CODEMASTERS_CHARACTER_1
 ldx #0
 @loop2:
 lda #32 + 1
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda CODEMASTERS_ADDRESS_1_LOW
-sta 8198
+sta PPU_ADDRESS_REGISTER
 dec CODEMASTERS_ADDRESS_1_LOW
 lda cm_codemap,X
 @cm_code_bit_loop:
 asl
 beq @next2
 bcc @skip
-sty 8199
+sty PPU_DATA_REGISTER
 iny
 bne @cm_code_bit_loop
 @skip:
-bit 8199
+bit PPU_DATA_REGISTER
 bcc @cm_code_bit_loop
 @next2:
 inx
@@ -332,20 +332,20 @@ cpx #9
 bne @loop2
 @nc:
 lda #32 + 1
-sta 8192
-sta 8198
+sta PPU_CONTROL_REGISTER
+sta PPU_ADDRESS_REGISTER
 lda #244 + 64 - 256
-sta 8198
+sta PPU_ADDRESS_REGISTER
 ldx #142
-stx 8199
+stx PPU_DATA_REGISTER
 inx
-stx 8199
+stx PPU_DATA_REGISTER
 lda #0
-sta 8195
-lda #CODEMASTERS_SPRITE_PAGE / 256
-sta 16404
+sta OAM_ADDRESS_REGISTER
+lda #>(CODEMASTERS_SPRITE_PAGE)
+sta OAM_DMA_REGISTER
 lda #129
-sta 8192
+sta PPU_CONTROL_REGISTER
 lda CODEMASTERS_Y_SCROLL_POSITION
 beq @at_rest
 sec
@@ -354,11 +354,11 @@ sta CODEMASTERS_Y_SCROLL_POSITION
 @at_rest:
 asl
 eor #255
-sta 8197
+sta PPU_SCROLL_REGISTER
 lda CODEMASTERS_Y_SCROLL_POSITION
-sta 8197
+sta PPU_SCROLL_REGISTER
 lda #30
-sta 8193
+sta PPU_MASK_REGISTER
 cm_code:
 CODEMASTERS_CHARACTER_1 = 1
 CODEMASTERS_CHARACTER_2 = 25
@@ -609,8 +609,8 @@ lda @rom_check - 32,X
 sta 0,X
 inx
 bne @smiley_copy_code_loop
-stx 8192
-stx 8193
+stx PPU_CONTROL_REGISTER
+stx PPU_MASK_REGISTER
 jsr @keypad
 sty @tst_byte
 lda @pad1
@@ -643,13 +643,13 @@ jsr @tst2_set
 @tst1a:
 ldy #64
 @tst1b:
-stx 8199
+stx PPU_DATA_REGISTER
 inx
-stx 8199
+stx PPU_DATA_REGISTER
 inx
-stx 8199
+stx PPU_DATA_REGISTER
 inx
-stx 8199
+stx PPU_DATA_REGISTER
 inx
 dey
 bne @tst1b
@@ -658,20 +658,20 @@ sec
 sbc #1
 bne @tst1a
 jsr @tst2_set
-ldy 8199
+ldy PPU_DATA_REGISTER
 @tst2a:
 ldy #64
 @tst2b:
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 inx
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 inx
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 inx
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 inx
 dey
@@ -685,13 +685,13 @@ ldx #255 - 37
 @tst3a:
 ldy #64
 @tst3b:
-stx 8199
+stx PPU_DATA_REGISTER
 dex
-stx 8199
+stx PPU_DATA_REGISTER
 dex
-stx 8199
+stx PPU_DATA_REGISTER
 dex
-stx 8199
+stx PPU_DATA_REGISTER
 dex
 dey
 bne @tst3b
@@ -701,20 +701,20 @@ sbc #1
 bne @tst3a
 jsr @tst2_set
 ldx #255 - 37
-ldy 8199
+ldy PPU_DATA_REGISTER
 @tst4a:
 ldy #64
 @tst4b:
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 dex
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 dex
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 dex
-cpx 8199
+cpx PPU_DATA_REGISTER
 bne @cram_fail
 dex
 dey
@@ -735,17 +735,17 @@ rts
 lda #32
 ldx #37
 ldy #0
-sty 8198
-sty 8198
+sty PPU_ADDRESS_REGISTER
+sty PPU_ADDRESS_REGISTER
 rts
 @keypad:
 ldx #1
-stx 16406
+stx JOYPAD_1_REGISTER
 dex
-stx 16406
+stx JOYPAD_1_REGISTER
 ldy #8
 @pad:
-lda 16406
+lda JOYPAD_1_REGISTER
 lsr
 rol @pad1
 dey
@@ -839,53 +839,53 @@ stx @face_mask
 ldx @tst_byte
 stx 17408
 ldy #0
-sty 8193
+sty PPU_MASK_REGISTER
 ldx #63
-stx 8198
-sty 8198
+stx PPU_ADDRESS_REGISTER
+sty PPU_ADDRESS_REGISTER
 jsr @store
 ora #48
 jsr @store
 jsr @store
-sty 8198
-sty 8198
+sty PPU_ADDRESS_REGISTER
+sty PPU_ADDRESS_REGISTER
 ldx #16
 dey
 @delay_loop:
-sty 8199
+sty PPU_DATA_REGISTER
 dex
 bne @delay_loop
 lda #32
-sta 8198
-stx 8198
+sta PPU_ADDRESS_REGISTER
+stx PPU_ADDRESS_REGISTER
 txa
 ldy #4
 @l1:
-sta 8199
+sta PPU_DATA_REGISTER
 inx
 bne @l1
 dey
 bne @l1
 lda #35
-sta 8198
+sta PPU_ADDRESS_REGISTER
 lda #200
-sta 8198
+sta PPU_ADDRESS_REGISTER
 ldy #0
 @l2:
 lda @face_data,Y
 and @face_mask
-sta 8199
+sta PPU_DATA_REGISTER
 iny
 cpy #48
 bcc @l2
 ldx #0
-stx 8192
-stx 8198
-stx 8198
-stx 8197
-stx 8197
+stx PPU_CONTROL_REGISTER
+stx PPU_ADDRESS_REGISTER
+stx PPU_ADDRESS_REGISTER
+stx PPU_SCROLL_REGISTER
+stx PPU_SCROLL_REGISTER
 lda #14
-sta 8193
+sta PPU_MASK_REGISTER
 ldy #10
 @wait:
 dec TEMP_BYTE_1
@@ -894,13 +894,13 @@ dex
 bne @wait
 dey
 bne @wait
-sty 8193
+sty PPU_MASK_REGISTER
 rts
 @store:
-sta 8199
-sta 8199
-sta 8199
-sta 8199
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
+sta PPU_DATA_REGISTER
 rts
 @face_data:
 .byte $00,$C0,$FC,$FF,$FF,$F0,$00,$00

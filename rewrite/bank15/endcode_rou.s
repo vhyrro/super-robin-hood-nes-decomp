@@ -1,5 +1,5 @@
 end_of_bank15_data:
-BANK_15_SIZE = 65529 - end_of_bank15_data
+BANK_15_SIZE = $FFF9 - end_of_bank15_data
 TOTAL_SIZE = BANK_12_SIZE + BANK_13_SIZE + BANK_14_SIZE + BANK_15_SIZE
 bank15_size_word:
 .byte >(BANK_15_SIZE)
@@ -13,7 +13,7 @@ very_end:
 .org $FFF9
 irq_interrupt:
 rti
-.word 49159
+.word nmi_entry
 .word start
 .word irq_interrupt
 WIPE_BANK_COUNTER .set 0

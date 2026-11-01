@@ -1,4 +1,5 @@
 jmp boot_delay_done
+nmi_entry:
 jmp cm_nmi
 bank_table_alias1:
 bank_table_alias2:
