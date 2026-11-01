@@ -1,34 +1,34 @@
-COLLISIONCHR:
+collisionchr:
 .byte $0E,$00,$80
-SOLIDCOLLISIONCHR:
+solidcollisionchr:
 .byte $0F,$FF
-ALPHACHRS:
-HISCORECHRS:
+alphachrs:
+hiscorechrs:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/HISCORE.PP1"
-TITLETOPCHRS:
+titletopchrs:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/TOPCHRS.PP1"
-TITLEBOTCHRS:
+titlebotchrs:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/BOTCHRS.PP1"
-ROBINCHRS:
+robinchrs:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/ROBINCHR.PP1"
-BASECHR:
+basechr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/BASECHR.PP1"
-BEADCHR:
+beadchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/BEADCHR.PP1"
-BOXCHR:
+boxchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/BOXCHR.PP1"
-ARCHCHR:
+archchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/ARCHCHR.PP1"
-ROCKCHR:
+rockchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/ROCKCHR.PP1"
-BEDCHR:
+bedchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/BEDCHR.PP1"
-DOORCHR:
+doorchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/DOORCHR.PP1"
-OKCHR:
+okchr:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/OKCHR.PP1"
-ED14:
-B14 = 49151 - ED14
-BANK14:
-.byte >(B14)
-.byte <(B14)
+end_of_bank14_data:
+BANK_14_SIZE = 49151 - end_of_bank14_data
+bank14_size_word:
+.byte >(BANK_14_SIZE)
+.byte <(BANK_14_SIZE)

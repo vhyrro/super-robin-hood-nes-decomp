@@ -1,70 +1,70 @@
-CHECKADDFLAMESETC:
-ldy ADDRESS9
-lda BLOCKROUS,Y
-beq PUTINNOWT
-sta TEMP1
+checkaddflamesetc:
+ldy TEMP_POINTER_9
+lda blockrous,Y
+beq putinnowt
+sta TEMP_BYTE_1
 and #63
-sta TEMP
+sta TEMP_BYTE
 tax
-lda ABLOCKROUS,X
-sta ADDRESS
-lda ABLOCKROUS + 1,X
-sta ADDRESS + 1
-ldx #NOOFONSCREENS - 1
-FINDASPACE:
-lda ONSCREENROU,X
-beq GOTSPACEONSCREEN
-FINDASPACE1:
+lda ablockrous,X
+sta TEMP_POINTER
+lda ablockrous + 1,X
+sta TEMP_POINTER + 1
+ldx #NUMBER_OF_ONSCREEN_OBJECTS - 1
+findaspace:
+lda ONSCREEN_ROUTINE,X
+beq gotspaceonscreen
+findaspace1:
 dex
-bpl FINDASPACE
-PUTINNOWT:
+bpl findaspace
+putinnowt:
 rts
-GOTSPACEONSCREEN:
-bit TEMP1
-bvc @_1
-cpx #NOOFONSCREENS - 1
-beq FINDASPACE1
-lda ONSCREENROU + 1,X
-bne FINDASPACE1
-@_1:
-lda TEMP
-sta ONSCREENROU,X
+gotspaceonscreen:
+bit TEMP_BYTE_1
+bvc @gotspaceonscreen_skip_if_no_overflow
+cpx #NUMBER_OF_ONSCREEN_OBJECTS - 1
+beq findaspace1
+lda ONSCREEN_ROUTINE + 1,X
+bne findaspace1
+@gotspaceonscreen_skip_if_no_overflow:
+lda TEMP_BYTE
+sta ONSCREEN_ROUTINE,X
 lda #0
-sta ONSCREENCOUNT1,X
-sta ONSCREENCOUNT2,X
-jmp (ADDRESS)
-ABLOCKROUS:
-BNOWT = 0
-.word PUTINNOWT
-BFLAM = 2
-.word PUTINFLAMES
-BSPIT = 4
-.word PUTINSPIT
-BEYES = 6
-.word PUTINEYES
-BDRIP = 8
-.word PUTINDRIP
-BTRAM = 10
-.word PUTINTRAMP
-BDRDN = 12 + 128
-.word PUTINDRILLDOWN
-BDRUP = 14 + 128
-.word PUTINDRILLUP
-BBAT = 16 + 128 + 64
-.word PUTINBAT
-BRAT = 18 + 128
-.word PUTINRAT
-BSPID = 20 + 128
-.word PUTINSPIDER
-BHART = 22 + 128
-.word PUTINHEART
-BBARR = 24 + 64
-.word PUTINBARREL
-BBLCK = 26 + 128
-.word PUTINBLOCK
-BCOIN = 28 + 128
-.word PUTINCOIN
-BLOCKROUS:
+sta ONSCREEN_COUNTER_1,X
+sta ONSCREEN_COUNTER_2,X
+jmp (TEMP_POINTER)
+ablockrous:
+BLOCK_TYPE_NONE = 0
+.word putinnowt
+BLOCK_TYPE_FLAME = 2
+.word putinflames
+BLOCK_TYPE_SPITTER = 4
+.word putinspit
+BLOCK_TYPE_EYES = 6
+.word putineyes
+BLOCK_TYPE_DRIP = 8
+.word putindrip
+BLOCK_TYPE_TRAMPOLINE = 10
+.word putintramp
+BLOCK_TYPE_DRILL_DOWN = 12 + 128
+.word putindrilldown
+BLOCK_TYPE_DRILL_UP = 14 + 128
+.word putindrillup
+BLOCK_TYPE_BAT = 16 + 128 + 64
+.word putinbat
+BLOCK_TYPE_RAT = 18 + 128
+.word putinrat
+BLOCK_TYPE_SPIDER = 20 + 128
+.word putinspider
+BLOCK_TYPE_HEART = 22 + 128
+.word putinheart
+BLOCK_TYPE_BARREL = 24 + 64
+.word putinbarrel
+BLOCK_TYPE_BLOCK = 26 + 128
+.word putinblock
+BLOCK_TYPE_COIN = 28 + 128
+.word putincoin
+blockrous:
 .byte $00
 .byte $00
 .byte $00
@@ -321,333 +321,333 @@ BLOCKROUS:
 .byte $00
 .byte $02
 .byte $00
-UPDATEONSCREENS:
-ldy #NOOFONSCREENS - 1
-DOUPDATES:
-ldx ONSCREENROU,Y
-beq BACKFROMSCREENROU1
+updateonscreens:
+ldy #NUMBER_OF_ONSCREEN_OBJECTS - 1
+doupdates:
+ldx ONSCREEN_ROUTINE,Y
+beq backfromscreenrou1
 cpx #255
-beq BACKFROMSCREENROU1
-sty ADDRESS9
-lda UPDATESCRROUS - 2,X
-sta ADDRESS
-lda UPDATESCRROUS + 1 - 2,X
-sta ADDRESS + 1
-jmp (ADDRESS)
-BACKFROMSCREENROU:
-ldy ADDRESS9
-BACKFROMSCREENROU1:
+beq backfromscreenrou1
+sty TEMP_POINTER_9
+lda updatescrrous - 2,X
+sta TEMP_POINTER
+lda updatescrrous + 1 - 2,X
+sta TEMP_POINTER + 1
+jmp (TEMP_POINTER)
+backfromscreenrou:
+ldy TEMP_POINTER_9
+backfromscreenrou1:
 dey
-bpl DOUPDATES
+bpl doupdates
 rts
-UPDATESCRROUS:
-.word UPDATEFLAMES
-.word UPDATESPIT
-.word UPDATEEYES
-.word UPDATEDRIPS
-.word UPDATETRAMP
-.word UPDATEDRILLDOWN
-.word UPDATEDRILLUP
-.word UPDATEBAT
-.word UPDATERAT
-.word UPDATESPIDER
-.word UPDATEHEART
-.word UPDATEBARREL
-.word UPDATEBLOCK
-.word UPDATECOIN
-ONSCRXANDY0:
+updatescrrous:
+.word updateflames
+.word updatespit
+.word updateeyes
+.word updatedrips
+.word updatetramp
+.word updatedrilldown
+.word updatedrillup
+.word updatebat
+.word updaterat
+.word updatespider
+.word updateheart
+.word updatebarrel
+.word updateblock
+.word updatecoin
+onscrxandy0:
 lda #0
-ONSCRXANDY:
-ldy BLOCKX
+onscrxandy:
+ldy BLOCK_X
 clc
-adc TIMES16LO - 1,Y
-sta ONSCREENXL,X
-lda TIMES16HI - 1,Y
+adc multiply_by_16_lo - 1,Y
+sta ONSCREEN_X_LOW,X
+lda multiply_by_16_hi - 1,Y
 adc #0
-sta ONSCREENXH,X
-ldy BLOCKY
-lda TIMES16LO,Y
-sta ONSCREENY,X
-ldy #NOOFONSCREENS - 1
-@_1:
-sty TEMP
-cpx TEMP
-beq @_2
-lda ONSCREENROU,Y
-beq @_2
-cmp ONSCREENROU,X
-bne @_2
-lda ONSCREENXL,X
-cmp ONSCREENXL,Y
-bne @_2
-lda ONSCREENXH,X
-cmp ONSCREENXH,Y
-bne @_2
-lda ONSCREENY,X
-cmp ONSCREENY,Y
-bne @_2
+sta ONSCREEN_X_HIGH,X
+ldy BLOCK_Y
+lda multiply_by_16_lo,Y
+sta ONSCREEN_Y,X
+ldy #NUMBER_OF_ONSCREEN_OBJECTS - 1
+@onscrxandy_loop:
+sty TEMP_BYTE
+cpx TEMP_BYTE
+beq @onscrxandy_skip_if_equal
+lda ONSCREEN_ROUTINE,Y
+beq @onscrxandy_skip_if_equal
+cmp ONSCREEN_ROUTINE,X
+bne @onscrxandy_skip_if_equal
+lda ONSCREEN_X_LOW,X
+cmp ONSCREEN_X_LOW,Y
+bne @onscrxandy_skip_if_equal
+lda ONSCREEN_X_HIGH,X
+cmp ONSCREEN_X_HIGH,Y
+bne @onscrxandy_skip_if_equal
+lda ONSCREEN_Y,X
+cmp ONSCREEN_Y,Y
+bne @onscrxandy_skip_if_equal
 lda #0
-sta ONSCREENROU,X
+sta ONSCREEN_ROUTINE,X
 rts
-@_2:
+@onscrxandy_skip_if_equal:
 dey
-bpl @_1
-RTS3:
+bpl @onscrxandy_loop
+return_from_put_in_onscreen:
 rts
-PUTINFLAMES:
+putinflames:
 lda #4
 cpy #10
-beq ADDFLAME
+beq addflame
 cpy #254
-beq ADDFLAME
+beq addflame
 lda #12
 cpy #68
-bne ADDFLAME
-jsr ONSCRXANDY
-lda ONSCREENY,X
+bne addflame
+jsr onscrxandy
+lda ONSCREEN_Y,X
 clc
 adc #($F8)
-sta ONSCREENY,X
+sta ONSCREEN_Y,X
 rts
-ADDFLAME:
-jmp ONSCRXANDY
-PUTINSPIT:
+addflame:
+jmp onscrxandy
+putinspit:
 lda #0
 cpy #52
-beq @_1
+beq @putinspit_skip_if_equal
 lda #($FF)
-@_1:
-sta ONSCREENCOUNT1,X
-lda BLOCKX
+@putinspit_skip_if_equal:
+sta ONSCREEN_COUNTER_1,X
+lda BLOCK_X
 and #7
-sta ONSCREENCOUNT2,X
+sta ONSCREEN_COUNTER_2,X
 lda #4
-jmp ONSCRXANDY
-PUTINEYES:
-lda SEED + 2
+jmp onscrxandy
+putineyes:
+lda RANDOM_SEED + 2
 cmp #30
-bcs DONTPUTINONSCREEN
+bcs dontputinonscreen
 and #3
-sta ONSCREENCOUNT2,X
-lda SEED + 1
-sta ONSCREENCOUNT1,X
-jmp ONSCRXANDY0
-DONTPUTINONSCREEN:
+sta ONSCREEN_COUNTER_2,X
+lda RANDOM_SEED + 1
+sta ONSCREEN_COUNTER_1,X
+jmp onscrxandy0
+dontputinonscreen:
 lda #0
-sta ONSCREENROU,X
-jmp RANDOM
-PUTINDRIP:
-lda BLOCKX
+sta ONSCREEN_ROUTINE,X
+jmp random
+putindrip:
+lda BLOCK_X
 and #3
 tay
-lda FIRESTABLE,Y
-sta ONSCREENCOUNT2,X
+lda firestable,Y
+sta ONSCREEN_COUNTER_2,X
 lda #8
-jsr ONSCRXANDY
-lda ONSCREENY,X
+jsr onscrxandy
+lda ONSCREEN_Y,X
 clc
 adc #16 + 4
-sta ONSCREENY,X
+sta ONSCREEN_Y,X
 rts
-FIRESTABLE:
+firestable:
 .byte $FF
 .byte $7F
 .byte $3F
 .byte $7F
-PUTINTRAMP:
+putintramp:
 lda #8
-jmp ONSCRXANDY
-PUTINDRILLUP:
+jmp onscrxandy
+putindrillup:
 lda #4
-jsr ONSCRXANDY
-lda ONSCREENY,X
+jsr onscrxandy
+lda ONSCREEN_Y,X
 clc
 adc #16
-PUTINDRILLER:
-sta ONSCREENY,X
-sta ONSCREENCOUNT1,X
-lda BLOCKX
+putindriller:
+sta ONSCREEN_Y,X
+sta ONSCREEN_COUNTER_1,X
+lda BLOCK_X
 and #7
 clc
 adc #128 + 64
-sta ONSCREENCOUNT2,X
+sta ONSCREEN_COUNTER_2,X
 rts
-PUTINDRILLDOWN:
+putindrilldown:
 lda #4
-jsr ONSCRXANDY
-lda ONSCREENY,X
+jsr onscrxandy
+lda ONSCREEN_Y,X
 clc
 adc #($F6)
-jmp PUTINDRILLER
-PUTINBAT:
-ldy #NOOFONSCREENS - 1
-MOREBATS:
-lda ONSCREENROU,Y
-cmp #BBAT - 64 - 128
-bne BATOK
-lda ONSCREENXL + 1,Y
-cmp BLOCKX
-bne BATOK
-lda ONSCREENY + 1,Y
-cmp BLOCKY
-bne BATOK
-PUTINCANCELDOUBLE:
+jmp putindriller
+putinbat:
+ldy #NUMBER_OF_ONSCREEN_OBJECTS - 1
+morebats:
+lda ONSCREEN_ROUTINE,Y
+cmp #BLOCK_TYPE_BAT - 64 - 128
+bne batok
+lda ONSCREEN_X_LOW + 1,Y
+cmp BLOCK_X
+bne batok
+lda ONSCREEN_Y + 1,Y
+cmp BLOCK_Y
+bne batok
+putincanceldouble:
 lda #0
-sta ONSCREENROU,X
-sta ONSCREENROU + 1,X
+sta ONSCREEN_ROUTINE,X
+sta ONSCREEN_ROUTINE + 1,X
 rts
-BATOK:
+batok:
 dey
-bpl MOREBATS
+bpl morebats
 lda #255
-sta ONSCREENROU + 1,X
-lda BLOCKX
+sta ONSCREEN_ROUTINE + 1,X
+lda BLOCK_X
 and #1
-bne @_3
+bne @batok_skip_if_not_equal
 lda #($FF)
-@_3:
-sta ONSCREENCOUNT1,X
+@batok_skip_if_not_equal:
+sta ONSCREEN_COUNTER_1,X
 lda #1
-sta ONSCREENCOUNT2,X
-sta ONSCREENCOUNT2 + 1,X
+sta ONSCREEN_COUNTER_2,X
+sta ONSCREEN_COUNTER_2 + 1,X
 lda #10
-sta ONSCREENCOUNT1 + 1,X
-lda BLOCKX
-sta ONSCREENXL + 1,X
-lda BLOCKY
-sta ONSCREENY + 1,X
-jmp ONSCRXANDY0
-PUTINRAT:
+sta ONSCREEN_COUNTER_1 + 1,X
+lda BLOCK_X
+sta ONSCREEN_X_LOW + 1,X
+lda BLOCK_Y
+sta ONSCREEN_Y + 1,X
+jmp onscrxandy0
+putinrat:
 lda #128
-sta ONSCREENCOUNT1,X
-lda BLOCKX
+sta ONSCREEN_COUNTER_1,X
+lda BLOCK_X
 and #3
 tay
-lda RATTABLE,Y
-sta ONSCREENCOUNT2,X
-jmp ONSCRXANDY0
-RATTABLE:
+lda rattable,Y
+sta ONSCREEN_COUNTER_2,X
+jmp onscrxandy0
+rattable:
 .byte $03
 .byte $83
 .byte $01
 .byte $81
-PUTINSPIDER:
-lda BLOCKX
+putinspider:
+lda BLOCK_X
 and #1
-sta ONSCREENCOUNT2,X
+sta ONSCREEN_COUNTER_2,X
 lda #9
-jmp ONSCRXANDY
-PUTINBARREL:
+jmp onscrxandy
+putinbarrel:
 lda #255
-sta ONSCREENROU + 1,X
+sta ONSCREEN_ROUTINE + 1,X
 lda #0
-sta ONSCREENY + 1,X
-lda BLOCKX
+sta ONSCREEN_Y + 1,X
+lda BLOCK_X
 and #1
-bne @_1
+bne @putinbarrel_skip_if_not_equal
 lda #255
-@_1:
-sta ONSCREENCOUNT2 + 1,X
-lda BLOCKX
+@putinbarrel_skip_if_not_equal:
+sta ONSCREEN_COUNTER_2 + 1,X
+lda BLOCK_X
 lsr
 and #1
-sta ONSCREENCOUNT2,X
+sta ONSCREEN_COUNTER_2,X
 lda #8
-jsr ONSCRXANDY
-bne @_2
-jmp PUTINCANCELDOUBLE
-@_2:
+jsr onscrxandy
+bne @putinbarrel_skip_if_not_equal_2
+jmp putincanceldouble
+@putinbarrel_skip_if_not_equal_2:
 rts
-PUTINBLOCK:
-jmp ONSCRXANDY0
-PUTINHEART:
-jsr CHANGEBANK13ROU
+putinblock:
+jmp onscrxandy0
+putinheart:
+jsr change_bank13_routine
 ldy #8 * 6 * 2
-bne PUTINHEARTBIT
-PUTINCOIN:
-jsr CHANGEBANK13ROU
+bne putinheartbit
+putincoin:
+jsr change_bank13_routine
 ldy #0
-PUTINHEARTBIT:
-jsr PUTINHEARTBANK
-jsr CHANGEBANK12ROU
+putinheartbit:
+jsr putinheartbank
+jsr change_bank12_routine
 rts
-CALCONSCREENX:
-lda ONSCREENXL,Y
+calconscreenx:
+lda ONSCREEN_X_LOW,Y
 sec
-sbc SCRXL
+sbc SCREEN_X_LOW
 tax
-lda ONSCREENXH,Y
-sbc SCRXH
-sta XCOORDH
-bne OUTOFSCREEN
+lda ONSCREEN_X_HIGH,Y
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+bne outofscreen
 rts
-OUTOFSCREEN:
-bpl @_5
+outofscreen:
+bpl @outofscreen_skip_if_positive
 cpx #256 - 32
-bcs @_1
-bcc @_6
-@_5:
+bcs @outofscreen_skip_if_carry
+bcc @outofscreen_skip_if_no_carry
+@outofscreen_skip_if_positive:
 cpx #32
-bcc @_1
-@_6:
+bcc @outofscreen_skip_if_carry
+@outofscreen_skip_if_no_carry:
 lda #0
-sta ONSCREENROU,Y
+sta ONSCREEN_ROUTINE,Y
 pla
 pla
-jmp BACKFROMSCREENROU
-@_1:
+jmp backfromscreenrou
+@outofscreen_skip_if_carry:
 rts
-UPDATEFLAMES:
-jsr CALCONSCREENX
-lda XCOORDH
-bne @_1
-sty TEMP1
+updateflames:
+jsr calconscreenx
+lda SPRITE_X_COORD_HIGH
+bne @updateflames_skip_if_not_equal_2
+sty TEMP_BYTE_1
 ldy #3
-lda COUNTER
+lda FRAME_COUNTER
 and #4
-bne @_3
+bne @updateflames_skip_if_not_equal
 dex
 ldy #3 + 64
-@_3:
-sty TEMP
-ldy TEMP1
-lda ONSCREENY,Y
+@updateflames_skip_if_not_equal:
+sty TEMP_BYTE
+ldy TEMP_BYTE_1
+lda ONSCREEN_Y,Y
 clc
-adc #YDISPLACE
+adc #SPRITE_Y_DISPLACE
 tay
 lda #149
-jsr POKESPRITE
-@_1:
-jmp BACKFROMSCREENROU
-UPDATESPIT:
-ldx ONSCREENCOUNT2,Y
-lda SPITDELAY,X
-and COUNTER
-bne ENDSPITTER
-jsr CALCONSCREENX
-ldx #NOOFSPITTERS - 1
-FINDSPITTERSLOT:
-lda SPITTERY,X
-beq GOTSPITTER
+jsr pokesprite
+@updateflames_skip_if_not_equal_2:
+jmp backfromscreenrou
+updatespit:
+ldx ONSCREEN_COUNTER_2,Y
+lda spitdelay,X
+and FRAME_COUNTER
+bne endspitter
+jsr calconscreenx
+ldx #NUMBER_OF_SPITTERS - 1
+findspitterslot:
+lda SPITTER_Y,X
+beq gotspitter
 dex
-bpl FINDSPITTERSLOT
-beq ENDSPITTER
-GOTSPITTER:
-lda ONSCREENXL,Y
-sta SPITTERXL,X
-lda ONSCREENXH,Y
-sta SPITTERXH,X
-lda ONSCREENY,Y
+bpl findspitterslot
+beq endspitter
+gotspitter:
+lda ONSCREEN_X_LOW,Y
+sta SPITTER_X_LOW,X
+lda ONSCREEN_X_HIGH,Y
+sta SPITTER_X_HIGH,X
+lda ONSCREEN_Y,Y
 clc
 adc #8
-sta SPITTERY,X
-lda ONSCREENCOUNT1,Y
-sta SPITTERDIR,X
-lda #SPITFX
-jsr SOUNDFX
-ENDSPITTER:
-jmp BACKFROMSCREENROU
-SPITDELAY:
+sta SPITTER_Y,X
+lda ONSCREEN_COUNTER_1,Y
+sta SPITTER_DIRECTION,X
+lda #SFX_SPIT
+jsr soundfx
+endspitter:
+jmp backfromscreenrou
+spitdelay:
 .byte $FF
 .byte $7F
 .byte $FF
@@ -656,258 +656,258 @@ SPITDELAY:
 .byte $FF
 .byte $FF
 .byte $7F
-UPDATEEYES:
-lda COUNTER
+updateeyes:
+lda FRAME_COUNTER
 and #3
-bne @_2
-lda ONSCREENCOUNT1,Y
+bne @updateeyes_skip_if_not_equal
+lda ONSCREEN_COUNTER_1,Y
 sec
 sbc #1
-sta ONSCREENCOUNT1,Y
-bne @_2
-lda SEED
-sta ONSCREENCOUNT1,Y
-lda ONSCREENCOUNT2,Y
+sta ONSCREEN_COUNTER_1,Y
+bne @updateeyes_skip_if_not_equal
+lda RANDOM_SEED
+sta ONSCREEN_COUNTER_1,Y
+lda ONSCREEN_COUNTER_2,Y
 eor #255
-sta ONSCREENCOUNT2,Y
-@_2:
-lda ONSCREENCOUNT2,Y
-bmi @_1
-jsr CALCONSCREENX
-lda ONSCREENCOUNT2,Y
-sta TEMP
-lda ONSCREENY,Y
+sta ONSCREEN_COUNTER_2,Y
+@updateeyes_skip_if_not_equal:
+lda ONSCREEN_COUNTER_2,Y
+bmi @updateeyes_skip_if_negative
+jsr calconscreenx
+lda ONSCREEN_COUNTER_2,Y
+sta TEMP_BYTE
+lda ONSCREEN_Y,Y
 tay
-lda TEMP
+lda TEMP_BYTE
 clc
-adc #EYES
-jsr WINPRINTSPRITE
-@_1:
-BACKFROMSCR:
-jmp BACKFROMSCREENROU
-UPDATEDRIPS:
-lda ONSCREENCOUNT1,Y
-bne FIREHAPPENING
-lda COUNTER
+adc #SPRITE_EYES
+jsr winprintsprite
+@updateeyes_skip_if_negative:
+backfromscr:
+jmp backfromscreenrou
+updatedrips:
+lda ONSCREEN_COUNTER_1,Y
+bne firehappening
+lda FRAME_COUNTER
 clc
-adc ONSCREENXL,Y
-and ONSCREENCOUNT2,Y
-bne ENDDRIPS
-lda #BREATHINGFIREFX
-jsr SOUNDFX
-ldy ADDRESS9
+adc ONSCREEN_X_LOW,Y
+and ONSCREEN_COUNTER_2,Y
+bne enddrips
+lda #SFX_BREATHING_FIRE
+jsr soundfx
+ldy TEMP_POINTER_9
 lda #64
-FIREHAPPENING:
+firehappening:
 sec
 sbc #1
-sta ONSCREENCOUNT1,Y
-jsr CALCONSCREENX
-stx ADDRESS8
-lda ONSCREENY,Y
-jsr PICKUPCOLLISION
-bcs @_1
+sta ONSCREEN_COUNTER_1,Y
+jsr calconscreenx
+stx TEMP_POINTER_8
+lda ONSCREEN_Y,Y
+jsr pickupcollision
+bcs @firehappening_skip_if_carry
 tya
 pha
 lda #1
-jsr SUBFROMHEARTS
+jsr subfromhearts
 pla
 tay
-@_1:
-lda ONSCREENY,Y
-sta TEMP
-lda ONSCREENCOUNT1,Y
+@firehappening_skip_if_carry:
+lda ONSCREEN_Y,Y
+sta TEMP_BYTE
+lda ONSCREEN_COUNTER_1,Y
 lsr
 lsr
-sta TEMP1
+sta TEMP_BYTE_1
 lsr
 and #7
 tay
-lda FIRETABLE,Y
-ldy TEMP
-lsr TEMP1
-jsr WINPRINTSPRITEPOSREV
-ENDDRIPS:
-jmp BACKFROMSCREENROU
-FIRETABLE:
-.byte <(FIRE)
-.byte <(FIRE + 1)
-.byte <(FIRE + 2)
-.byte <(FIRE + 3)
-.byte <(FIRE + 4)
-.byte <(FIRE + 3)
-.byte <(FIRE + 2)
-.byte <(FIRE + 1)
-UPDATETRAMP:
-jsr CALCONSCREENX
-stx ADDRESS8
-lda XCOORDH
-bne ENDTRAMP
-lda ROBINGRAVITY
+lda firetable,Y
+ldy TEMP_BYTE
+lsr TEMP_BYTE_1
+jsr winprintspriteposrev
+enddrips:
+jmp backfromscreenrou
+firetable:
+.byte <(SPRITE_FIRE)
+.byte <(SPRITE_FIRE + 1)
+.byte <(SPRITE_FIRE + 2)
+.byte <(SPRITE_FIRE + 3)
+.byte <(SPRITE_FIRE + 4)
+.byte <(SPRITE_FIRE + 3)
+.byte <(SPRITE_FIRE + 2)
+.byte <(SPRITE_FIRE + 1)
+updatetramp:
+jsr calconscreenx
+stx TEMP_POINTER_8
+lda SPRITE_X_COORD_HIGH
+bne endtramp
+lda PLAYER_GRAVITY
 clc
 adc #2
-bmi ENDTRAMP
-lda ONSCREENY,Y
+bmi endtramp
+lda ONSCREEN_Y,Y
 clc
 adc #16
-jsr PICKUPCOLLISION
-bcs ENDTRAMP
+jsr pickupcollision
+bcs endtramp
 lda #0
 sec
-sbc ROBINGRAVITY
+sbc PLAYER_GRAVITY
 cmp #($E8)
-bcc @_3
-sta ROBINGRAVITY
-@_3:
-jsr CHECKLEFTRIGHTKEYS
-jsr ADDLEFTRIGHT1
-lda OROBINXL
-sta ROBINXL
-lda OROBINXL + 1
-sta ROBINXL + 1
-lda #TRAMPFX
-jsr SOUNDFX
-ldy ADDRESS9
+bcc @updatetramp_skip_if_no_carry
+sta PLAYER_GRAVITY
+@updatetramp_skip_if_no_carry:
+jsr checkleftrightkeys
+jsr addleftright1
+lda PREVIOUS_PLAYER_X_LOW
+sta PLAYER_X_LOW
+lda PREVIOUS_PLAYER_X_LOW + 1
+sta PLAYER_X_LOW + 1
+lda #SFX_TRAMPOLINE
+jsr soundfx
+ldy TEMP_POINTER_9
 lda #1
-sta ROBINJUMPING
+sta PLAYER_JUMPING
 lda #($FA)
-sta ONSCREENCOUNT1,Y
-ENDTRAMP:
-lda ONSCREENY,Y
-sta ADDRESS8 + 1
-lda ONSCREENCOUNT1,Y
-bpl @_6
-ldx ADDRESS9
-inc ONSCREENCOUNT1,X
-lda #TRAMPET + 1
-bne @_4
-@_6:
-lda #TRAMPET
-@_4:
-ldx ADDRESS8
-ldy ADDRESS8 + 1
-jsr WINPRINTSPRITE
-jmp BACKFROMSCREENROU
-UPDATEDRILLDOWN:
-jsr CALCONSCREENX
+sta ONSCREEN_COUNTER_1,Y
+endtramp:
+lda ONSCREEN_Y,Y
+sta TEMP_POINTER_8 + 1
+lda ONSCREEN_COUNTER_1,Y
+bpl @endtramp_skip_if_positive
+ldx TEMP_POINTER_9
+inc ONSCREEN_COUNTER_1,X
+lda #SPRITE_TRAMPOLINE + 1
+bne @endtramp_skip_if_not_equal
+@endtramp_skip_if_positive:
+lda #SPRITE_TRAMPOLINE
+@endtramp_skip_if_not_equal:
+ldx TEMP_POINTER_8
+ldy TEMP_POINTER_8 + 1
+jsr winprintsprite
+jmp backfromscreenrou
+updatedrilldown:
+jsr calconscreenx
 lda #128
-sta ADDRESS7 + 1
+sta TEMP_POINTER_7 + 1
 lda #($FF)
-jsr STANDARDDRILL
-ldx XCOORDH
-bne ENDDRILLDOWN
-cpy ADDRESS8 + 1
-bcc ENDDRILLDOWN
-@_1:
-ldx ADDRESS8
-jsr POKESPRITE
+jsr standarddrill
+ldx SPRITE_X_COORD_HIGH
+bne enddrilldown
+cpy TEMP_POINTER_8 + 1
+bcc enddrilldown
+@updatedrilldown_loop:
+ldx TEMP_POINTER_8
+jsr pokesprite
 tya
 clc
 adc #($F8)
 tay
 lda #190
-cpy ADDRESS8 + 1
-bcs @_1
-ENDDRILLDOWN:
-jmp BACKFROMSCREENROU
-UPDATEDRILLUP:
-jsr CALCONSCREENX
+cpy TEMP_POINTER_8 + 1
+bcs @updatedrilldown_loop
+enddrilldown:
+jmp backfromscreenrou
+updatedrillup:
+jsr calconscreenx
 lda #0
-sta ADDRESS7 + 1
+sta TEMP_POINTER_7 + 1
 lda #1
-jsr STANDARDDRILL
-ldx XCOORDH
-bne ENDDRILLUP
-@_1:
-ldx ADDRESS8
-jsr POKESPRITE
+jsr standarddrill
+ldx SPRITE_X_COORD_HIGH
+bne enddrillup
+@updatedrillup_loop:
+ldx TEMP_POINTER_8
+jsr pokesprite
 tya
 clc
 adc #8
 tay
 lda #190
-cpy ADDRESS8 + 1
-bcc @_1
-ENDDRILLUP:
-jmp BACKFROMSCREENROU
-STANDARDDRILL:
-sta ADDRESS7
-stx ADDRESS8
-lda ONSCREENCOUNT2,Y
+cpy TEMP_POINTER_8 + 1
+bcc @updatedrillup_loop
+enddrillup:
+jmp backfromscreenrou
+standarddrill:
+sta TEMP_POINTER_7
+stx TEMP_POINTER_8
+lda ONSCREEN_COUNTER_2,Y
 and #64
-beq @_1
-lda COUNTER
-bne PRINTDRILLUP
-@_2:
-lda ONSCREENCOUNT2,Y
+beq @standarddrill_skip_if_equal
+lda FRAME_COUNTER
+bne printdrillup
+@standarddrill_body:
+lda ONSCREEN_COUNTER_2,Y
 and #255 - 64
-sta ONSCREENCOUNT2,Y
-@_1:
-lda ONSCREENCOUNT2,Y
+sta ONSCREEN_COUNTER_2,Y
+@standarddrill_skip_if_equal:
+lda ONSCREEN_COUNTER_2,Y
 and #7
-sta TEMP
+sta TEMP_BYTE
 asl
 clc
-adc TEMP
+adc TEMP_BYTE
 tax
-lda DRILLERPATTERNS + 1,X
-sta ADDRESS6 + 1
-lda DRILLERPATTERNS + 2,X
-eor COUNTER
-sta ADDRESS6
-lda ONSCREENCOUNT2,Y
-bpl MOVINGDRILL
-lda ADDRESS6
-cmp DRILLERPATTERNS,X
-bne CONTDRILL
-lda ONSCREENCOUNT2,Y
+lda drillerpatterns + 1,X
+sta TEMP_POINTER_6 + 1
+lda drillerpatterns + 2,X
+eor FRAME_COUNTER
+sta TEMP_POINTER_6
+lda ONSCREEN_COUNTER_2,Y
+bpl movingdrill
+lda TEMP_POINTER_6
+cmp drillerpatterns,X
+bne contdrill
+lda ONSCREEN_COUNTER_2,Y
 eor #128
-sta ONSCREENCOUNT2,Y
-MOVINGDRILL:
-lda ADDRESS6
-bmi DRILLCOMINGDOWN
-and ADDRESS6 + 1
-bne CONTDRILL
-lda ONSCREENCOUNT1,Y
+sta ONSCREEN_COUNTER_2,Y
+movingdrill:
+lda TEMP_POINTER_6
+bmi drillcomingdown
+and TEMP_POINTER_6 + 1
+bne contdrill
+lda ONSCREEN_COUNTER_1,Y
 sec
-sbc ADDRESS7
-sta ONSCREENCOUNT1,Y
-jmp CONTDRILL
-DRILLCOMINGDOWN:
-and ADDRESS6 + 1
-bne CONTDRILL
-lda ONSCREENCOUNT1,Y
+sbc TEMP_POINTER_7
+sta ONSCREEN_COUNTER_1,Y
+jmp contdrill
+drillcomingdown:
+and TEMP_POINTER_6 + 1
+bne contdrill
+lda ONSCREEN_COUNTER_1,Y
 clc
-adc ADDRESS7
-sta ONSCREENCOUNT1,Y
-cmp ONSCREENY,Y
-bne CONTDRILL
-lda ONSCREENCOUNT2,Y
+adc TEMP_POINTER_7
+sta ONSCREEN_COUNTER_1,Y
+cmp ONSCREEN_Y,Y
+bne contdrill
+lda ONSCREEN_COUNTER_2,Y
 eor #128
-sta ONSCREENCOUNT2,Y
-CONTDRILL:
-ldx ADDRESS8
-lda ONSCREENCOUNT1,Y
+sta ONSCREEN_COUNTER_2,Y
+contdrill:
+ldx TEMP_POINTER_8
+lda ONSCREEN_COUNTER_1,Y
 tay
-jsr CHECKCHRCOLLISION
-ldy ADDRESS9
-PRINTDRILLUP:
-lda XCOORDH
-bne @_1
+jsr checkchrcollision
+ldy TEMP_POINTER_9
+printdrillup:
+lda SPRITE_X_COORD_HIGH
+bne @printdrillup_skip_if_not_equal
 lda #1 + 32
 clc
-adc ADDRESS7 + 1
-sta TEMP
-lda ONSCREENY,Y
+adc TEMP_POINTER_7 + 1
+sta TEMP_BYTE
+lda ONSCREEN_Y,Y
 clc
-adc #YDISPLACE
-sta ADDRESS8 + 1
+adc #SPRITE_Y_DISPLACE
+sta TEMP_POINTER_8 + 1
 tay
-ldx ADDRESS8
+ldx TEMP_POINTER_8
 lda #127
-jsr POKESPRITE
-@_1:
-ldy ADDRESS9
-lda ADDRESS6
+jsr pokesprite
+@printdrillup_skip_if_not_equal:
+ldy TEMP_POINTER_9
+lda TEMP_POINTER_6
 asl
 asl
 asl
@@ -916,15 +916,15 @@ and #64
 clc
 adc #2
 clc
-adc ADDRESS7 + 1
-sta TEMP
-lda ONSCREENCOUNT1,Y
+adc TEMP_POINTER_7 + 1
+sta TEMP_BYTE
+lda ONSCREEN_COUNTER_1,Y
 clc
-adc #YDISPLACE
+adc #SPRITE_Y_DISPLACE
 tay
 lda #189
 rts
-DRILLERPATTERNS:
+drillerpatterns:
 .byte $40
 .byte $01
 .byte $00
@@ -949,161 +949,161 @@ DRILLERPATTERNS:
 .byte $40
 .byte $03
 .byte $FF
-UPDATEBAT:
-lda COUNTER
+updatebat:
+lda FRAME_COUNTER
 and #1
-bne @_1
-jsr MOVEBAT
-@_1:
-BATNOTMOVING:
-lda ONSCREENY,Y
-sta ADDRESS8 + 1
-lda ONSCREENXL,Y
-sta ADDRESS7
+bne @updatebat_skip_if_not_equal
+jsr movebat
+@updatebat_skip_if_not_equal:
+batnotmoving:
+lda ONSCREEN_Y,Y
+sta TEMP_POINTER_8 + 1
+lda ONSCREEN_X_LOW,Y
+sta TEMP_POINTER_7
 sec
-sbc SCRXL
-sta ADDRESS8
-lda ONSCREENXH,Y
-sta ADDRESS7 + 1
-sbc SCRXH
-sta XCOORDH
-lda ONSCREENY,Y
+sbc SCREEN_X_LOW
+sta TEMP_POINTER_8
+lda ONSCREEN_X_HIGH,Y
+sta TEMP_POINTER_7 + 1
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+lda ONSCREEN_Y,Y
 sec
-sbc ARROWY
+sbc ARROW_Y
 clc
 adc #4
 cmp #16
-bcs MISSEDBAT
-jsr COLLIDEBATWITHARROW
-bcs MISSEDBAT
+bcs missedbat
+jsr collidebatwitharrow
+bcs missedbat
 ldx #0
-jsr TAKEARROWOFFROU
-lda #BATHITFX
-jsr SOUNDFX
-TURNOFFBAT:
-ldy ADDRESS9
+jsr takearrowoffrou
+lda #SFX_BAT_HIT
+jsr soundfx
+turnoffbat:
+ldy TEMP_POINTER_9
 lda #4
-jsr STARTSTARS
+jsr startstars
 lda #65
-jsr ADDTOSCORE
-ldy ADDRESS9
-jmp TURNOFFDOUBLE
-MISSEDBAT:
-ldx ADDRESS8
-lda XCOORDH
-bne @_2
-ldy ADDRESS8 + 1
-jsr CHECKCHRCOLLISION
-bcs TURNOFFBAT
-bcc @_1
-@_2:
+jsr addtoscore
+ldy TEMP_POINTER_9
+jmp turnoffdouble
+missedbat:
+ldx TEMP_POINTER_8
+lda SPRITE_X_COORD_HIGH
+bne @missedbat_skip_if_not_equal
+ldy TEMP_POINTER_8 + 1
+jsr checkchrcollision
+bcs turnoffbat
+bcc @missedbat_skip_if_no_carry
+@missedbat_skip_if_not_equal:
 clc
 adc #1
 cmp #3
-bcc @_1
-jmp TURNOFFDOUBLE
-@_1:
-ldy ADDRESS8 + 1
-ldx ADDRESS8
-lda COUNTER
+bcc @missedbat_skip_if_no_carry
+jmp turnoffdouble
+@missedbat_skip_if_no_carry:
+ldy TEMP_POINTER_8 + 1
+ldx TEMP_POINTER_8
+lda FRAME_COUNTER
 lsr
 lsr
 and #1
-BATONWALL:
+batonwall:
 clc
-adc #BAT
-jsr WINPRINTSPRITE
-jmp BACKFROMSCREENROU
-MOVEBAT:
-@_1:
-lda ONSCREENXL,Y
+adc #SPRITE_BAT
+jsr winprintsprite
+jmp backfromscreenrou
+movebat:
+@movebat_body:
+lda ONSCREEN_X_LOW,Y
 and #7
-bne BATXOK
-lda ONSCREENY,Y
-sta ADDRESS7
-lda ONSCREENXH,Y
+bne bat_x_ok
+lda ONSCREEN_Y,Y
+sta TEMP_POINTER_7
+lda ONSCREEN_X_HIGH,Y
 tax
-lda ONSCREENCOUNT1,Y
-beq NOWBATY
-bmi BATNEGX
-lda ONSCREENXL,Y
+lda ONSCREEN_COUNTER_1,Y
+beq now_bat_y
+bmi bat_negative_x
+lda ONSCREEN_X_LOW,Y
 clc
 adc #8
-bcc DOXBATCHR
+bcc apply_bat_x_delta
 inx
-jmp DOXBATCHR
-BATNEGX:
-lda ONSCREENXL,Y
+jmp apply_bat_x_delta
+bat_negative_x:
+lda ONSCREEN_X_LOW,Y
 sec
 sbc #8
-bcs DOXBATCHR
+bcs apply_bat_x_delta
 dex
-DOXBATCHR:
-ldy ADDRESS7
-jsr FINDSOLID
-ldy ADDRESS9
+apply_bat_x_delta:
+ldy TEMP_POINTER_7
+jsr findsolid
+ldy TEMP_POINTER_9
 cmp #3
-bne BATXOK
+bne bat_x_ok
 lda #0
 sec
-sbc ONSCREENCOUNT1,Y
-sta ONSCREENCOUNT1,Y
-BATXOK:
+sbc ONSCREEN_COUNTER_1,Y
+sta ONSCREEN_COUNTER_1,Y
+bat_x_ok:
 ldx #0
-lda ONSCREENCOUNT1,Y
-bpl @_1
+lda ONSCREEN_COUNTER_1,Y
+bpl @bat_x_ok_skip_if_positive
 ldx #255
-@_1:
+@bat_x_ok_skip_if_positive:
 clc
-adc ONSCREENXL,Y
-sta ONSCREENXL,Y
+adc ONSCREEN_X_LOW,Y
+sta ONSCREEN_X_LOW,Y
 txa
-adc ONSCREENXH,Y
-sta ONSCREENXH,Y
-NOWBATY:
-lda ONSCREENY,Y
+adc ONSCREEN_X_HIGH,Y
+sta ONSCREEN_X_HIGH,Y
+now_bat_y:
+lda ONSCREEN_Y,Y
 clc
 adc #($F8)
-ldx ONSCREENCOUNT2,Y
+ldx ONSCREEN_COUNTER_2,Y
 cpx #0
-beq BATYOK
-bmi BATNEGY
+beq bat_y_ok
+bmi bat_negative_y
 clc
 adc #16
-BATNEGY:
-sta ADDRESS7
-lda ONSCREENXL,Y
-ldx ONSCREENXH,Y
-ldy ADDRESS7
-jsr FINDSOLID
-ldy ADDRESS9
+bat_negative_y:
+sta TEMP_POINTER_7
+lda ONSCREEN_X_LOW,Y
+ldx ONSCREEN_X_HIGH,Y
+ldy TEMP_POINTER_7
+jsr findsolid
+ldy TEMP_POINTER_9
 cmp #3
-bne BATYOK
+bne bat_y_ok
 lda #0
 sec
-sbc ONSCREENCOUNT2,Y
-sta ONSCREENCOUNT2,Y
-BATYOK:
-lda ONSCREENCOUNT2 + 1,Y
+sbc ONSCREEN_COUNTER_2,Y
+sta ONSCREEN_COUNTER_2,Y
+bat_y_ok:
+lda ONSCREEN_COUNTER_2 + 1,Y
 clc
 adc #1
-sta ONSCREENCOUNT2 + 1,Y
+sta ONSCREEN_COUNTER_2 + 1,Y
 lsr
 lsr
 lsr
 and #7
 tax
-lda BATWOBBLE,X
-@_1:
+lda batwobble,X
+@bat_y_ok_body:
 clc
-adc ONSCREENCOUNT2,Y
+adc ONSCREEN_COUNTER_2,Y
 clc
-adc ONSCREENY,Y
-sta ONSCREENY,Y
-DONEBATY:
-@_1:
+adc ONSCREEN_Y,Y
+sta ONSCREEN_Y,Y
+done_bat_y:
+@return_from_done_bat_y:
 rts
-BATWOBBLE:
+batwobble:
 .byte $00
 .byte $01
 .byte $01
@@ -1112,348 +1112,348 @@ BATWOBBLE:
 .byte $FF
 .byte $FF
 .byte $00
-UPDATERAT:
-lda ONSCREENXH,Y
+updaterat:
+lda ONSCREEN_X_HIGH,Y
 sec
-sbc SCRXH
+sbc SCREEN_X_HIGH
 clc
 adc #2
 cmp #5
-bcc @_1
+bcc @updaterat_skip_if_no_carry
 lda #0
-sta ONSCREENROU,Y
-jmp BACKFROMSCREENROU
-@_1:
-lda ONSCREENCOUNT2,Y
+sta ONSCREEN_ROUTINE,Y
+jmp backfromscreenrou
+@updaterat_skip_if_no_carry:
+lda ONSCREEN_COUNTER_2,Y
 and #7
-and COUNTER
-bne @_5
-lda ONSCREENCOUNT2,Y
-bmi @_2
-lda ONSCREENCOUNT1,Y
+and FRAME_COUNTER
+bne @updaterat_skip_if_not_equal_2
+lda ONSCREEN_COUNTER_2,Y
+bmi @updaterat_skip_if_negative
+lda ONSCREEN_COUNTER_1,Y
 clc
 adc #1
-bne @_3
-@_4:
-lda ONSCREENCOUNT2,Y
+bne @updaterat_skip_if_not_equal
+@updaterat_loop:
+lda ONSCREEN_COUNTER_2,Y
 eor #128
-sta ONSCREENCOUNT2,Y
-jmp @_5
-@_2:
-lda ONSCREENCOUNT1,Y
+sta ONSCREEN_COUNTER_2,Y
+jmp @updaterat_skip_if_not_equal_2
+@updaterat_skip_if_negative:
+lda ONSCREEN_COUNTER_1,Y
 clc
 adc #($FF)
-beq @_4
-@_3:
-sta ONSCREENCOUNT1,Y
-@_5:
-MOVEDRAT:
-@_11:
-lda ONSCREENCOUNT1,Y
-sta TEMP9
+beq @updaterat_loop
+@updaterat_skip_if_not_equal:
+sta ONSCREEN_COUNTER_1,Y
+@updaterat_skip_if_not_equal_2:
+movedrat:
+@movedrat_body:
+lda ONSCREEN_COUNTER_1,Y
+sta TEMP_BYTE_9
 sec
 sbc #128
 php
 clc
-adc ONSCREENXL,Y
-sta ADDRESS8
-lda ONSCREENXH,Y
+adc ONSCREEN_X_LOW,Y
+sta TEMP_POINTER_8
+lda ONSCREEN_X_HIGH,Y
 adc #0
 plp
 sbc #0
-sta ADDRESS8 + 1
+sta TEMP_POINTER_8 + 1
 tax
-lda ONSCREENY,Y
-sta TEMP8
-lda ADDRESS8
+lda ONSCREEN_Y,Y
+sta TEMP_BYTE_8
+lda TEMP_POINTER_8
 and #7
-bne RATNOTHITWALL
-lda ONSCREENCOUNT2,Y
+bne ratnothitwall
+lda ONSCREEN_COUNTER_2,Y
 and #128
 eor #128
-bpl @_1
+bpl @movedrat_skip_if_positive
 lda #24
-@_1:
+@movedrat_skip_if_positive:
 clc
-adc ADDRESS8
-bcc @_2
+adc TEMP_POINTER_8
+bcc @movedrat_skip_if_no_carry
 inx
-@_2:
+@movedrat_skip_if_no_carry:
 sec
 sbc #16
-bcs @_3
+bcs @movedrat_skip_if_carry
 dex
-@_3:
-stx ADDRESS7 + 1
-sta ADDRESS7
-ldy TEMP8
-jsr FINDSOLID
-ldy ADDRESS9
+@movedrat_skip_if_carry:
+stx TEMP_POINTER_7 + 1
+sta TEMP_POINTER_7
+ldy TEMP_BYTE_8
+jsr findsolid
+ldy TEMP_POINTER_9
 cmp #3
-beq RATHITWALL
-ldx ADDRESS7 + 1
-lda TEMP8
+beq rathitwall
+ldx TEMP_POINTER_7 + 1
+lda TEMP_BYTE_8
 clc
 adc #16
 tay
-lda ADDRESS7
-jsr FINDSOLID
-ldy ADDRESS9
+lda TEMP_POINTER_7
+jsr findsolid
+ldy TEMP_POINTER_9
 cmp #0
-bne RATNOTHITWALL
-RATHITWALL:
-lda ONSCREENCOUNT2,Y
+bne ratnothitwall
+rathitwall:
+lda ONSCREEN_COUNTER_2,Y
 eor #128
-sta ONSCREENCOUNT2,Y
-RATNOTHITWALL:
-lda ONSCREENCOUNT2,Y
+sta ONSCREEN_COUNTER_2,Y
+ratnothitwall:
+lda ONSCREEN_COUNTER_2,Y
 lsr
 and #64
 clc
 adc #1
-sta TEMP
-lda ADDRESS8
+sta TEMP_BYTE
+lda TEMP_POINTER_8
 sec
-sbc SCRXL
-sta ADDRESS7
+sbc SCREEN_X_LOW
+sta TEMP_POINTER_7
 tax
-lda ADDRESS8 + 1
-sbc SCRXH
-sta XCOORDH
-lda ONSCREENY,Y
-sta ADDRESS7 + 1
+lda TEMP_POINTER_8 + 1
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+lda ONSCREEN_Y,Y
+sta TEMP_POINTER_7 + 1
 clc
 adc #4
 tay
-ldx ADDRESS7
-lda XCOORDH
-bne @_1
-jsr CHECKCHRCOLLISION
-ldx ADDRESS7
-lda ADDRESS7 + 1
+ldx TEMP_POINTER_7
+lda SPRITE_X_COORD_HIGH
+bne @ratnothitwall_skip_if_not_equal
+jsr checkchrcollision
+ldx TEMP_POINTER_7
+lda TEMP_POINTER_7 + 1
 clc
 adc #8
 tay
-lda TEMP9
+lda TEMP_BYTE_9
 asl
 and #4
 clc
 adc #144
 cmp #144
-beq @_2
+beq @ratnothitwall_skip_if_equal
 lda #200
-@_2:
-jsr POKESPRITE2BY2
-@_1:
-jmp BACKFROMSCREENROU
-UPDATESPIDER:
-jsr CALCONSCREENX
-stx ADDRESS8
-lda ONSCREENCOUNT1,Y
-sta TEMP1
+@ratnothitwall_skip_if_equal:
+jsr pokesprite2by2
+@ratnothitwall_skip_if_not_equal:
+jmp backfromscreenrou
+updatespider:
+jsr calconscreenx
+stx TEMP_POINTER_8
+lda ONSCREEN_COUNTER_1,Y
+sta TEMP_BYTE_1
 clc
-adc ONSCREENY,Y
+adc ONSCREEN_Y,Y
 clc
 adc #8
-sta TEMP9
-lda ONSCREENY,Y
+sta TEMP_BYTE_9
+lda ONSCREEN_Y,Y
 clc
-adc #YDISPLACE
-sta ADDRESS8 + 1
-lda ONSCREENCOUNT2,Y
-bpl SPIDERGOINGDOWN
-lda COUNTER
+adc #SPRITE_Y_DISPLACE
+sta TEMP_POINTER_8 + 1
+lda ONSCREEN_COUNTER_2,Y
+bpl spidergoingdown
+lda FRAME_COUNTER
 and #3
-bne MOVEDSPIDER
-lda ONSCREENCOUNT1,Y
+bne movedspider
+lda ONSCREEN_COUNTER_1,Y
 clc
 adc #($FF)
-sta ONSCREENCOUNT1,Y
-beq SPIDERCHANGE
-lda ONSCREENCOUNT2,Y
+sta ONSCREEN_COUNTER_1,Y
+beq spiderchange
+lda ONSCREEN_COUNTER_2,Y
 and #1
-beq MOVEDSPIDER
-lda COUNTER
-beq SPIDERCHANGE
-bne MOVEDSPIDER
-SPIDERGOINGDOWN:
-lda ONSCREENCOUNT1,Y
+beq movedspider
+lda FRAME_COUNTER
+beq spiderchange
+bne movedspider
+spidergoingdown:
+lda ONSCREEN_COUNTER_1,Y
 clc
 adc #1
-sta ONSCREENCOUNT1,Y
+sta ONSCREEN_COUNTER_1,Y
 and #7
-bne MOVEDSPIDER
-lda TEMP9
+bne movedspider
+lda TEMP_BYTE_9
 clc
 adc #16
-sta TEMP
-ldx ONSCREENXH,Y
-lda ONSCREENXL,Y
-ldy TEMP
-jsr FINDSOLID
-ldy ADDRESS9
+sta TEMP_BYTE
+ldx ONSCREEN_X_HIGH,Y
+lda ONSCREEN_X_LOW,Y
+ldy TEMP_BYTE
+jsr findsolid
+ldy TEMP_POINTER_9
 cmp #0
-beq MOVEDSPIDER
-SPIDERCHANGE:
-lda ONSCREENCOUNT2,Y
+beq movedspider
+spiderchange:
+lda ONSCREEN_COUNTER_2,Y
 eor #128
-sta ONSCREENCOUNT2,Y
-MOVEDSPIDER:
-lda TEMP9
-jsr PICKUPCOLLISION
-bcs PRINTSPIDER
+sta ONSCREEN_COUNTER_2,Y
+movedspider:
+lda TEMP_BYTE_9
+jsr pickupcollision
+bcs printspider
 lda #1
-jsr SUBFROMHEARTS
-ldy ADDRESS9
-PRINTSPIDER:
-lda ONSCREENCOUNT2,Y
+jsr subfromhearts
+ldy TEMP_POINTER_9
+printspider:
+lda ONSCREEN_COUNTER_2,Y
 and #1
-bne @_2
+bne @printspider_skip_if_not_equal
 lda #152
-sta ADDRESS7
+sta TEMP_POINTER_7
 ldx #2
 lda #179
-bne @_3
-@_2:
+bne @printspider_skip_if_not_equal_2
+@printspider_skip_if_not_equal:
 lda #148
-sta ADDRESS7
+sta TEMP_POINTER_7
 ldx #1
-lda ONSCREENCOUNT1,Y
+lda ONSCREEN_COUNTER_1,Y
 and #2
 clc
 adc #164
 cmp #164
-beq @_3
+beq @printspider_skip_if_not_equal_2
 lda #242
-@_3:
-stx ADDRESS7 + 1
-stx TEMP
-ldy TEMP9
-ldx XCOORDH
-bne @_4
-ldx ADDRESS8
-jsr POKESPRITE2BY2
-@_4:
-lda ADDRESS8
+@printspider_skip_if_not_equal_2:
+stx TEMP_POINTER_7 + 1
+stx TEMP_BYTE
+ldy TEMP_BYTE_9
+ldx SPRITE_X_COORD_HIGH
+bne @printspider_skip_if_not_equal_3
+ldx TEMP_POINTER_8
+jsr pokesprite2by2
+@printspider_skip_if_not_equal_3:
+lda TEMP_POINTER_8
 clc
 adc #($FC)
-sta ADDRESS8
-bcs @_1
-dec XCOORDH
-@_1:
-lda XCOORDH
-bne ENDSPIDER
-lda ADDRESS7 + 1
-sta TEMP
-lda TEMP9
+sta TEMP_POINTER_8
+bcs @printspider_skip_if_carry
+dec SPRITE_X_COORD_HIGH
+@printspider_skip_if_carry:
+lda SPRITE_X_COORD_HIGH
+bne endspider
+lda TEMP_POINTER_7 + 1
+sta TEMP_BYTE
+lda TEMP_BYTE_9
 clc
 adc #($FC)
 tay
 cmp #8
-bcc ENDSPIDER
-DRAWCHAIN:
-ldx ADDRESS8
-lda ADDRESS7
-jsr POKESPRITE
+bcc endspider
+drawchain:
+ldx TEMP_POINTER_8
+lda TEMP_POINTER_7
+jsr pokesprite
 tya
 sec
 sbc #8
 tay
-cmp ADDRESS8 + 1
-bcs DRAWCHAIN
-lda ADDRESS7 + 1
+cmp TEMP_POINTER_8 + 1
+bcs drawchain
+lda TEMP_POINTER_7 + 1
 clc
 adc #32
-sta TEMP
-ldx ADDRESS8
-lda ADDRESS7
-jsr POKESPRITE
-ENDSPIDER:
-jmp BACKFROMSCREENROU
-UPDATEBARREL:
-lda ONSCREENY + 1,Y
-bne BARRELMOVING
-lda ONSCREENXL,Y
+sta TEMP_BYTE
+ldx TEMP_POINTER_8
+lda TEMP_POINTER_7
+jsr pokesprite
+endspider:
+jmp backfromscreenrou
+updatebarrel:
+lda ONSCREEN_Y + 1,Y
+bne barrelmoving
+lda ONSCREEN_X_LOW,Y
 sec
-sbc SCRXL
-lda ONSCREENXH,Y
-sbc SCRXH
+sbc SCREEN_X_LOW
+lda ONSCREEN_X_HIGH,Y
+sbc SCREEN_X_HIGH
 clc
 adc #1
 cmp #3
-bcc DONTTURNOFFBARREL
-TURNOFFDOUBLE:
+bcc dontturnoffbarrel
+turnoffdouble:
 lda #0
-sta ONSCREENROU,Y
-sta ONSCREENROU + 1,Y
-jmp BACKFROMSCREENROU
-DONTTURNOFFBARREL:
-lda ONSCREENY,Y
+sta ONSCREEN_ROUTINE,Y
+sta ONSCREEN_ROUTINE + 1,Y
+jmp backfromscreenrou
+dontturnoffbarrel:
+lda ONSCREEN_Y,Y
 clc
 adc #1
-sta ONSCREENY + 1,Y
-lda ONSCREENXL,Y
-sta ONSCREENXL + 1,Y
-lda ONSCREENXH,Y
-sta ONSCREENXH + 1,Y
-lda ONSCREENCOUNT2 + 1,Y
-sta ONSCREENCOUNT1,Y
+sta ONSCREEN_Y + 1,Y
+lda ONSCREEN_X_LOW,Y
+sta ONSCREEN_X_LOW + 1,Y
+lda ONSCREEN_X_HIGH,Y
+sta ONSCREEN_X_HIGH + 1,Y
+lda ONSCREEN_COUNTER_2 + 1,Y
+sta ONSCREEN_COUNTER_1,Y
 lda #0
-sta ONSCREENCOUNT1 + 1,Y
-BARRELMOVING:
-lda ONSCREENXL + 1,Y
+sta ONSCREEN_COUNTER_1 + 1,Y
+barrelmoving:
+lda ONSCREEN_X_LOW + 1,Y
 sec
-sbc SCRXL
-sta ADDRESS7
-lda ONSCREENXH + 1,Y
-sbc SCRXH
-sta XCOORDH
-jsr MOVEBARREL
-lda ONSCREENY + 1,Y
-sta ADDRESS7 + 1
-ldx ADDRESS7
-lda ONSCREENCOUNT2,Y
-bne @_1
-lda XCOORDH
-bne ENDBARREL
+sbc SCREEN_X_LOW
+sta TEMP_POINTER_7
+lda ONSCREEN_X_HIGH + 1,Y
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+jsr movebarrel
+lda ONSCREEN_Y + 1,Y
+sta TEMP_POINTER_7 + 1
+ldx TEMP_POINTER_7
+lda ONSCREEN_COUNTER_2,Y
+bne @barrelmoving_skip_if_not_equal
+lda SPRITE_X_COORD_HIGH
+bne endbarrel
 lda #2
-sta TEMP
+sta TEMP_BYTE
 lda #175
-ldy ADDRESS7 + 1
-beq ENDBARREL
-jsr POKESPRITE2BY2
-jmp BACKFROMSCREENROU
-@_1:
-lda ADDRESS7
+ldy TEMP_POINTER_7 + 1
+beq endbarrel
+jsr pokesprite2by2
+jmp backfromscreenrou
+@barrelmoving_skip_if_not_equal:
+lda TEMP_POINTER_7
 lsr
 lsr
 and #3
 clc
-adc #BARRELS
-@_2:
-ldy ADDRESS7 + 1
-beq ENDBARREL
-jsr WINPRINTSPRITE
-ENDBARREL:
-jmp BACKFROMSCREENROU
-MOVEBARREL:
-ldx ONSCREENCOUNT1,Y
-stx TEMP9
+adc #SPRITE_BARRELS
+@barrelmoving_body:
+ldy TEMP_POINTER_7 + 1
+beq endbarrel
+jsr winprintsprite
+endbarrel:
+jmp backfromscreenrou
+movebarrel:
+ldx ONSCREEN_COUNTER_1,Y
+stx TEMP_BYTE_9
 inx
-lda ONSCREENXL + 1,Y
+lda ONSCREEN_X_LOW + 1,Y
 clc
-adc ONSCREENCOUNT1,Y
-sta ONSCREENXL + 1,Y
-lda ONSCREENXH + 1,Y
-adc HIGHBITADD,X
-sta ONSCREENXH + 1,Y
-lda ONSCREENCOUNT1 + 1,Y
-beq @_3
-bmi @_1
+adc ONSCREEN_COUNTER_1,Y
+sta ONSCREEN_X_LOW + 1,Y
+lda ONSCREEN_X_HIGH + 1,Y
+adc high_bit_add_table,X
+sta ONSCREEN_X_HIGH + 1,Y
+lda ONSCREEN_COUNTER_1 + 1,Y
+beq @movebarrel_skip_if_equal
+bmi @movebarrel_skip_if_negative
 lsr
 lsr
-jmp @_2
-@_1:
+jmp @movebarrel_skip
+@movebarrel_skip_if_negative:
 eor #255
 clc
 adc #1
@@ -1462,154 +1462,154 @@ lsr
 eor #255
 clc
 adc #1
-@_2:
+@movebarrel_skip:
 clc
-adc ONSCREENY + 1,Y
-sta ONSCREENY + 1,Y
+adc ONSCREEN_Y + 1,Y
+sta ONSCREEN_Y + 1,Y
 tax
 cpx #192
-bcc @_3
-lda ONSCREENCOUNT1 + 1,Y
+bcc @movebarrel_skip_if_equal
+lda ONSCREEN_COUNTER_1 + 1,Y
 clc
 adc #1
-sta ONSCREENCOUNT1 + 1,Y
+sta ONSCREEN_COUNTER_1 + 1,Y
 cpx #232
-bcc @_4
+bcc @movebarrel_skip_if_no_carry
 lda #0
-sta ONSCREENY + 1,Y
-@_4:
+sta ONSCREEN_Y + 1,Y
+@movebarrel_skip_if_no_carry:
 rts
-@_3:
-ldx ONSCREENXH + 1,Y
-lda ONSCREENCOUNT1,Y
-bne @_5
-lda ONSCREENXL + 1,Y
+@movebarrel_skip_if_equal:
+ldx ONSCREEN_X_HIGH + 1,Y
+lda ONSCREEN_COUNTER_1,Y
+bne @movebarrel_skip_if_not_equal
+lda ONSCREEN_X_LOW + 1,Y
 and #7
-bne BARRELONFLOOR
-@_5:
-lda ONSCREENY + 1,Y
+bne barrelonfloor
+@movebarrel_skip_if_not_equal:
+lda ONSCREEN_Y + 1,Y
 clc
 adc #9
-sta TEMP
-lda ONSCREENXL + 1,Y
-ldy TEMP
-jsr FINDSOLID
-ldy ADDRESS9
+sta TEMP_BYTE
+lda ONSCREEN_X_LOW + 1,Y
+ldy TEMP_BYTE
+jsr findsolid
+ldy TEMP_POINTER_9
 cmp #3
-beq BARRELONFLOOR
-BARRELFALLING:
-lda COUNTER
+beq barrelonfloor
+barrelfalling:
+lda FRAME_COUNTER
 and #1
-bne DONEGRAV
-BARRELADDGRAV:
-lda ONSCREENCOUNT1 + 1,Y
+bne donegrav
+barreladdgrav:
+lda ONSCREEN_COUNTER_1 + 1,Y
 clc
 adc #1
 cmp #17
-bne STOREGRAV
+bne storegrav
 lda #16
-bne STOREGRAV
-BARRELONFLOOR:
-lda ONSCREENCOUNT1 + 1,Y
-bmi DONEGRAV
+bne storegrav
+barrelonfloor:
+lda ONSCREEN_COUNTER_1 + 1,Y
+bmi donegrav
 cmp #4
-bcc @_1
-lda XCOORDH
-bne @_1
-lda #BALLBOUNCEFX
-jsr SOUNDFX
-@_1:
-lda ONSCREENCOUNT1 + 1,Y
-bmi DONEGRAV
+bcc @barrelonfloor_skip_if_no_carry
+lda SPRITE_X_COORD_HIGH
+bne @barrelonfloor_skip_if_no_carry
+lda #SFX_BALL_BOUNCE
+jsr soundfx
+@barrelonfloor_skip_if_no_carry:
+lda ONSCREEN_COUNTER_1 + 1,Y
+bmi donegrav
 lsr
 eor #255
 clc
 adc #1
-STOREGRAV:
-sta ONSCREENCOUNT1 + 1,Y
-DONEGRAV:
-lda ONSCREENXL + 1,Y
-asl TEMP9
+storegrav:
+sta ONSCREEN_COUNTER_1 + 1,Y
+donegrav:
+lda ONSCREEN_X_LOW + 1,Y
+asl TEMP_BYTE_9
 adc #0
 and #3
-bne BARRELNOTHITWALL
-lda ONSCREENXL + 1,Y
-ldx ONSCREENCOUNT1,Y
-bmi @_1
+bne barrelnothitwall
+lda ONSCREEN_X_LOW + 1,Y
+ldx ONSCREEN_COUNTER_1,Y
+bmi @donegrav_skip_if_negative
 clc
 adc #8
-jmp @_2
-@_1:
+jmp @donegrav_skip
+@donegrav_skip_if_negative:
 clc
 adc #($F8)
-@_2:
-sta TEMP
+@donegrav_skip:
+sta TEMP_BYTE
 inx
-lda ONSCREENXH + 1,Y
-adc HIGHBITADD,X
+lda ONSCREEN_X_HIGH + 1,Y
+adc high_bit_add_table,X
 tax
-lda ONSCREENY + 1,Y
+lda ONSCREEN_Y + 1,Y
 clc
 adc #6
 tay
-lda TEMP
-jsr FINDSOLID
-ldy ADDRESS9
-lda SOLIDFOUND
+lda TEMP_BYTE
+jsr findsolid
+ldy TEMP_POINTER_9
+lda SOLID_TILE_FOUND
 cmp #3
-bne BARRELNOTHITWALL
-BARRELHITWALL:
+bne barrelnothitwall
+barrelhitwall:
 lda #0
 sec
-sbc ONSCREENCOUNT1,Y
-sta ONSCREENCOUNT1,Y
-jmp PASTBARRELWALL
-BARRELNOTHITWALL:
-PASTBARRELWALL:
-NOWCOLLIDEBARRELWITHROBIN:
-lda XCOORDH
-bne ENDBARRELMOVE
-lda ADDRESS7
+sbc ONSCREEN_COUNTER_1,Y
+sta ONSCREEN_COUNTER_1,Y
+jmp pastbarrelwall
+barrelnothitwall:
+pastbarrelwall:
+nowcollidebarrelwithrobin:
+lda SPRITE_X_COORD_HIGH
+bne endbarrelmove
+lda TEMP_POINTER_7
 sec
-sbc ROBINONSCRX
+sbc PLAYER_ONSCREEN_X
 clc
 adc #12
 cmp #24
-bcs ENDBARRELMOVE
-lda ONSCREENY + 1,Y
+bcs endbarrelmove
+lda ONSCREEN_Y + 1,Y
 sec
-sbc ROBINY
+sbc PLAYER_Y
 clc
 adc #32
 cmp #30
-bcc BARRELHITROBIN
-ldx ROBINLADDER
-bne ENDBARRELMOVE
+bcc barrelhitrobin
+ldx PLAYER_ON_LADDER
+bne endbarrelmove
 cmp #44
-bcs ENDBARRELMOVE
-@_1:
-lda ONSCREENY + 1,Y
+bcs endbarrelmove
+@nowcollidebarrelwithrobin_body:
+lda ONSCREEN_Y + 1,Y
 clc
 adc #($F7)
-sta ADDRESS7 + 1
-jsr ROBINJUMPOFFPLATFORM
-ldy ADDRESS9
+sta TEMP_POINTER_7 + 1
+jsr robinjumpoffplatform
+ldy TEMP_POINTER_9
 rts
-BARRELHITROBIN:
-lda ROBININVINC
-bne ENDBARRELMOVE
+barrelhitrobin:
+lda PLAYER_INVINCIBILITY_TIMER
+bne endbarrelmove
 lda #1
-jsr SUBFROMHEARTS
-ldy ADDRESS9
-ENDBARRELMOVE:
+jsr subfromhearts
+ldy TEMP_POINTER_9
+endbarrelmove:
 rts
-UPDATEBLOCK:
-jsr CALCONSCREENX
-jmp BACKFROMSCREENROU
-UPDATEHEART:
-UPDATECOIN:
-jsr CALCONSCREENX
-jsr CHANGEBANK13ROU
-jsr RESTUPDATECOIN
-jsr CHANGEBANK12ROU
-jmp BACKFROMSCREENROU
+updateblock:
+jsr calconscreenx
+jmp backfromscreenrou
+updateheart:
+updatecoin:
+jsr calconscreenx
+jsr change_bank13_routine
+jsr restupdatecoin
+jsr change_bank12_routine
+jmp backfromscreenrou

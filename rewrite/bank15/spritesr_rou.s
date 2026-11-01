@@ -1,224 +1,224 @@
-FRMWIDTH = TOPLEVVAR1
-FRMHEIGHT = TOPLEVVAR2
-TEMPWIDTH = TOPLEVVAR3
-TEMPHEIGHT = TOPLEVVAR4
-XCOORD1 = TOPLEVVAR5
-YCOORD1 = TOPLEVVAR6
-ADDX = TOPLEVVAR7
-ADDY = TOPLEVVAR8
-TEMPATTR = TOPLEVVAR9
-TEMPCHR = TOPLEVVAR10
-SPRITEREV = TEMP1
-XCOORD = TEMP2
-YCOORD = TEMP3
-WHICHSPRITE = TEMP4
-FRMSINSPR = TEMP5
-XCOORDH1 = TEMP6
-XCOORDH = TEMP7
-SPRITETEMPXH = TEMP8
-SPRCHRS = ADDRESS3
-ALLOWBEHIND = 1
-SPRITEBEHIND = ZLIM
-ZLIM .set ZLIM + 1
-SPRITECOLOUR = ZLIM
-ZLIM .set ZLIM + 1
-SPRITETEMPX = ZLIM
-ZLIM .set ZLIM + 1
-WINDOWEDGE = 30 * 8
-PRINTSPRITEREV:
+SPRITE_FRAME_WIDTH = SCRATCH_BYTE_1
+SPRITE_FRAME_HEIGHT = SCRATCH_BYTE_2
+SPRITE_TEMP_WIDTH = SCRATCH_BYTE_3
+SPRITE_TEMP_HEIGHT = SCRATCH_BYTE_4
+SPRITE_X_COORD_1 = SCRATCH_BYTE_5
+SPRITE_Y_COORD_1 = SCRATCH_BYTE_6
+SPRITE_ADD_X = SCRATCH_BYTE_7
+SPRITE_ADD_Y = SCRATCH_BYTE_8
+SPRITE_TEMP_ATTRIBUTE = SCRATCH_BYTE_9
+SPRITE_TEMP_CHARACTER = SCRATCH_BYTE_10
+SPRITE_REVERSE = TEMP_BYTE_1
+SPRITE_X_COORD = TEMP_BYTE_2
+SPRITE_Y_COORD = TEMP_BYTE_3
+SPRITE_INDEX = TEMP_BYTE_4
+SPRITE_FRAME_COUNT = TEMP_BYTE_5
+SPRITE_X_COORD_HIGH_1 = TEMP_BYTE_6
+SPRITE_X_COORD_HIGH = TEMP_BYTE_7
+SPRITE_TEMP_X_HIGH = TEMP_BYTE_8
+SPRITE_CHARACTERS = TEMP_POINTER_3
+SPRITE_ALLOW_BEHIND = 1
+SPRITE_BEHIND = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SPRITE_COLOUR = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SPRITE_TEMP_X = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SPRITE_WINDOW_EDGE = 30 * 8
+printspriterev:
 sec
-bcs PRINTSPRITEPOSREV
-PRINTSPRITE:
+bcs printspriteposrev
+printsprite:
 clc
-PRINTSPRITEPOSREV:
-stx XCOORD
+printspriteposrev:
+stx SPRITE_X_COORD
 ldx #0
-stx SPRITEREV
-ror SPRITEREV
-sty YCOORD
+stx SPRITE_REVERSE
+ror SPRITE_REVERSE
+sty SPRITE_Y_COORD
 asl
 tay
-bcs @_2
-lda SPRITETABLE,Y
-sta ADDRESS2
-lda SPRITETABLE + 1,Y
-sta ADDRESS2 + 1
-jmp @_1
-@_2:
-lda SPRITETABLE + 256,Y
-sta ADDRESS2
-lda SPRITETABLE + 1 + 256,Y
-sta ADDRESS2 + 1
-@_1:
+bcs @printspriteposrev_skip_if_carry
+lda spritetable,Y
+sta TEMP_POINTER_2
+lda spritetable + 1,Y
+sta TEMP_POINTER_2 + 1
+jmp @printspriteposrev_skip
+@printspriteposrev_skip_if_carry:
+lda spritetable + 256,Y
+sta TEMP_POINTER_2
+lda spritetable + 1 + 256,Y
+sta TEMP_POINTER_2 + 1
+@printspriteposrev_skip:
 ldy #0
-lda (ADDRESS2),Y
-sta FRMSINSPR
-lda YCOORD
+lda (TEMP_POINTER_2),Y
+sta SPRITE_FRAME_COUNT
+lda SPRITE_Y_COORD
 clc
-adc #YDISPLACE
-sta YCOORD
+adc #SPRITE_Y_DISPLACE
+sta SPRITE_Y_COORD
 iny
-EACHFRMINSPRITELP:
-lda (ADDRESS2),Y
-ldx SPRITEREV
-bpl @_2
+eachfrminspritelp:
+lda (TEMP_POINTER_2),Y
+ldx SPRITE_REVERSE
+bpl @eachfrminspritelp_skip_if_positive
 eor #64
-@_2:
-sta TEMP
-bit PLAYERMASK
-beq @_1
+@eachfrminspritelp_skip_if_positive:
+sta TEMP_BYTE
+bit playermask
+beq @eachfrminspritelp_skip_if_equal
 clc
-adc SPRITECOLOUR
-@_1:
+adc SPRITE_COLOUR
+@eachfrminspritelp_skip_if_equal:
 and #195
-sta TEMPATTR
+sta SPRITE_TEMP_ATTRIBUTE
 lda #8
-asl TEMP
-bcc NOTVERT
+asl TEMP_BYTE
+bcc notvert
 lda #($F8)
-NOTVERT:
-sta ADDY
+notvert:
+sta SPRITE_ADD_Y
 lda #8
-asl TEMP
-bcc NOTHOR
+asl TEMP_BYTE
+bcc nothor
 lda #($F8)
-NOTHOR:
-sta ADDX
+nothor:
+sta SPRITE_ADD_X
 iny
 lda #0
 tax
-asl TEMP
-bcc NODISPLACEMENTS
-lda (ADDRESS2),Y
+asl TEMP_BYTE
+bcc nodisplacements
+lda (TEMP_POINTER_2),Y
 tax
 iny
-lda (ADDRESS2),Y
+lda (TEMP_POINTER_2),Y
 iny
-NODISPLACEMENTS:
-stx XCOORD1
-sta YCOORD1
-DOTHESPRITE:
-lda (ADDRESS2),Y
-asl TEMP
-bcc MUSTBESPR
+nodisplacements:
+stx SPRITE_X_COORD_1
+sta SPRITE_Y_COORD_1
+dothesprite:
+lda (TEMP_POINTER_2),Y
+asl TEMP_BYTE
+bcc mustbespr
 tax
-sta SPRCHRS + 0
+sta SPRITE_CHARACTERS + 0
 lda #1
-asl TEMP
-bcc NOTTWOBYTWO
+asl TEMP_BYTE
+bcc nottwobytwo
 asl
 inx
-stx SPRCHRS + 1
+stx SPRITE_CHARACTERS + 1
 inx
-stx SPRCHRS + 2
+stx SPRITE_CHARACTERS + 2
 inx
-stx SPRCHRS + 3
-NOTTWOBYTWO:
-sta FRMWIDTH
-sta FRMHEIGHT
-sty WHICHSPRITE
-lda #<(SPRCHRS)
-sta ADDRESS1
-lda #>(SPRCHRS)
-sta ADDRESS1 + 1
+stx SPRITE_CHARACTERS + 3
+nottwobytwo:
+sta SPRITE_FRAME_WIDTH
+sta SPRITE_FRAME_HEIGHT
+sty SPRITE_INDEX
+lda #<(SPRITE_CHARACTERS)
+sta TEMP_POINTER_1
+lda #>(SPRITE_CHARACTERS)
+sta TEMP_POINTER_1 + 1
 ldy #0
-jmp MUSTBEJUSTCHR
-MUSTBESPR:
-sta ADDRESS1
+jmp mustbejustchr
+mustbespr:
+sta TEMP_POINTER_1
 iny
-sty WHICHSPRITE
-lda (ADDRESS2),Y
-sta ADDRESS1 + 1
+sty SPRITE_INDEX
+lda (TEMP_POINTER_2),Y
+sta TEMP_POINTER_1 + 1
 ldy #0
-lda (ADDRESS1),Y
+lda (TEMP_POINTER_1),Y
 lsr
 lsr
 lsr
 lsr
-sta FRMWIDTH
-lda (ADDRESS1),Y
+sta SPRITE_FRAME_WIDTH
+lda (TEMP_POINTER_1),Y
 and #15
-sta FRMHEIGHT
+sta SPRITE_FRAME_HEIGHT
 iny
-MUSTBEJUSTCHR:
-lda XCOORD1
-bit SPRITEREV
-bmi @_1
-bit ADDX
-bpl @_2
-ldx FRMWIDTH
+mustbejustchr:
+lda SPRITE_X_COORD_1
+bit SPRITE_REVERSE
+bmi @mustbejustchr_skip_if_negative
+bit SPRITE_ADD_X
+bpl @mustbejustchr_skip_if_positive
+ldx SPRITE_FRAME_WIDTH
 clc
-adc FRMTIMES8,X
-jmp @_2
-@_1:
-bit ADDX
-bmi @_3
-ldx FRMWIDTH
+adc frmtimes8,X
+jmp @mustbejustchr_skip_if_positive
+@mustbejustchr_skip_if_negative:
+bit SPRITE_ADD_X
+bmi @mustbejustchr_skip_if_negative_2
+ldx SPRITE_FRAME_WIDTH
 clc
-adc FRMTIMES8,X
-@_3:
+adc frmtimes8,X
+@mustbejustchr_skip_if_negative_2:
 eor #255
 clc
 adc #($F9)
-@_2:
+@mustbejustchr_skip_if_positive:
 clc
-adc XCOORD
-sta XCOORD1
-lda ADDY
-bpl NOTFLIPPEDOVER
+adc SPRITE_X_COORD
+sta SPRITE_X_COORD_1
+lda SPRITE_ADD_Y
+bpl notflippedover
 sec
-sbc YCOORD1
-sta YCOORD1
-NOTFLIPPEDOVER:
-lda YCOORD
+sbc SPRITE_Y_COORD_1
+sta SPRITE_Y_COORD_1
+notflippedover:
+lda SPRITE_Y_COORD
 clc
-adc YCOORD1
-sta YCOORD1
-ldx SPRITEBLOCKPOINTER
-beq NOMORESPRITECHRSLEFT
-YSPRITELP:
-lda FRMWIDTH
-sta TEMPWIDTH
-lda XCOORD1
-sta SPRITETEMPX
-XSPRITELP:
-lda YCOORD1
-sta SPRITEBLOCK,X
-lda (ADDRESS1),Y
+adc SPRITE_Y_COORD_1
+sta SPRITE_Y_COORD_1
+ldx SPRITE_BLOCK_POINTER
+beq nomorespritechrsleft
+yspritelp:
+lda SPRITE_FRAME_WIDTH
+sta SPRITE_TEMP_WIDTH
+lda SPRITE_X_COORD_1
+sta SPRITE_TEMP_X
+xspritelp:
+lda SPRITE_Y_COORD_1
+sta SPRITE_BLOCK_ADDRESS,X
+lda (TEMP_POINTER_1),Y
 iny
 inx
-sta SPRITEBLOCK,X
-lda TEMPATTR
-ora SPRITEBEHIND
+sta SPRITE_BLOCK_ADDRESS,X
+lda SPRITE_TEMP_ATTRIBUTE
+ora SPRITE_BEHIND
 inx
-sta SPRITEBLOCK,X
+sta SPRITE_BLOCK_ADDRESS,X
 inx
-lda SPRITETEMPX
-sta SPRITEBLOCK,X
+lda SPRITE_TEMP_X
+sta SPRITE_BLOCK_ADDRESS,X
 inx
-beq NOMORESPRITECHRSLEFT
-@_1:
+beq nomorespritechrsleft
+@xspritelp_body:
 clc
-adc ADDX
-sta SPRITETEMPX
-dec TEMPWIDTH
-bne XSPRITELP
-lda YCOORD1
+adc SPRITE_ADD_X
+sta SPRITE_TEMP_X
+dec SPRITE_TEMP_WIDTH
+bne xspritelp
+lda SPRITE_Y_COORD_1
 clc
-adc ADDY
-sta YCOORD1
-dec FRMHEIGHT
-bne YSPRITELP
-NOMORESPRITECHRSLEFT:
-stx SPRITEBLOCKPOINTER
-dec FRMSINSPR
-beq @_2
-ldy WHICHSPRITE
+adc SPRITE_ADD_Y
+sta SPRITE_Y_COORD_1
+dec SPRITE_FRAME_HEIGHT
+bne yspritelp
+nomorespritechrsleft:
+stx SPRITE_BLOCK_POINTER
+dec SPRITE_FRAME_COUNT
+beq @nomorespritechrsleft_skip_if_equal
+ldy SPRITE_INDEX
 iny
-jmp EACHFRMINSPRITELP
-@_2:
+jmp eachfrminspritelp
+@nomorespritechrsleft_skip_if_equal:
 rts
-FRMTIMES8:
+frmtimes8:
 .byte $00
 .byte $00
 .byte $08
@@ -229,352 +229,352 @@ FRMTIMES8:
 .byte $30
 .byte $38
 .byte $40
-PLAYERMASK:
+playermask:
 .byte $04
-WINPRINTSPRITEREVERSED:
+winprintspritereversed:
 sec
-bcs WINPRINTSPRITEPOSREV
-WINPRINTSPRITE:
+bcs winprintspriteposrev
+winprintsprite:
 clc
-WINPRINTSPRITEPOSREV:
-stx XCOORD
+winprintspriteposrev:
+stx SPRITE_X_COORD
 ldx #0
-sta SPRITEREV
-ror SPRITEREV
-ldx XCOORDH
+sta SPRITE_REVERSE
+ror SPRITE_REVERSE
+ldx SPRITE_X_COORD_HIGH
 inx
 cpx #3
-bcc @_5
-@_3:
+bcc @winprintspriteposrev_skip_if_no_carry
+@winprintspriteposrev_loop:
 rts
-@_5:
+@winprintspriteposrev_skip_if_no_carry:
 cpx #1
-beq @_4
-bcc @_6
-ldx XCOORD
+beq @winprintspriteposrev_skip_if_equal
+bcc @winprintspriteposrev_skip_if_no_carry_2
+ldx SPRITE_X_COORD
 cpx #($E8)
-bcc @_4
+bcc @winprintspriteposrev_skip_if_equal
 rts
-@_6:
-ldx XCOORD
+@winprintspriteposrev_skip_if_no_carry_2:
+ldx SPRITE_X_COORD
 cpx #24
-bcs @_3
-@_4:
-sty YCOORD
+bcs @winprintspriteposrev_loop
+@winprintspriteposrev_skip_if_equal:
+sty SPRITE_Y_COORD
 asl
 tay
-bcs @_2
-lda SPRITETABLE,Y
-sta ADDRESS2
-lda SPRITETABLE + 1,Y
-sta ADDRESS2 + 1
-jmp @_1
-@_2:
-lda SPRITETABLE + 256,Y
-sta ADDRESS2
-lda SPRITETABLE + 1 + 256,Y
-sta ADDRESS2 + 1
-@_1:
+bcs @winprintspriteposrev_skip_if_carry
+lda spritetable,Y
+sta TEMP_POINTER_2
+lda spritetable + 1,Y
+sta TEMP_POINTER_2 + 1
+jmp @winprintspriteposrev_skip
+@winprintspriteposrev_skip_if_carry:
+lda spritetable + 256,Y
+sta TEMP_POINTER_2
+lda spritetable + 1 + 256,Y
+sta TEMP_POINTER_2 + 1
+@winprintspriteposrev_skip:
 ldy #0
-lda (ADDRESS2),Y
-sta FRMSINSPR
-lda YCOORD
+lda (TEMP_POINTER_2),Y
+sta SPRITE_FRAME_COUNT
+lda SPRITE_Y_COORD
 clc
-adc #YDISPLACE
-sta YCOORD
+adc #SPRITE_Y_DISPLACE
+sta SPRITE_Y_COORD
 iny
-WINEACHFRMINSPRITELP:
-lda XCOORDH
-sta XCOORDH1
-lda (ADDRESS2),Y
-bit SPRITEREV
-bpl @_2
+wineachfrminspritelp:
+lda SPRITE_X_COORD_HIGH
+sta SPRITE_X_COORD_HIGH_1
+lda (TEMP_POINTER_2),Y
+bit SPRITE_REVERSE
+bpl @wineachfrminspritelp_skip_if_positive
 eor #64
-@_2:
-sta TEMP
-bit PLAYERMASK
-beq @_1
+@wineachfrminspritelp_skip_if_positive:
+sta TEMP_BYTE
+bit playermask
+beq @wineachfrminspritelp_skip_if_equal
 clc
-adc SPRITECOLOUR
-@_1:
+adc SPRITE_COLOUR
+@wineachfrminspritelp_skip_if_equal:
 and #195
-sta TEMPATTR
+sta SPRITE_TEMP_ATTRIBUTE
 lda #8
-asl TEMP
-bcc WINNOTVERT
+asl TEMP_BYTE
+bcc winnotvert
 lda #($F8)
-WINNOTVERT:
-sta ADDY
+winnotvert:
+sta SPRITE_ADD_Y
 lda #8
-asl TEMP
-bcc WINNOTHOR
+asl TEMP_BYTE
+bcc winnothor
 lda #($F8)
-WINNOTHOR:
-sta ADDX
+winnothor:
+sta SPRITE_ADD_X
 iny
 lda #0
 tax
-asl TEMP
-bcc WINNODISPLACEMENTS
-lda (ADDRESS2),Y
+asl TEMP_BYTE
+bcc winnodisplacements
+lda (TEMP_POINTER_2),Y
 tax
 iny
-lda (ADDRESS2),Y
+lda (TEMP_POINTER_2),Y
 iny
-WINNODISPLACEMENTS:
-stx XCOORD1
-sta YCOORD1
-WINDOTHESPRITE:
-lda (ADDRESS2),Y
-asl TEMP
-bcc WINMUSTBESPR
+winnodisplacements:
+stx SPRITE_X_COORD_1
+sta SPRITE_Y_COORD_1
+windothesprite:
+lda (TEMP_POINTER_2),Y
+asl TEMP_BYTE
+bcc winmustbespr
 tax
-sta SPRCHRS + 0
+sta SPRITE_CHARACTERS + 0
 lda #1
-asl TEMP
-bcc WINNOTTWOBYTWO
+asl TEMP_BYTE
+bcc winnottwobytwo
 asl
 inx
-stx SPRCHRS + 1
+stx SPRITE_CHARACTERS + 1
 inx
-stx SPRCHRS + 2
+stx SPRITE_CHARACTERS + 2
 inx
-stx SPRCHRS + 3
-WINNOTTWOBYTWO:
-sta FRMWIDTH
-sta FRMHEIGHT
-sty WHICHSPRITE
-lda #<(SPRCHRS)
-sta ADDRESS1
-lda #>(SPRCHRS)
-sta ADDRESS1 + 1
+stx SPRITE_CHARACTERS + 3
+winnottwobytwo:
+sta SPRITE_FRAME_WIDTH
+sta SPRITE_FRAME_HEIGHT
+sty SPRITE_INDEX
+lda #<(SPRITE_CHARACTERS)
+sta TEMP_POINTER_1
+lda #>(SPRITE_CHARACTERS)
+sta TEMP_POINTER_1 + 1
 ldy #0
-jmp WINMUSTBEJUSTCHR
-WINMUSTBESPR:
-sta ADDRESS1
+jmp winmustbejustchr
+winmustbespr:
+sta TEMP_POINTER_1
 iny
-sty WHICHSPRITE
-lda (ADDRESS2),Y
-sta ADDRESS1 + 1
+sty SPRITE_INDEX
+lda (TEMP_POINTER_2),Y
+sta TEMP_POINTER_1 + 1
 ldy #0
-lda (ADDRESS1),Y
+lda (TEMP_POINTER_1),Y
 lsr
 lsr
 lsr
 lsr
-sta FRMWIDTH
-lda (ADDRESS1),Y
+sta SPRITE_FRAME_WIDTH
+lda (TEMP_POINTER_1),Y
 and #15
-sta FRMHEIGHT
+sta SPRITE_FRAME_HEIGHT
 iny
-WINMUSTBEJUSTCHR:
-bit SPRITEREV
-bmi @_1
-lda XCOORD1
-bmi @_8
-inc XCOORDH1
-@_8:
-bit ADDX
-bpl @_5
-ldx FRMWIDTH
+winmustbejustchr:
+bit SPRITE_REVERSE
+bmi @winmustbejustchr_skip_if_negative_2
+lda SPRITE_X_COORD_1
+bmi @winmustbejustchr_skip_if_negative
+inc SPRITE_X_COORD_HIGH_1
+@winmustbejustchr_skip_if_negative:
+bit SPRITE_ADD_X
+bpl @winmustbejustchr_skip_if_positive
+ldx SPRITE_FRAME_WIDTH
 clc
-adc FRMTIMES8,X
-bcs @_2
-@_5:
-dec XCOORDH1
-jmp @_2
-@_1:
-lda XCOORD1
-bmi @_9
-dec XCOORDH1
-@_9:
-bit ADDX
-bmi @_3
-ldx FRMWIDTH
+adc frmtimes8,X
+bcs @winmustbejustchr_skip_if_carry_2
+@winmustbejustchr_skip_if_positive:
+dec SPRITE_X_COORD_HIGH_1
+jmp @winmustbejustchr_skip_if_carry_2
+@winmustbejustchr_skip_if_negative_2:
+lda SPRITE_X_COORD_1
+bmi @winmustbejustchr_skip_if_negative_3
+dec SPRITE_X_COORD_HIGH_1
+@winmustbejustchr_skip_if_negative_3:
+bit SPRITE_ADD_X
+bmi @winmustbejustchr_skip_if_negative_4
+ldx SPRITE_FRAME_WIDTH
 clc
-adc FRMTIMES8,X
-bcc @_3
-dec XCOORDH1
-@_3:
+adc frmtimes8,X
+bcc @winmustbejustchr_skip_if_negative_4
+dec SPRITE_X_COORD_HIGH_1
+@winmustbejustchr_skip_if_negative_4:
 eor #255
 clc
 adc #($F9)
-bcs @_7
-dec XCOORDH1
-@_7:
-@_2:
+bcs @winmustbejustchr_skip_if_carry
+dec SPRITE_X_COORD_HIGH_1
+@winmustbejustchr_skip_if_carry:
+@winmustbejustchr_skip_if_carry_2:
 clc
-adc XCOORD
-sta XCOORD1
-bcc @_4
-inc XCOORDH1
-@_4:
-AROUNDADDX:
-lda ADDY
-bpl WINNOTFLIPPEDOVER
+adc SPRITE_X_COORD
+sta SPRITE_X_COORD_1
+bcc @winmustbejustchr_skip_if_no_carry
+inc SPRITE_X_COORD_HIGH_1
+@winmustbejustchr_skip_if_no_carry:
+aroundaddx:
+lda SPRITE_ADD_Y
+bpl winnotflippedover
 sec
-sbc YCOORD1
-sta YCOORD1
-WINNOTFLIPPEDOVER:
-lda YCOORD
+sbc SPRITE_Y_COORD_1
+sta SPRITE_Y_COORD_1
+winnotflippedover:
+lda SPRITE_Y_COORD
 clc
-adc YCOORD1
-sta YCOORD1
-ldx SPRITEBLOCKPOINTER
-beq WINNOMORESPRITECHRSLEFT
-WINYSPRITELP:
-lda FRMWIDTH
-sta TEMPWIDTH
-lda XCOORD1
-sta SPRITETEMPX
-lda XCOORDH1
-sta SPRITETEMPXH
-WINXSPRITELP:
-lda SPRITETEMPXH
-bne WINTHISCHRNOTONSCREEN
-lda YCOORD1
-cmp #WINDOWEDGE
-bcs WINTHISCHRNOTONSCREEN
-sta SPRITEBLOCK,X
-lda (ADDRESS1),Y
+adc SPRITE_Y_COORD_1
+sta SPRITE_Y_COORD_1
+ldx SPRITE_BLOCK_POINTER
+beq winnomorespritechrsleft
+winyspritelp:
+lda SPRITE_FRAME_WIDTH
+sta SPRITE_TEMP_WIDTH
+lda SPRITE_X_COORD_1
+sta SPRITE_TEMP_X
+lda SPRITE_X_COORD_HIGH_1
+sta SPRITE_TEMP_X_HIGH
+winxspritelp:
+lda SPRITE_TEMP_X_HIGH
+bne winthischrnotonscreen
+lda SPRITE_Y_COORD_1
+cmp #SPRITE_WINDOW_EDGE
+bcs winthischrnotonscreen
+sta SPRITE_BLOCK_ADDRESS,X
+lda (TEMP_POINTER_1),Y
 inx
-sta SPRITEBLOCK,X
-lda TEMPATTR
-ora SPRITEBEHIND
+sta SPRITE_BLOCK_ADDRESS,X
+lda SPRITE_TEMP_ATTRIBUTE
+ora SPRITE_BEHIND
 inx
-sta SPRITEBLOCK,X
+sta SPRITE_BLOCK_ADDRESS,X
 inx
-lda SPRITETEMPX
-sta SPRITEBLOCK,X
+lda SPRITE_TEMP_X
+sta SPRITE_BLOCK_ADDRESS,X
 inx
-beq WINNOMORESPRITECHRSLEFT
-WINTHISCHRNOTONSCREEN:
+beq winnomorespritechrsleft
+winthischrnotonscreen:
 iny
-lda ADDX
-bmi @_1
-lda SPRITETEMPX
+lda SPRITE_ADD_X
+bmi @winthischrnotonscreen_skip_if_negative
+lda SPRITE_TEMP_X
 clc
-adc ADDX
-sta SPRITETEMPX
-bcc @_2
-inc SPRITETEMPXH
-jmp @_2
-@_1:
+adc SPRITE_ADD_X
+sta SPRITE_TEMP_X
+bcc @winthischrnotonscreen_skip_if_no_carry
+inc SPRITE_TEMP_X_HIGH
+jmp @winthischrnotonscreen_skip_if_no_carry
+@winthischrnotonscreen_skip_if_negative:
 clc
-adc SPRITETEMPX
-sta SPRITETEMPX
-bcs @_2
-dec SPRITETEMPXH
-@_2:
-dec TEMPWIDTH
-bne WINXSPRITELP
-lda YCOORD1
+adc SPRITE_TEMP_X
+sta SPRITE_TEMP_X
+bcs @winthischrnotonscreen_skip_if_no_carry
+dec SPRITE_TEMP_X_HIGH
+@winthischrnotonscreen_skip_if_no_carry:
+dec SPRITE_TEMP_WIDTH
+bne winxspritelp
+lda SPRITE_Y_COORD_1
 clc
-adc ADDY
-sta YCOORD1
-dec FRMHEIGHT
-bne WINYSPRITELP
-WINNOMORESPRITECHRSLEFT:
-stx SPRITEBLOCKPOINTER
-dec FRMSINSPR
-beq @_3
-ldy WHICHSPRITE
+adc SPRITE_ADD_Y
+sta SPRITE_Y_COORD_1
+dec SPRITE_FRAME_HEIGHT
+bne winyspritelp
+winnomorespritechrsleft:
+stx SPRITE_BLOCK_POINTER
+dec SPRITE_FRAME_COUNT
+beq @winnomorespritechrsleft_skip_if_equal
+ldy SPRITE_INDEX
 iny
-jmp WINEACHFRMINSPRITELP
-@_3:
+jmp wineachfrminspritelp
+@winnomorespritechrsleft_skip_if_equal:
 rts
-POKESPRITE:
-stx TOPLEVVAR1
-ldx SPRITEBLOCKPOINTER
-beq NOMORESPRITEPLACES
-sta SPRITEBLOCK + 1,X
-lda TOPLEVVAR1
-sta SPRITEBLOCK + 3,X
+pokesprite:
+stx SCRATCH_BYTE_1
+ldx SPRITE_BLOCK_POINTER
+beq nomorespriteplaces
+sta SPRITE_BLOCK_ADDRESS + 1,X
+lda SCRATCH_BYTE_1
+sta SPRITE_BLOCK_ADDRESS + 3,X
 tya
-sta SPRITEBLOCK + 0,X
-lda TEMP
-sta SPRITEBLOCK + 2,X
+sta SPRITE_BLOCK_ADDRESS + 0,X
+lda TEMP_BYTE
+sta SPRITE_BLOCK_ADDRESS + 2,X
 txa
 clc
 adc #4
-sta SPRITEBLOCKPOINTER
-NOMORESPRITEPLACES:
+sta SPRITE_BLOCK_POINTER
+nomorespriteplaces:
 rts
-POKESPRITE2BY2:
-stx TOPLEVVAR1
-ldx SPRITEBLOCKPOINTER
-bne @_2
-@_3:
+pokesprite2by2:
+stx SCRATCH_BYTE_1
+ldx SPRITE_BLOCK_POINTER
+bne @pokesprite2by2_skip_if_not_equal
+@pokesprite2by2_loop:
 rts
-@_2:
+@pokesprite2by2_skip_if_not_equal:
 cpx #240
-bcs @_3
-sta SPRITEBLOCK + 1,X
+bcs @pokesprite2by2_loop
+sta SPRITE_BLOCK_ADDRESS + 1,X
 adc #1
-sta SPRITEBLOCK + 1 + 4,X
+sta SPRITE_BLOCK_ADDRESS + 1 + 4,X
 adc #1
-sta SPRITEBLOCK + 1 + 8,X
+sta SPRITE_BLOCK_ADDRESS + 1 + 8,X
 adc #1
-sta SPRITEBLOCK + 1 + 12,X
-lda TEMP
-sta SPRITEBLOCK + 2,X
-sta SPRITEBLOCK + 2 + 4,X
-sta SPRITEBLOCK + 2 + 8,X
-sta SPRITEBLOCK + 2 + 12,X
+sta SPRITE_BLOCK_ADDRESS + 1 + 12,X
+lda TEMP_BYTE
+sta SPRITE_BLOCK_ADDRESS + 2,X
+sta SPRITE_BLOCK_ADDRESS + 2 + 4,X
+sta SPRITE_BLOCK_ADDRESS + 2 + 8,X
+sta SPRITE_BLOCK_ADDRESS + 2 + 12,X
 and #128
-bne FLIPPEDVERT
+bne flippedvert
 tya
 clc
-adc #YDISPLACE
-sta SPRITEBLOCK + 8,X
-sta SPRITEBLOCK + 12,X
+adc #SPRITE_Y_DISPLACE
+sta SPRITE_BLOCK_ADDRESS + 8,X
+sta SPRITE_BLOCK_ADDRESS + 12,X
 clc
 adc #($F8)
-sta SPRITEBLOCK + 0,X
-sta SPRITEBLOCK + 4,X
-jmp NOWHOR
-FLIPPEDVERT:
+sta SPRITE_BLOCK_ADDRESS + 0,X
+sta SPRITE_BLOCK_ADDRESS + 4,X
+jmp nowhor
+flippedvert:
 tya
 clc
-adc #YDISPLACE
-sta SPRITEBLOCK + 0,X
-sta SPRITEBLOCK + 4,X
+adc #SPRITE_Y_DISPLACE
+sta SPRITE_BLOCK_ADDRESS + 0,X
+sta SPRITE_BLOCK_ADDRESS + 4,X
 clc
 adc #($F8)
-sta SPRITEBLOCK + 8,X
-sta SPRITEBLOCK + 12,X
-NOWHOR:
-lda TOPLEVVAR1
-bit TEMP
-bvs FLIPPEDHOR
-sta SPRITEBLOCK + 3 + 4,X
-sta SPRITEBLOCK + 3 + 12,X
+sta SPRITE_BLOCK_ADDRESS + 8,X
+sta SPRITE_BLOCK_ADDRESS + 12,X
+nowhor:
+lda SCRATCH_BYTE_1
+bit TEMP_BYTE
+bvs flippedhor
+sta SPRITE_BLOCK_ADDRESS + 3 + 4,X
+sta SPRITE_BLOCK_ADDRESS + 3 + 12,X
 clc
 adc #($F8)
-bcs @_1
+bcs @nowhor_skip_if_carry
 lda #245
-sta SPRITEBLOCK + 0 + 0,X
-sta SPRITEBLOCK + 0 + 8,X
-@_1:
-sta SPRITEBLOCK + 3 + 0,X
-sta SPRITEBLOCK + 3 + 8,X
-jmp DONE2BY2
-FLIPPEDHOR:
-sta SPRITEBLOCK + 3 + 0,X
-sta SPRITEBLOCK + 3 + 8,X
+sta SPRITE_BLOCK_ADDRESS + 0 + 0,X
+sta SPRITE_BLOCK_ADDRESS + 0 + 8,X
+@nowhor_skip_if_carry:
+sta SPRITE_BLOCK_ADDRESS + 3 + 0,X
+sta SPRITE_BLOCK_ADDRESS + 3 + 8,X
+jmp done2by2
+flippedhor:
+sta SPRITE_BLOCK_ADDRESS + 3 + 0,X
+sta SPRITE_BLOCK_ADDRESS + 3 + 8,X
 clc
 adc #($F8)
-bcs @_1
+bcs @flippedhor_skip_if_carry
 lda #245
-sta SPRITEBLOCK + 0 + 4,X
-sta SPRITEBLOCK + 0 + 12,X
-@_1:
-sta SPRITEBLOCK + 3 + 4,X
-sta SPRITEBLOCK + 3 + 12,X
-DONE2BY2:
+sta SPRITE_BLOCK_ADDRESS + 0 + 4,X
+sta SPRITE_BLOCK_ADDRESS + 0 + 12,X
+@flippedhor_skip_if_carry:
+sta SPRITE_BLOCK_ADDRESS + 3 + 4,X
+sta SPRITE_BLOCK_ADDRESS + 3 + 12,X
+done2by2:
 txa
 clc
 adc #16
-sta SPRITEBLOCKPOINTER
-NOMORE2BY2:
+sta SPRITE_BLOCK_POINTER
+nomore2by2:
 rts

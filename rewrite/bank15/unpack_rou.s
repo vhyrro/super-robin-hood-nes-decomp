@@ -1,351 +1,351 @@
-COMPACTEDCHRSTABLE:
-CM_CHRSET0 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(CM_CHRSET)
-.byte >(CM_CHRSET)
+compactedchrstable:
+CHARSET_CODEMASTERS = (* - compactedchrstable) / 4
+.byte <(cm_chrset)
+.byte >(cm_chrset)
 .byte $00
 .byte $0E
-TITLETOPCHRS0_245 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(TITLETOPCHRS)
-.byte >(TITLETOPCHRS)
+CHARSET_TITLE_TOP = (* - compactedchrstable) / 4
+.byte <(titletopchrs)
+.byte >(titletopchrs)
 .byte $00
 .byte $8E
-TITLEBOTCHRS0_245 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(TITLEBOTCHRS)
-.byte >(TITLEBOTCHRS)
+CHARSET_TITLE_BOTTOM = (* - compactedchrstable) / 4
+.byte <(titlebotchrs)
+.byte >(titlebotchrs)
 .byte $00
 .byte $0E
-HISCORECHRS0_43 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(HISCORECHRS)
-.byte >(HISCORECHRS)
+CHARSET_HIGH_SCORE = (* - compactedchrstable) / 4
+.byte <(hiscorechrs)
+.byte >(hiscorechrs)
 .byte $00
 .byte $8E
-HISCORECHRS0_43S = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(HISCORECHRS)
-.byte >(HISCORECHRS)
+CHARSET_HIGH_SCORE_2 = (* - compactedchrstable) / 4
+.byte <(hiscorechrs)
+.byte >(hiscorechrs)
 .byte $00
 .byte $0E
-BASECHR0_157 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(BASECHR)
-.byte >(BASECHR)
+CHARSET_BASE = (* - compactedchrstable) / 4
+.byte <(basechr)
+.byte >(basechr)
 .byte $00
 .byte $8E
-BEADCHR157_23 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(BEADCHR)
-.byte >(BEADCHR)
+CHARSET_BEAD = (* - compactedchrstable) / 4
+.byte <(beadchr)
+.byte >(beadchr)
 .byte $9D
 .byte $8E
-BOXCHR247_9 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(BOXCHR)
-.byte >(BOXCHR)
+CHARSET_BOX = (* - compactedchrstable) / 4
+.byte <(boxchr)
+.byte >(boxchr)
 .byte $F7
 .byte $8E
-ARCHCHR157_85 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(ARCHCHR)
-.byte >(ARCHCHR)
+CHARSET_ARCH = (* - compactedchrstable) / 4
+.byte <(archchr)
+.byte >(archchr)
 .byte $9D
 .byte $8E
-ROCKCHR157_99 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(ROCKCHR)
-.byte >(ROCKCHR)
+CHARSET_ROCK = (* - compactedchrstable) / 4
+.byte <(rockchr)
+.byte >(rockchr)
 .byte $9D
 .byte $8E
-BEDCHR180_66 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(BEDCHR)
-.byte >(BEDCHR)
+CHARSET_BED = (* - compactedchrstable) / 4
+.byte <(bedchr)
+.byte >(bedchr)
 .byte $B4
 .byte $8E
-DOORCHR180_73 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(DOORCHR)
-.byte >(DOORCHR)
+CHARSET_DOOR = (* - compactedchrstable) / 4
+.byte <(doorchr)
+.byte >(doorchr)
 .byte $B4
 .byte $8E
-ROBINCHRS0_255 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(ROBINCHRS)
-.byte >(ROBINCHRS)
+CHARSET_ROBIN = (* - compactedchrstable) / 4
+.byte <(robinchrs)
+.byte >(robinchrs)
 .byte $00
 .byte $0E
-OKCHR0_1 = (* - COMPACTEDCHRSTABLE) / 4
-.byte <(OKCHR)
-.byte >(OKCHR)
+CHARSET_OK = (* - compactedchrstable) / 4
+.byte <(okchr)
+.byte >(okchr)
 .byte $00
 .byte $0E
-COPYBLOCKOFCOMPACTEDCHRS:
+copyblockofcompactedchrs:
 asl
 asl
 tay
-lda BANKNO
+lda CURRENT_BANK
 pha
-lda COMPACTEDCHRSTABLE + 3,Y
+lda compactedchrstable + 3,Y
 and #15
-jsr CHANGEBANKROU
-lda COMPACTEDCHRSTABLE + 2,Y
-sta TEMP
-lda COMPACTEDCHRSTABLE + 3,Y
+jsr change_bank_routine
+lda compactedchrstable + 2,Y
+sta TEMP_BYTE
+lda compactedchrstable + 3,Y
 asl
 lda #0
 adc #0
-asl TEMP
+asl TEMP_BYTE
 rol
-asl TEMP
+asl TEMP_BYTE
 rol
-asl TEMP
+asl TEMP_BYTE
 rol
-asl TEMP
+asl TEMP_BYTE
 rol
-sta _VRAMADDR
-lda TEMP
-sta _VRAMADDR
-lda COMPACTEDCHRSTABLE + 0,Y
-sta ADR1L
-lda COMPACTEDCHRSTABLE + 1,Y
-sta ADR1H
-jsr PP1_UNPACK
+sta PPU_ADDRESS_REGISTER
+lda TEMP_BYTE
+sta PPU_ADDRESS_REGISTER
+lda compactedchrstable + 0,Y
+sta PP1_ADDRESS_LOW
+lda compactedchrstable + 1,Y
+sta PP1_ADDRESS_HIGH
+jsr pp1_unpack
 pla
-jmp CHANGEBANKROU
-PP1_ZBUF = TOPLEVVAR1
-PP1_TYPES = ADDRESS2
-PP1_FOL1 = PP1_TYPES + 4
-PP1_FOL2 = PP1_TYPES + 8
-PP1_FOL3 = PP1_TYPES + 12
-ADR1 = ADDRESS1
-ADR1L = ADDRESS1
-ADR1H = ADDRESS1 + 1
-PP1_DOWNLOAD3:
-stx ADR1L
-sty ADR1H
+jmp change_bank_routine
+PP1_ZERO_BUFFER = SCRATCH_BYTE_1
+PP1_TYPE_TABLE = TEMP_POINTER_2
+PP1_FOLLOW_1 = PP1_TYPE_TABLE + 4
+PP1_FOLLOW_2 = PP1_TYPE_TABLE + 8
+PP1_FOLLOW_3 = PP1_TYPE_TABLE + 12
+PP1_ADDRESS = TEMP_POINTER_1
+PP1_ADDRESS_LOW = TEMP_POINTER_1
+PP1_ADDRESS_HIGH = TEMP_POINTER_1 + 1
+pp1_download3:
+stx PP1_ADDRESS_LOW
+sty PP1_ADDRESS_HIGH
 txa
-lda BANKNO
+lda CURRENT_BANK
 pha
 txa
-jsr CHANGEBANKROU
-jsr PP1_UNPACK
+jsr change_bank_routine
+jsr pp1_unpack
 pla
-jmp CHANGEBANKROU
-PP1_DOWNLOAD2:
-stx ADR1L
-sty ADR1H
-PP1_DOWNLOAD:
+jmp change_bank_routine
+pp1_download2:
+stx PP1_ADDRESS_LOW
+sty PP1_ADDRESS_HIGH
+pp1_download:
 ldx #13
-PP1_UNPACK:
+pp1_unpack:
 ldy #0
-lda (ADR1),Y
-sta TEMP1
-sta TEMP8
+lda (PP1_ADDRESS),Y
+sta TEMP_BYTE_1
+sta TEMP_BYTE_8
 iny
 lda #128
-sta TEMP2
-PP1_CHRLOOP:
-jsr PP1_GETC
-bcs PP1_GOTHEADER
+sta TEMP_BYTE_2
+pp1_chrloop:
+jsr pp1_getc
+bcs pp1_gotheader
 ldx #3
-@HL:
-jsr PP1_GET2
-sta PP1_TYPES,X
-beq @T0
+@hl:
+jsr pp1_get2
+sta PP1_TYPE_TABLE,X
+beq @t0
 lsr
-beq @T1
-bcc @T2
-@T3:
-jsr PP1_T3
-sta PP1_FOL3,X
-jmp @T0
-@T2:
-jsr PP1_T3
-sta TEMP3
-jsr PP1_GETC
-bcc @T0
-lda TEMP3
-sta PP1_FOL2,X
-jmp @T0
-@T1:
-jsr PP1_T1
-sta PP1_FOL1,X
-@T0:
+beq @t1
+bcc @t2
+@t3:
+jsr pp1_t3
+sta PP1_FOLLOW_3,X
+jmp @t0
+@t2:
+jsr pp1_t3
+sta TEMP_BYTE_3
+jsr pp1_getc
+bcc @t0
+lda TEMP_BYTE_3
+sta PP1_FOLLOW_2,X
+jmp @t0
+@t1:
+jsr pp1_t1
+sta PP1_FOLLOW_1,X
+@t0:
 dex
-bpl @HL
-PP1_GOTHEADER:
+bpl @hl
+pp1_gotheader:
 ldx #7
-PP1_GETLINE:
-stx TEMP3
-asl TEMP2
-bcc @Q10
-bne PP1_GOTLINE
-jsr PP1_GETQ
-bcs PP1_GOTLINE
-@Q10:
-jsr PP1_GET2
+pp1_getline:
+stx TEMP_BYTE_3
+asl TEMP_BYTE_2
+bcc @q10
+bne pp1_gotline
+jsr pp1_getq
+bcs pp1_gotline
+@q10:
+jsr pp1_get2
 tax
-sta TEMP4
+sta TEMP_BYTE_4
 lsr
 ora #2
-sta TEMP5
-@NEXT:
-lda PP1_TYPES,X
-beq @T0
-asl TEMP2
-bcc @Q11
-bne @T0
-jsr PP1_GETQ
-bcs @T0
-@Q11:
-lda PP1_TYPES,X
+sta TEMP_BYTE_5
+@next:
+lda PP1_TYPE_TABLE,X
+beq @t0
+asl TEMP_BYTE_2
+bcc @q11
+bne @t0
+jsr pp1_getq
+bcs @t0
+@q11:
+lda PP1_TYPE_TABLE,X
 lsr
-beq @T1
-bcc @T2
-@T3:
-asl TEMP2
-bcc @Q12
-bne @T1
-jsr PP1_GETQ
-bcs @T1
-@Q12:
-asl TEMP2
-bcc @T2B
-bne @Q13
-jsr PP1_GETQ
-bcc @T2B
-@Q13:
-lda PP1_FOL3,X
+beq @t1
+bcc @t2
+@t3:
+asl TEMP_BYTE_2
+bcc @q12
+bne @t1
+jsr pp1_getq
+bcs @t1
+@q12:
+asl TEMP_BYTE_2
+bcc @t2b
+bne @q13
+jsr pp1_getq
+bcc @t2b
+@q13:
+lda PP1_FOLLOW_3,X
 tax
-jmp @P
-@T2:
-asl TEMP2
-bcc @T1
-bne @Q14
-jsr PP1_GETQ
-bcc @T1
-@Q14:
-@T2B:
-lda PP1_FOL2,X
+jmp @p
+@t2:
+asl TEMP_BYTE_2
+bcc @t1
+bne @q14
+jsr pp1_getq
+bcc @t1
+@q14:
+@t2b:
+lda PP1_FOLLOW_2,X
 tax
-jmp @P
-@T1:
-lda PP1_FOL1,X
+jmp @p
+@t1:
+lda PP1_FOLLOW_1,X
 tax
-@T0:
+@t0:
 txa
-@P:
+@p:
 lsr
-rol TEMP4
+rol TEMP_BYTE_4
 lsr
-rol TEMP5
-bcc @NEXT
-PP1_GOTLINE:
-lda TEMP4
+rol TEMP_BYTE_5
+bcc @next
+pp1_gotline:
+lda TEMP_BYTE_4
 sta 8199
-ldx TEMP3
-lda TEMP5
-sta PP1_ZBUF,X
+ldx TEMP_BYTE_3
+lda TEMP_BYTE_5
+sta PP1_ZERO_BUFFER,X
 dex
-bpl PP1_GETLINE
+bpl pp1_getline
 ldx #7
-@BPL1:
-lda PP1_ZBUF,X
+@bpl1:
+lda PP1_ZERO_BUFFER,X
 sta 8199
 dex
-bpl @BPL1
-dec TEMP1
-beq @DONE
-jmp PP1_CHRLOOP
-@DONE:
+bpl @bpl1
+dec TEMP_BYTE_1
+beq @done
+jmp pp1_chrloop
+@done:
 rts
-PP1_GETC:
-asl TEMP2
-beq @H0
+pp1_getc:
+asl TEMP_BYTE_2
+beq @h0
 rts
-@H0:
-PP1_GETQ:
-lda (ADR1),Y
+@h0:
+pp1_getq:
+lda (PP1_ADDRESS),Y
 iny
-bne @H2
-inc ADR1H
-@H2:
+bne @h2
+inc PP1_ADDRESS_HIGH
+@h2:
 rol
-sta TEMP2
+sta TEMP_BYTE_2
 rts
-PP1_GET2:
-asl TEMP2
-bne @_20
-lda (ADR1),Y
+pp1_get2:
+asl TEMP_BYTE_2
+bne @pp1_get2_skip_if_not_equal_2
+lda (PP1_ADDRESS),Y
 iny
-bne @_22
-inc ADR1H
-@_22:
+bne @pp1_get2_skip_if_not_equal
+inc PP1_ADDRESS_HIGH
+@pp1_get2_skip_if_not_equal:
 rol
-sta TEMP2
-@_20:
+sta TEMP_BYTE_2
+@pp1_get2_skip_if_not_equal_2:
 rol
 and #1
-asl TEMP2
-beq @_21
+asl TEMP_BYTE_2
+beq @pp1_get2_skip_if_equal
 rol
 rts
-@_21:
+@pp1_get2_skip_if_equal:
 pha
-lda (ADR1),Y
+lda (PP1_ADDRESS),Y
 iny
-bne @_23
-inc ADR1H
-@_23:
+bne @pp1_get2_skip_if_not_equal_3
+inc PP1_ADDRESS_HIGH
+@pp1_get2_skip_if_not_equal_3:
 rol
-sta TEMP2
+sta TEMP_BYTE_2
 pla
 rol
 rts
-PP1_T1:
-jsr PP1_GETC
-bcc @T1B
-lda PP1_FC1,X
+pp1_t1:
+jsr pp1_getc
+bcc @t1b
+lda pp1_fc1,X
 rts
-@T1B:
-jsr PP1_GETC
-bcs @T1C
-lda PP1_FC2,X
+@t1b:
+jsr pp1_getc
+bcs @t1c
+lda pp1_fc2,X
 rts
-@T1C:
-lda PP1_FC3,X
+@t1c:
+lda pp1_fc3,X
 rts
-PP1_T3:
-jsr PP1_T1
-sta PP1_FOL1,X
-beq @T3_0
+pp1_t3:
+jsr pp1_t1
+sta PP1_FOLLOW_1,X
+beq @t3_0
 cmp #2
-bcc @T3_1
-beq @T3_2
-@T3_3:
-lda PP1_F3L,X
-sta PP1_FOL2,X
-lda PP1_F3H,X
+bcc @t3_1
+beq @t3_2
+@t3_3:
+lda PP1_FRAME_3_LOW,X
+sta PP1_FOLLOW_2,X
+lda PP1_FRAME_3_HIGH,X
 rts
-@T3_2:
-lda PP1_F2L,X
-sta PP1_FOL2,X
-lda PP1_F2H,X
+@t3_2:
+lda PP1_FRAME_2_LOW,X
+sta PP1_FOLLOW_2,X
+lda pp1_f2h,X
 rts
-@T3_1:
-lda PP1_F1L,X
-sta PP1_FOL2,X
-lda PP1_F1H,X
+@t3_1:
+lda pp1_f1l,X
+sta PP1_FOLLOW_2,X
+lda PP1_FRAME_1_HIGH,X
 rts
-@T3_0:
-lda PP1_F0L,X
-sta PP1_FOL2,X
-lda PP1_F0H,X
+@t3_0:
+lda PP1_FRAME_0_LOW,X
+sta PP1_FOLLOW_2,X
+lda PP1_FRAME_0_HIGH,X
 rts
-PP1_FC3:
+pp1_fc3:
 .byte $03,$03,$03
-PP1_FC2:
+pp1_fc2:
 .byte $02,$02,$01
-PP1_FC1:
+pp1_fc1:
 .byte $01,$00,$00,$00
-PP1_F0L = PP1_FC2
-PP1_F0H = PP1_FC3
-PP1_F1L:
+PP1_FRAME_0_LOW = pp1_fc2
+PP1_FRAME_0_HIGH = pp1_fc3
+pp1_f1l:
 .byte $02,$FF,$00,$00
-PP1_F1H = PP1_FC3
-PP1_F2L = PP1_FC1
-PP1_F2H:
+PP1_FRAME_1_HIGH = pp1_fc3
+PP1_FRAME_2_LOW = pp1_fc1
+pp1_f2h:
 .byte $03,$03,$FF,$01
-PP1_F3L = PP1_FC1
-PP1_F3H = PP1_FC2
-PP1_SIZE = * - PP1_DOWNLOAD3
+PP1_FRAME_3_LOW = pp1_fc1
+PP1_FRAME_3_HIGH = pp1_fc2
+PP1_SIZE = * - pp1_download3

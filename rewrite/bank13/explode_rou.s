@@ -1,289 +1,289 @@
-ROBINHEARTS:
-lda ROBINY
+robinhearts:
+lda PLAYER_Y
 clc
 adc #($EE)
-sta HEARTSTABLE + 2,X
-lda ROBINXL
+sta HEART_TABLE + 2,X
+lda PLAYER_X_LOW
 sec
 sbc #4
-sta HEARTSTABLE + 0,X
-lda ROBINXH
+sta HEART_TABLE + 0,X
+lda PLAYER_X_HIGH
 sbc #0
-sta HEARTSTABLE + 1,X
+sta HEART_TABLE + 1,X
 rts
-UPDATEHEARTS:
+updatehearts:
 ldx #0
-MOREHEARTS:
-stx HTEMPXREG
-lda HEARTSTABLE,X
-ora HEARTSTABLE + 1,X
-beq ENDHEARTS
-UPDATEHEARTSLP:
-lda HEARTSTABLE + 5,X
-bpl @_1
-jsr ROBINHEARTS
-@_1:
-lda HEARTSTABLE,X
+morehearts:
+stx HEIGHT_TEMP_X_REGISTER
+lda HEART_TABLE,X
+ora HEART_TABLE + 1,X
+beq endhearts
+updateheartslp:
+lda HEART_TABLE + 5,X
+bpl @updateheartslp_skip_if_positive
+jsr robinhearts
+@updateheartslp_skip_if_positive:
+lda HEART_TABLE,X
 sec
-sbc SCRXL
-sta HEARTXL
-lda HEARTSTABLE + 1,X
-sbc SCRXH
-sta HEARTXH
-lda HEARTSTABLE + 2,X
-sta HEARTY
-lda HEARTSTABLE + 3,X
-sta HTEMPCHR
-lda HEARTSTABLE + 4,X
+sbc SCREEN_X_LOW
+sta HEART_X_LOW
+lda HEART_TABLE + 1,X
+sbc SCREEN_X_HIGH
+sta HEART_X_HIGH
+lda HEART_TABLE + 2,X
+sta HEART_Y
+lda HEART_TABLE + 3,X
+sta HEIGHT_TEMP_CHARACTER
+lda HEART_TABLE + 4,X
 lsr
 lsr
 lsr
 lsr
-sta HTEMPCOL
-lda HEARTSTABLE + 4,X
+sta HEIGHT_TEMP_COLOUR
+lda HEART_TABLE + 4,X
 and #15
-sta NOOFHPARAS
-lda HEARTSTABLE + 5,X
+sta HEART_PIECE_COUNT
+lda HEART_TABLE + 5,X
 and #31
-sta HTEMPROU
-DOEACHHEART:
-ldy HTEMPROU
-lda EXPLODEROUBITSL,Y
-sta ADDRESS
-lda EXPLODEROUBITSH,Y
-sta ADDRESS + 1
-jmp (ADDRESS)
-BACKFROMHEARTROU:
-@_1:
-jsr PRINTCIRCLEOFHEARTS
-BACKFROMHEARTROU1:
+sta HEIGHT_TEMP_ROUTINE
+doeachheart:
+ldy HEIGHT_TEMP_ROUTINE
+lda exploderoubitsl,Y
+sta TEMP_POINTER
+lda exploderoubitsh,Y
+sta TEMP_POINTER + 1
+jmp (TEMP_POINTER)
+backfromheartrou:
+@backfromheartrou_body:
+jsr printcircleofhearts
+backfromheartrou1:
 inx
 inx
-dec NOOFHPARAS
-bne DOEACHHEART
-ENDHEARTS:
-lda HTEMPXREG
+dec HEART_PIECE_COUNT
+bne doeachheart
+endhearts:
+lda HEIGHT_TEMP_X_REGISTER
 clc
 adc #16
 tax
 cmp #48
-bne MOREHEARTS
+bne morehearts
 rts
-SPINANDINC:
-dec HEARTSTABLE + 7,X
-JUSTINC:
-jsr INCHEARTS4
-FINHEARTS1:
-bne BACKFROMHEARTROU
-FINHEARTS:
-ldy HTEMPXREG
+spinandinc:
+dec HEART_TABLE + 7,X
+just_increment:
+jsr inchearts4
+finhearts1:
+bne backfromheartrou
+finhearts:
+ldy HEIGHT_TEMP_X_REGISTER
 lda #0
-sta HEARTSTABLE,Y
-sta HEARTSTABLE + 1,Y
-jmp BACKFROMHEARTROU1
-LARGEEXPFORGUARD:
-jsr INCHEARTS4
-bpl BACKFROMHEARTROU
-bmi FINHEARTS
-SMALLEXPFORGUARD:
-jsr INCHEARTS3
-lda HEARTSTABLE + 6,X
+sta HEART_TABLE,Y
+sta HEART_TABLE + 1,Y
+jmp backfromheartrou1
+largeexpforguard:
+jsr inchearts4
+bpl backfromheartrou
+bmi finhearts
+smallexpforguard:
+jsr inchearts3
+lda HEART_TABLE + 6,X
 cmp #64
-bcc BACKFROMHEARTROU
-bcs FINHEARTS
-EXPLODEHEARTS:
-ldy NOOFHPARAS
-lda EXPSIZETABLE,Y
+bcc backfromheartrou
+bcs finhearts
+explodehearts:
+ldy HEART_PIECE_COUNT
+lda expsizetable,Y
 clc
-adc HEARTSTABLE + 6,X
-sta HEARTSTABLE + 6,X
-bcc BACKFROMHEARTROU
-bcs FINHEARTS
-EXPSIZETABLE:
+adc HEART_TABLE + 6,X
+sta HEART_TABLE + 6,X
+bcc backfromheartrou
+bcs finhearts
+expsizetable:
 .byte $01
 .byte $02
 .byte $03
 .byte $04
 .byte $05
 .byte $06
-SPININSTARS:
-dec HEARTSTABLE + 7,X
-lda HEARTSTABLE + 6,X
+spininstars:
+dec HEART_TABLE + 7,X
+lda HEART_TABLE + 6,X
 clc
 adc #($FA)
-sta HEARTSTABLE + 6,X
-jmp FINHEARTS1
-EXPLODEHEARTSL:
-dec HEARTSTABLE + 7,X
-ldy NOOFHPARAS
-lda ROBININVINC
+sta HEART_TABLE + 6,X
+jmp finhearts1
+explodeheartsl:
+dec HEART_TABLE + 7,X
+ldy HEART_PIECE_COUNT
+lda PLAYER_INVINCIBILITY_TIMER
 cmp #170 - 50
-bcc @_1
-lda EXPSIZETABLE,Y
+bcc @explodeheartsl_skip_if_no_carry
+lda expsizetable,Y
 clc
-adc HEARTSTABLE + 6,X
-sta HEARTSTABLE + 6,X
-jmp BACKFROMHEARTROU
-@_1:
-lda HEARTSTABLE + 6,X
+adc HEART_TABLE + 6,X
+sta HEART_TABLE + 6,X
+jmp backfromheartrou
+@explodeheartsl_skip_if_no_carry:
+lda HEART_TABLE + 6,X
 sec
-sbc EXPSIZETABLE,Y
-sta HEARTSTABLE + 6,X
-bmi FINHEARTS
-jmp BACKFROMHEARTROU
-INCHEARTS4:
-inc HEARTSTABLE + 6,X
-INCHEARTS3:
-inc HEARTSTABLE + 6,X
-INCHEARTS2:
-inc HEARTSTABLE + 6,X
-INCHEARTS1:
-inc HEARTSTABLE + 6,X
+sbc expsizetable,Y
+sta HEART_TABLE + 6,X
+bmi finhearts
+jmp backfromheartrou
+inchearts4:
+inc HEART_TABLE + 6,X
+inchearts3:
+inc HEART_TABLE + 6,X
+inchearts2:
+inc HEART_TABLE + 6,X
+inchearts1:
+inc HEART_TABLE + 6,X
 rts
-GETVALUE:
+getvalue:
 and #63
 tay
-lda SINCOSTABLE,Y
-bit HTEMPANGLE
-bvc WASPOS
-jsr WASPOS
+lda sincostable,Y
+bit HEIGHT_TEMP_ANGLE
+bvc sine_times_size
+jsr sine_times_size
 eor #255
 clc
 adc #1
 dey
 rts
-WASPOS:
-sta TEMP
-lda HTEMPSIZE
-sta ADDRESS
+sine_times_size:
+sta TEMP_BYTE
+lda HEIGHT_TEMP_SIZE
+sta TEMP_POINTER
 ldy #8
 lda #0
-sta ADDRESS + 1
-sta ADDRESS1
-sta ADDRESS1 + 1
-MULTLP:
-lsr TEMP
-bcc NOADD
-lda ADDRESS1
+sta TEMP_POINTER + 1
+sta TEMP_POINTER_1
+sta TEMP_POINTER_1 + 1
+multiply_loop:
+lsr TEMP_BYTE
+bcc multiply_no_add
+lda TEMP_POINTER_1
 clc
-adc ADDRESS
-sta ADDRESS1
-lda ADDRESS1 + 1
-adc ADDRESS + 1
-sta ADDRESS1 + 1
-NOADD:
-asl ADDRESS
-rol ADDRESS + 1
+adc TEMP_POINTER
+sta TEMP_POINTER_1
+lda TEMP_POINTER_1 + 1
+adc TEMP_POINTER + 1
+sta TEMP_POINTER_1 + 1
+multiply_no_add:
+asl TEMP_POINTER
+rol TEMP_POINTER + 1
 dey
-bne MULTLP
-lda ADDRESS1 + 1
+bne multiply_loop
+lda TEMP_POINTER_1 + 1
 rts
-PUTSPINHEART:
-lda HTEMPPRTY
-sta SPRITEBLOCK + 0,Y
-lda HTEMPCHR
-sta SPRITEBLOCK + 1,Y
-lda HTEMPCOL
-sta SPRITEBLOCK + 2,Y
+putspinheart:
+lda HEIGHT_TEMP_PRINT_Y
+sta SPRITE_BLOCK_ADDRESS + 0,Y
+lda HEIGHT_TEMP_CHARACTER
+sta SPRITE_BLOCK_ADDRESS + 1,Y
+lda HEIGHT_TEMP_COLOUR
+sta SPRITE_BLOCK_ADDRESS + 2,Y
 iny
 iny
 iny
 iny
 rts
-PRINTCIRCLEOFHEARTS:
-lda HEARTSTABLE + 6,X
-sta HTEMPSIZE
-lda HEARTSTABLE + 7,X
+printcircleofhearts:
+lda HEART_TABLE + 6,X
+sta HEIGHT_TEMP_SIZE
+lda HEART_TABLE + 7,X
 and #127
-sta HTEMPANGLE
-jsr GETVALUE
-sty XMINUS
+sta HEIGHT_TEMP_ANGLE
+jsr getvalue
+sty X_MINUS
 asl
-sta HTEMPX
-lda HTEMPANGLE
+sta HEIGHT_TEMP_X
+lda HEIGHT_TEMP_ANGLE
 clc
 adc #32
 and #127
-sta HTEMPANGLE
-jsr GETVALUE
-sty YMINUS
+sta HEIGHT_TEMP_ANGLE
+jsr getvalue
+sty Y_MINUS
 asl
-sta HTEMPY
-ldy SPRITEBLOCKPOINTER
-bne @_29
+sta HEIGHT_TEMP_Y
+ldy SPRITE_BLOCK_POINTER
+bne @printcircleofhearts_skip_if_not_equal
 rts
-@_29:
-lda HEARTXL
+@printcircleofhearts_skip_if_not_equal:
+lda HEART_X_LOW
 clc
-adc HTEMPX
-sta SPRITEBLOCK + 3,Y
-lda HEARTXH
-adc XMINUS
-bne @_1
-lda HEARTY
+adc HEIGHT_TEMP_X
+sta SPRITE_BLOCK_ADDRESS + 3,Y
+lda HEART_X_HIGH
+adc X_MINUS
+bne @printcircleofhearts_skip_if_not_equal_2
+lda HEART_Y
 clc
-adc HTEMPY
-sta HTEMPPRTY
+adc HEIGHT_TEMP_Y
+sta HEIGHT_TEMP_PRINT_Y
 lda #0
-adc YMINUS
-bne @_1
-jsr PUTSPINHEART
-beq NOMOREHEARTS
-@_1:
-lda HEARTXL
+adc Y_MINUS
+bne @printcircleofhearts_skip_if_not_equal_2
+jsr putspinheart
+beq nomorehearts
+@printcircleofhearts_skip_if_not_equal_2:
+lda HEART_X_LOW
 clc
-adc HTEMPY
-sta SPRITEBLOCK + 3,Y
-lda HEARTXH
-adc YMINUS
-bne @_2
-lda HEARTY
+adc HEIGHT_TEMP_Y
+sta SPRITE_BLOCK_ADDRESS + 3,Y
+lda HEART_X_HIGH
+adc Y_MINUS
+bne @printcircleofhearts_skip_if_not_equal_3
+lda HEART_Y
 sec
-sbc HTEMPX
-sta HTEMPPRTY
+sbc HEIGHT_TEMP_X
+sta HEIGHT_TEMP_PRINT_Y
 lda #0
-sbc XMINUS
-bne @_2
-jsr PUTSPINHEART
-beq NOMOREHEARTS
-@_2:
-lda HEARTXL
+sbc X_MINUS
+bne @printcircleofhearts_skip_if_not_equal_3
+jsr putspinheart
+beq nomorehearts
+@printcircleofhearts_skip_if_not_equal_3:
+lda HEART_X_LOW
 sec
-sbc HTEMPY
-sta SPRITEBLOCK + 3,Y
-lda HEARTXH
-sbc YMINUS
-bne @_3
-lda HEARTY
+sbc HEIGHT_TEMP_Y
+sta SPRITE_BLOCK_ADDRESS + 3,Y
+lda HEART_X_HIGH
+sbc Y_MINUS
+bne @printcircleofhearts_skip_if_not_equal_4
+lda HEART_Y
 clc
-adc HTEMPX
-sta HTEMPPRTY
+adc HEIGHT_TEMP_X
+sta HEIGHT_TEMP_PRINT_Y
 lda #0
-adc XMINUS
-bne @_3
-jsr PUTSPINHEART
-beq NOMOREHEARTS
-@_3:
-lda HEARTXL
+adc X_MINUS
+bne @printcircleofhearts_skip_if_not_equal_4
+jsr putspinheart
+beq nomorehearts
+@printcircleofhearts_skip_if_not_equal_4:
+lda HEART_X_LOW
 sec
-sbc HTEMPX
-sta SPRITEBLOCK + 3,Y
-lda HEARTXH
-sbc XMINUS
-bne @_4
-lda HEARTY
+sbc HEIGHT_TEMP_X
+sta SPRITE_BLOCK_ADDRESS + 3,Y
+lda HEART_X_HIGH
+sbc X_MINUS
+bne @printcircleofhearts_skip_if_not_equal_5
+lda HEART_Y
 sec
-sbc HTEMPY
-sta HTEMPPRTY
+sbc HEIGHT_TEMP_Y
+sta HEIGHT_TEMP_PRINT_Y
 lda #0
-sbc YMINUS
-bne @_4
-jsr PUTSPINHEART
-@_4:
-NOMOREHEARTS:
-sty SPRITEBLOCKPOINTER
+sbc Y_MINUS
+bne @printcircleofhearts_skip_if_not_equal_5
+jsr putspinheart
+@printcircleofhearts_skip_if_not_equal_5:
+nomorehearts:
+sty SPRITE_BLOCK_POINTER
 rts
-SINCOSTABLE:
+sincostable:
 .byte $00
 .byte $03
 .byte $06
@@ -349,19 +349,19 @@ SINCOSTABLE:
 .byte $06
 .byte $03
 .byte $00
-EXPLODEROUBITSL:
-.byte <(EXPLODEHEARTSL)
-.byte <(EXPLODEHEARTS)
-.byte <(SPINANDINC)
-.byte <(SPININSTARS)
-.byte <(JUSTINC)
-.byte <(SMALLEXPFORGUARD)
-.byte <(LARGEEXPFORGUARD)
-EXPLODEROUBITSH:
-.byte >(EXPLODEHEARTSL)
-.byte >(EXPLODEHEARTS)
-.byte >(SPINANDINC)
-.byte >(SPININSTARS)
-.byte >(JUSTINC)
-.byte >(SMALLEXPFORGUARD)
-.byte >(LARGEEXPFORGUARD)
+exploderoubitsl:
+.byte <(explodeheartsl)
+.byte <(explodehearts)
+.byte <(spinandinc)
+.byte <(spininstars)
+.byte <(just_increment)
+.byte <(smallexpforguard)
+.byte <(largeexpforguard)
+exploderoubitsh:
+.byte >(explodeheartsl)
+.byte >(explodehearts)
+.byte >(spinandinc)
+.byte >(spininstars)
+.byte >(just_increment)
+.byte >(smallexpforguard)
+.byte >(largeexpforguard)

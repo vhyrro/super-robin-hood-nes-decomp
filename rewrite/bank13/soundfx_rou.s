@@ -1,125 +1,125 @@
-PICKUPHEARTFX = 1
-PICKUPTREASUREFX = 1
-PICKUPKEYFX = 17
-KILLYOUTOTALLYFX = 30
-KILLYOUFX = 28
-KILLTHEMTOTALLYFX = 29
-KILLTHEMFX = 27
-DOORLIFTINGFX = 4
-ARROWHITWALLFX = 32
-SPITFX = 33
-BATHITFX = 26
-TRAMPFX = 21
-THEMFIRINGFX = 11
-BREATHINGFIREFX = 8
-BALLBOUNCEFX = 16
-BATSQUELFX = 15
-RATSQUELFX = 34
-FIRSTAPPEARFX = 2
-EXTRALIFEFX = 36
-CHOOSELETTERFX = 35
-DELETELETTERFX = 6
-LEFTRIGHTLETTERFX = 5
-YOUFIRINGFX = 11
-FX_TEMP = ZLIM
-ZLIM .set ZLIM + 1
-FX_AD1L = ZLIM
-ZLIM .set ZLIM + 1
-FX_AD1H = ZLIM
-ZLIM .set ZLIM + 1
-FX_AD1 = FX_AD1L
-FFX_AD1L = ZLIM
-ZLIM .set ZLIM + 1
-FFX_AD1H = ZLIM
-ZLIM .set ZLIM + 1
-FFX_AD1 = FFX_AD1L
-FX_AD2L = ZLIM
-ZLIM .set ZLIM + 1
-FX_AD2H = ZLIM
-ZLIM .set ZLIM + 1
-FX_AD2 = FX_AD2L
-FFX_AD2L = ZLIM
-ZLIM .set ZLIM + 1
-FFX_AD2H = ZLIM
-ZLIM .set ZLIM + 1
-FFX_AD2 = FFX_AD2L
-FX_COUNTERZ = VARLIM
-VARLIM .set VARLIM + 1
-FX_TEMPZ = VARLIM
-VARLIM .set VARLIM + 2
-FX_VOL1 = VARLIM
-VARLIM .set VARLIM + 4
-FX_VOL2 = VARLIM
-VARLIM .set VARLIM + 4
-FX_VOLUME = VARLIM
-VARLIM .set VARLIM + 4
-FX_ATCK = VARLIM
-VARLIM .set VARLIM + 4
-FX_DEL = VARLIM
-VARLIM .set VARLIM + 4
-FX_TIME = VARLIM
-VARLIM .set VARLIM + 4
-FX_PLS = VARLIM
-VARLIM .set VARLIM + 4
-FX_ON = VARLIM
-VARLIM .set VARLIM + 4
-FX_DATA1 = VARLIM
-VARLIM .set VARLIM + 4
-FX_POSITION = VARLIM
-VARLIM .set VARLIM + 4
-FX_POINTL = VARLIM
-VARLIM .set VARLIM + 4
-FX_POINTH = VARLIM
-VARLIM .set VARLIM + 4
-FX_CYCLES = VARLIM
-VARLIM .set VARLIM + 4
-FX_PRIORITY = VARLIM
-VARLIM .set VARLIM + 4
-FX_VOICES = VARLIM
-VARLIM .set VARLIM + 16
-FX_REAL_SAVE = VARLIM
-VARLIM .set VARLIM + 1
-FX_TO_DO .set 23
-FX_TABLE:
-.word @TAP
-.word @PING
-.word @WHOOSH
-.word @CLICK2
-.word @CLICK
-.word @BLIP
-.word @DELETE
-.word @THUD
-.word @BREATH
-.word @SIREN
-.word @SIRENB
-.word @BANG1
-.word @BANG2
-.word @THUD2
-.word @BANG3
-.word @BAT_SQUEAK
-.word @BOUNCE
-.word @PINGA
-.word @PINGB
-.word @HAHA
-.word @HOHO
-.word @BOING
-.word @METAL2
-.word @DROP_EM
-.word @SPLASH
-.word @EXPLODE1
-.word @EXPLODE3
-.word @EXPLODE2
-.word @EXPLODE4
-.word @MAJOR
-.word @VERY_MAJOR
-.word @BIGGIE
-.word @ARROW
-.word @SPIT
-.word @RAT_SQUEAK
-.word @CHOOSE_LETTER
-.word @EXTRA_LIFE
-.word @METAL_BALL
-@TAP:
+SFX_PICKUP_HEART = 1
+SFX_PICKUP_TREASURE = 1
+SFX_PICKUP_KEY = 17
+SFX_KILL_YOU_TOTALLY = 30
+SFX_KILL_YOU = 28
+SFX_KILL_THEM_TOTALLY = 29
+SFX_KILL_THEM = 27
+SFX_DOOR_LIFTING = 4
+SFX_ARROW_HIT_WALL = 32
+SFX_SPIT = 33
+SFX_BAT_HIT = 26
+SFX_TRAMPOLINE = 21
+SFX_THEM_FIRING = 11
+SFX_BREATHING_FIRE = 8
+SFX_BALL_BOUNCE = 16
+SFX_BAT_SQUEAL = 15
+SFX_RAT_SQUEAL = 34
+SFX_FIRST_APPEAR = 2
+SFX_EXTRA_LIFE = 36
+SFX_CHOOSE_LETTER = 35
+SFX_DELETE_LETTER = 6
+SFX_LEFT_RIGHT_LETTER = 5
+SFX_YOU_FIRING = 11
+SFX_TEMP = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_ADDRESS_1_LOW = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_ADDRESS_1_HIGH = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_ADDRESS_1 = SFX_ADDRESS_1_LOW
+SFX_FREQUENCY_ADDRESS_1_LOW = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_FREQUENCY_ADDRESS_1_HIGH = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_FREQUENCY_ADDRESS_1 = SFX_FREQUENCY_ADDRESS_1_LOW
+SFX_ADDRESS_2_LOW = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_ADDRESS_2_HIGH = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_ADDRESS_2 = SFX_ADDRESS_2_LOW
+SFX_FREQUENCY_ADDRESS_2_LOW = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_FREQUENCY_ADDRESS_2_HIGH = ZERO_PAGE_ALLOCATION
+ZERO_PAGE_ALLOCATION .set ZERO_PAGE_ALLOCATION + 1
+SFX_FREQUENCY_ADDRESS_2 = SFX_FREQUENCY_ADDRESS_2_LOW
+SFX_COUNTER = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 1
+SFX_TEMP_RAM = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 2
+SFX_VOLUME_1 = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_VOLUME_2 = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_VOLUME = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_ATTACK = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_DELAY = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_TIME = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_PULSE = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_ON = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_DATA_1 = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_POSITION = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_POINTER_LOW = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_POINTER_HIGH = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_CYCLES = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_PRIORITY = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 4
+SFX_VOICES = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 16
+SFX_REAL_SAVE = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 1
+SFX_TO_DO .set 23
+fx_table:
+.word @tap
+.word @ping
+.word @whoosh
+.word @click2
+.word @click
+.word @blip
+.word @delete
+.word @thud
+.word @breath
+.word @siren
+.word @sirenb
+.word @bang1
+.word @bang2
+.word @thud2
+.word @bang3
+.word @bat_squeak
+.word @bounce
+.word @pinga
+.word @pingb
+.word @haha
+.word @hoho
+.word @boing
+.word @metal2
+.word @drop_em
+.word @splash
+.word @explode1
+.word @explode3
+.word @explode2
+.word @explode4
+.word @major
+.word @very_major
+.word @biggie
+.word @arrow
+.word @spit
+.word @rat_squeak
+.word @choose_letter
+.word @extra_life
+.word @metal_ball
+@tap:
 .byte $0A
 .byte $03
 .byte $01
@@ -130,7 +130,7 @@ FX_TABLE:
 .byte $03
 .byte $02
 .byte $00
-@PING:
+@ping:
 .byte $0A
 .byte $02
 .byte $0A
@@ -159,7 +159,7 @@ FX_TABLE:
 .byte $00
 .byte $05
 .byte $00
-@PING2:
+@ping2:
 .byte $0A
 .byte $01
 .byte $0D
@@ -170,7 +170,7 @@ FX_TABLE:
 .byte $00
 .byte $14
 .byte $00
-@WHOOSH:
+@whoosh:
 .byte $28
 .byte $03
 .byte $4F
@@ -181,7 +181,7 @@ FX_TABLE:
 .byte $01
 .byte $28
 .byte $00
-@CLICK:
+@click:
 .byte $0A
 .byte $02
 .byte $00
@@ -195,7 +195,7 @@ FX_TABLE:
 .byte $48
 .byte $02
 .byte $00
-@CLICK2:
+@click2:
 .byte $0A
 .byte $03
 .byte $0F
@@ -206,7 +206,7 @@ FX_TABLE:
 .byte $00
 .byte $04
 .byte $00
-@BLIP:
+@blip:
 .byte $0A
 .byte $02
 .byte $01
@@ -217,7 +217,7 @@ FX_TABLE:
 .byte $00
 .byte $01
 .byte $00
-@DELETE:
+@delete:
 .byte $0A
 .byte $01
 .byte $0D
@@ -228,7 +228,7 @@ FX_TABLE:
 .byte $87
 .byte $03
 .byte $00
-@THUD:
+@thud:
 .byte $0A
 .byte $02
 .byte $00
@@ -239,7 +239,7 @@ FX_TABLE:
 .byte $50
 .byte $01
 .byte $00
-@ARROW:
+@arrow:
 .byte $0A
 .byte $03
 .byte $00
@@ -250,7 +250,7 @@ FX_TABLE:
 .byte $3A
 .byte $01
 .byte $00
-@SPIT:
+@spit:
 .byte $0A
 .byte $03
 .byte $01
@@ -261,7 +261,7 @@ FX_TABLE:
 .byte $64
 .byte $05
 .byte $00
-@BREATH:
+@breath:
 .byte $0A
 .byte $03
 .byte $6F
@@ -272,7 +272,7 @@ FX_TABLE:
 .byte $00
 .byte $1E
 .byte $00
-@SIREN:
+@siren:
 .byte $0A
 .byte $00
 .byte $0F
@@ -286,7 +286,7 @@ FX_TABLE:
 .byte $06
 .byte $1E
 .byte $00
-@SIRENB:
+@sirenb:
 .byte $0A
 .byte $01
 .byte $0F
@@ -300,7 +300,7 @@ FX_TABLE:
 .byte $18
 .byte $01
 .byte $00
-@BANG1:
+@bang1:
 .byte $0A
 .byte $03
 .byte $0B
@@ -311,7 +311,7 @@ FX_TABLE:
 .byte $04
 .byte $03
 .byte $00
-@BANG2:
+@bang2:
 .byte $0A
 .byte $03
 .byte $04
@@ -322,7 +322,7 @@ FX_TABLE:
 .byte $14
 .byte $04
 .byte $00
-@THUD2:
+@thud2:
 .byte $0A
 .byte $00
 .byte $0F
@@ -333,7 +333,7 @@ FX_TABLE:
 .byte $3C
 .byte $0A
 .byte $00
-@BANG3:
+@bang3:
 .byte $0A
 .byte $03
 .byte $0C
@@ -347,7 +347,7 @@ FX_TABLE:
 .byte $00
 .byte $14
 .byte $00
-@BAT_SQUEAK:
+@bat_squeak:
 .byte $0A
 .byte $01
 .byte $0F
@@ -370,7 +370,7 @@ FX_TABLE:
 .byte $08
 .byte $03
 .byte $00
-@RAT_SQUEAK:
+@rat_squeak:
 .byte $0A
 .byte $01
 .byte $0F
@@ -381,7 +381,7 @@ FX_TABLE:
 .byte $08
 .byte $02
 .byte $00
-@CHOOSE_LETTER:
+@choose_letter:
 .byte $0A
 .byte $02
 .byte $01
@@ -392,7 +392,7 @@ FX_TABLE:
 .byte $28
 .byte $03
 .byte $00
-@EXTRA_LIFE:
+@extra_life:
 .byte $0C
 .byte $02
 .byte $01
@@ -439,7 +439,7 @@ FX_TABLE:
 .byte $00
 .byte $06
 .byte $00
-@BOUNCE:
+@bounce:
 .byte $0A
 .byte $02
 .byte $0F
@@ -453,7 +453,7 @@ FX_TABLE:
 .byte $20
 .byte $03
 .byte $00
-@METAL_BALL:
+@metal_ball:
 .byte $0A
 .byte $03
 .byte $0A
@@ -464,7 +464,7 @@ FX_TABLE:
 .byte $4B
 .byte $04
 .byte $00
-@PINGB:
+@pingb:
 .byte $0A
 .byte $00
 .byte $0C
@@ -475,7 +475,7 @@ FX_TABLE:
 .byte $00
 .byte $14
 .byte $00
-@PINGA:
+@pinga:
 .byte $0A
 .byte $02
 .byte $0C
@@ -516,7 +516,7 @@ FX_TABLE:
 .byte $00
 .byte $06
 .byte $00
-@HAHA:
+@haha:
 .byte $0A
 .byte $03
 .byte $04
@@ -527,7 +527,7 @@ FX_TABLE:
 .byte $01
 .byte $01
 .byte $00
-@HOHO:
+@hoho:
 .byte $0A
 .byte $02
 .byte $04
@@ -538,7 +538,7 @@ FX_TABLE:
 .byte $0C
 .byte $03
 .byte $00
-@BOING:
+@boing:
 .byte $0C
 .byte $01
 .byte $0F
@@ -549,7 +549,7 @@ FX_TABLE:
 .byte $04
 .byte $18
 .byte $00
-@METAL2:
+@metal2:
 .byte $0A
 .byte $02
 .byte $01
@@ -560,7 +560,7 @@ FX_TABLE:
 .byte $24
 .byte $02
 .byte $00
-@DROP_EM:
+@drop_em:
 .byte $0A
 .byte $01
 .byte $0F
@@ -571,7 +571,7 @@ FX_TABLE:
 .byte $10
 .byte $2D
 .byte $00
-@SPLASH:
+@splash:
 .byte $0A
 .byte $03
 .byte $0B
@@ -582,7 +582,7 @@ FX_TABLE:
 .byte $01
 .byte $28
 .byte $00
-@EXPLODE1:
+@explode1:
 .byte $0A
 .byte $03
 .byte $0D
@@ -593,7 +593,7 @@ FX_TABLE:
 .byte $00
 .byte $28
 .byte $00
-@EXPLODE2:
+@explode2:
 .byte $0A
 .byte $03
 .byte $0D
@@ -604,7 +604,7 @@ FX_TABLE:
 .byte $81
 .byte $0A
 .byte $00
-@EXPLODE3:
+@explode3:
 .byte $0A
 .byte $00
 .byte $0F
@@ -618,7 +618,7 @@ FX_TABLE:
 .byte $0E
 .byte $03
 .byte $00
-@EXPLODE4:
+@explode4:
 .byte $0A
 .byte $03
 .byte $0D
@@ -629,7 +629,7 @@ FX_TABLE:
 .byte $28
 .byte $28
 .byte $00
-@MAJOR:
+@major:
 .byte $0A
 .byte $03
 .byte $0E
@@ -643,7 +643,7 @@ FX_TABLE:
 .byte $5B
 .byte $1E
 .byte $00
-@VERY_MAJOR:
+@very_major:
 .byte $0A
 .byte $03
 .byte $0F
@@ -660,7 +660,7 @@ FX_TABLE:
 .byte $01
 .byte $20
 .byte $00
-@BIGGIE:
+@biggie:
 .byte $0A
 .byte $01
 .byte $0F
@@ -671,202 +671,202 @@ FX_TABLE:
 .byte $04
 .byte $28
 .byte $00
-FX_ENVELOPES:
-lda FX_ATCK,X
-beq FX_TRYD
-jsr FX_REALSPEED
-beq @SKP
-lda FX_VOLUME,X
+fx_envelopes:
+lda SFX_ATTACK,X
+beq fx_decay
+jsr fx_realspeed
+beq @skp
+lda SFX_VOLUME,X
 clc
-adc FX_TEMP + 1
-cmp FX_VOL2,X
-bcc @OK
+adc SFX_TEMP + 1
+cmp SFX_VOLUME_2,X
+bcc @ok
 lda #0
-sta FX_ATCK,X
-lda FX_VOL2,X
-@OK:
-sta FX_VOLUME,X
-@SKP:
+sta SFX_ATTACK,X
+lda SFX_VOLUME_2,X
+@ok:
+sta SFX_VOLUME,X
+@skp:
 rts
-FX_TRYD:
-lda FX_DEL,X
-beq @SKP2
-jsr FX_REALSPEED
-beq @SKP
-lda FX_VOLUME,X
+fx_decay:
+lda SFX_DELAY,X
+beq @skp2
+jsr fx_realspeed
+beq @skp
+lda SFX_VOLUME,X
 sec
-sbc FX_TEMP + 1
-bcc @BOT
-cmp FX_VOL1,X
-bcs @OK
-@BOT:
+sbc SFX_TEMP + 1
+bcc @bot
+cmp SFX_VOLUME_1,X
+bcs @ok
+@bot:
 lda #0
-sta FX_DEL,X
-lda FX_VOL1,X
-@OK:
-sta FX_VOLUME,X
-@SKP:
+sta SFX_DELAY,X
+lda SFX_VOLUME_1,X
+@ok:
+sta SFX_VOLUME,X
+@skp:
 rts
-@SKP2:
-lda FX_VOL1,X
-sta FX_VOLUME,X
+@skp2:
+lda SFX_VOLUME_1,X
+sta SFX_VOLUME,X
 rts
-FX_SETUP:
-stx FFX_AD1L
+fx_setup:
+stx SFX_FREQUENCY_ADDRESS_1_LOW
 asl
 tax
-lda FX_TABLE,X
-sta FFX_AD1L
-lda FX_TABLE + 1,X
-sta FFX_AD1H
+lda fx_table,X
+sta SFX_FREQUENCY_ADDRESS_1_LOW
+lda fx_table + 1,X
+sta SFX_FREQUENCY_ADDRESS_1_HIGH
 ldy #1
-lda (FFX_AD1),Y
+lda (SFX_FREQUENCY_ADDRESS_1),Y
 tax
 ldy #0
-lda (FFX_AD1),Y
-cmp FX_PRIORITY,X
-bcs @HIGH
+lda (SFX_FREQUENCY_ADDRESS_1),Y
+cmp SFX_PRIORITY,X
+bcs @high
 rts
-@HIGH:
-sta FX_PRIORITY,X
-lda FFX_AD1L
-sta FX_POINTL,X
-lda FFX_AD1H
-sta FX_POINTH,X
-stx FFX_AD2L
+@high:
+sta SFX_PRIORITY,X
+lda SFX_FREQUENCY_ADDRESS_1_LOW
+sta SFX_POINTER_LOW,X
+lda SFX_FREQUENCY_ADDRESS_1_HIGH
+sta SFX_POINTER_HIGH,X
+stx SFX_FREQUENCY_ADDRESS_2_LOW
 txa
 asl
 asl
 tax
-stx FFX_AD2H
-ldx FFX_AD2L
+stx SFX_FREQUENCY_ADDRESS_2_HIGH
+ldx SFX_FREQUENCY_ADDRESS_2_LOW
 lda #255
-sta FX_TIME,X
-sta VOICE1,X
+sta SFX_TIME,X
+sta MUSIC_VOICE_1,X
 lda #6
-sta FX_POSITION,X
+sta SFX_POSITION,X
 ldy #3
-lda (FFX_AD1),Y
-sta FX_PLS,X
+lda (SFX_FREQUENCY_ADDRESS_1),Y
+sta SFX_PULSE,X
 ldy #2
-lda (FFX_AD1),Y
+lda (SFX_FREQUENCY_ADDRESS_1),Y
 pha
 and #240
 lsr
 lsr
 lsr
 lsr
-beq @EEQ
+beq @eeq
 sec
 sbc #1
 eor #15
-@EEQ:
-sta FX_ATCK,X
+@eeq:
+sta SFX_ATTACK,X
 pla
 and #15
-beq @EEQ2
+beq @eeq2
 sec
 sbc #1
 eor #15
-@EEQ2:
-sta FX_DEL,X
+@eeq2:
+sta SFX_DELAY,X
 ldy #4
-lda (FFX_AD1),Y
+lda (SFX_FREQUENCY_ADDRESS_1),Y
 pha
 and #240
 lsr
 lsr
 lsr
 lsr
-sta FX_VOL1,X
+sta SFX_VOLUME_1,X
 pla
 and #15
-sta FX_VOL2,X
+sta SFX_VOLUME_2,X
 lda #0
-sta FX_VOLUME,X
+sta SFX_VOLUME,X
 lda #1
-sta FX_CYCLES,X
-lda FX_ATCK,X
-bne @ATK_ON
-lda FX_VOL2,X
-sta FX_VOLUME,X
-@ATK_ON:
-ldx FFX_AD2H
+sta SFX_CYCLES,X
+lda SFX_ATTACK,X
+bne @atk_on
+lda SFX_VOLUME_2,X
+sta SFX_VOLUME,X
+@atk_on:
+ldx SFX_FREQUENCY_ADDRESS_2_HIGH
 lda #48
-sta FX_VOICES + 0,X
+sta SFX_VOICES + 0,X
 ldy #5
-lda (FFX_AD1),Y
+lda (SFX_FREQUENCY_ADDRESS_1),Y
 tay
-lda TABLO,Y
-sta FX_VOICES + 2,X
-lda TABHI,Y
-sta FX_VOICES + 3,X
-@TOO_LOW:
+lda frequency_table_lo,Y
+sta SFX_VOICES + 2,X
+lda frequency_table_hi,Y
+sta SFX_VOICES + 3,X
+@too_low:
 rts
-FX_PLAY:
-inc FX_COUNTERZ
+fx_play:
+inc SFX_COUNTER
 lda #3
-sta FX_TEMP
-@AGAIN:
-ldx FX_TEMP
-lda FX_PRIORITY,X
-beq @NO_FX2
+sta SFX_TEMP
+@again:
+ldx SFX_TEMP
+lda SFX_PRIORITY,X
+beq @no_fx2
 txa
 asl
 asl
 tay
-lda FX_VOICES,Y
-ora FX_VOLUME,X
-ora FX_PLS,X
+lda SFX_VOICES,Y
+ora SFX_VOLUME,X
+ora SFX_PULSE,X
 sta 16384,Y
-lda FX_TIME,X
+lda SFX_TIME,X
 cmp #255
-bne @NSETUP
-dec FX_TIME,X
-lda FX_VOICES + 2,Y
+bne @nsetup
+dec SFX_TIME,X
+lda SFX_VOICES + 2,Y
 sta 16384 + 2,Y
-lda FX_VOICES + 3,Y
+lda SFX_VOICES + 3,Y
 sta 16384 + 3,Y
-@NSETUP:
-@NO_FX:
-jsr FX_ENVELOPES
-dec FX_CYCLES,X
-bne @NO_FX1
-jsr FX_NEXT
-@NO_FX1:
-jsr FX_DO
-@NO_FX2:
-dec FX_TEMP
-bpl @AGAIN
+@nsetup:
+@no_fx:
+jsr fx_envelopes
+dec SFX_CYCLES,X
+bne @no_fx1
+jsr fx_next
+@no_fx1:
+jsr fx_do
+@no_fx2:
+dec SFX_TEMP
+bpl @again
 rts
-FX_NEXT:
-lda FX_POINTL,X
-sta FX_AD1L
-lda FX_POINTH,X
-sta FX_AD1H
-ldy FX_POSITION,X
-lda (FX_AD1),Y
-beq @QUIT
-sta FX_ON,X
+fx_next:
+lda SFX_POINTER_LOW,X
+sta SFX_ADDRESS_1_LOW
+lda SFX_POINTER_HIGH,X
+sta SFX_ADDRESS_1_HIGH
+ldy SFX_POSITION,X
+lda (SFX_ADDRESS_1),Y
+beq @quit
+sta SFX_ON,X
 iny
-lda (FX_AD1),Y
-sta FX_DATA1,X
+lda (SFX_ADDRESS_1),Y
+sta SFX_DATA_1,X
 iny
-lda (FX_AD1),Y
-sta FX_CYCLES,X
-inc FX_POSITION,X
-inc FX_POSITION,X
-inc FX_POSITION,X
+lda (SFX_ADDRESS_1),Y
+sta SFX_CYCLES,X
+inc SFX_POSITION,X
+inc SFX_POSITION,X
+inc SFX_POSITION,X
 rts
-@QUIT:
+@quit:
 lda #0
-sta FX_ON,X
-sta FX_PRIORITY,X
-sta VOICE1,X
-ldy NOTE1,X
-lda TABHI,Y
+sta SFX_ON,X
+sta SFX_PRIORITY,X
+sta MUSIC_VOICE_1,X
+ldy MUSIC_NOTE_1,X
+lda frequency_table_hi,Y
 pha
-lda TABLO,Y
+lda frequency_table_lo,Y
 pha
 txa
 asl
@@ -877,158 +877,158 @@ sta 16386,Y
 pla
 sta 16387,Y
 cpx #2
-beq @TRIANGLE
+beq @triangle
 lda #48
 sta 16384,Y
 rts
-@TRIANGLE:
+@triangle:
 lda #0
 sta 16384,Y
 rts
-FX_DO:
-lda FX_ON,X
+fx_do:
+lda SFX_ON,X
 cmp #1
-bne @NFX1
+bne @nfx1
 txa
 asl
 asl
 tay
-lda FX_VOICES + 2,Y
+lda SFX_VOICES + 2,Y
 sec
-sbc FX_DATA1,X
-sta FX_VOICES + 2,Y
-bcs @STORE_LOW
-lda FX_VOICES + 3,Y
+sbc SFX_DATA_1,X
+sta SFX_VOICES + 2,Y
+bcs @store_low
+lda SFX_VOICES + 3,Y
 sbc #0
-sta FX_VOICES + 3,Y
-@STORE_HIGH:
-lda FX_VOICES + 3,Y
+sta SFX_VOICES + 3,Y
+@store_high:
+lda SFX_VOICES + 3,Y
 sta 16384 + 3,Y
-@STORE_LOW:
-lda FX_VOICES + 2,Y
+@store_low:
+lda SFX_VOICES + 2,Y
 sta 16384 + 2,Y
 rts
-@NFX1:
+@nfx1:
 cmp #2
-bne @NFX2
+bne @nfx2
 txa
 asl
 asl
 tay
-lda FX_VOICES + 2,Y
+lda SFX_VOICES + 2,Y
 clc
-adc FX_DATA1,X
-sta FX_VOICES + 2,Y
-bcc @STORE_LOW
-lda FX_VOICES + 3,Y
+adc SFX_DATA_1,X
+sta SFX_VOICES + 2,Y
+bcc @store_low
+lda SFX_VOICES + 3,Y
 adc #0
-sta FX_VOICES + 3,Y
-jmp @STORE_HIGH
-@NFX2:
+sta SFX_VOICES + 3,Y
+jmp @store_high
+@nfx2:
 cmp #3
-bne @NFX3
-ldy FX_DATA1,X
-lda TABHI,Y
+bne @nfx3
+ldy SFX_DATA_1,X
+lda frequency_table_hi,Y
 pha
-lda TABLO,Y
+lda frequency_table_lo,Y
 pha
 txa
 asl
 asl
 tay
 pla
-sta FX_VOICES + 2,Y
+sta SFX_VOICES + 2,Y
 pla
-sta FX_VOICES + 3,Y
-jmp @STORE_HIGH
-@NFX3:
-@NFX4:
+sta SFX_VOICES + 3,Y
+jmp @store_high
+@nfx3:
+@nfx4:
 cmp #5
-bne @NFX5
+bne @nfx5
 txa
 asl
 asl
 tay
-lda FX_DATA1,X
-jsr FX_REALSPEED
-lda FX_VOICES + 2,Y
+lda SFX_DATA_1,X
+jsr fx_realspeed
+lda SFX_VOICES + 2,Y
 sec
-sbc FX_TEMP + 1
-sta FX_VOICES + 2,Y
-bcs @STORE_LOW
-lda FX_VOICES + 3,Y
+sbc SFX_TEMP + 1
+sta SFX_VOICES + 2,Y
+bcs @store_low
+lda SFX_VOICES + 3,Y
 sbc #0
-sta FX_VOICES + 3,Y
-jmp @STORE_HIGH
-@NFX5:
+sta SFX_VOICES + 3,Y
+jmp @store_high
+@nfx5:
 cmp #6
-bne @NFX6
+bne @nfx6
 txa
 asl
 asl
 tay
-lda FX_DATA1,X
-jsr FX_REALSPEED
-lda FX_VOICES + 2,Y
+lda SFX_DATA_1,X
+jsr fx_realspeed
+lda SFX_VOICES + 2,Y
 clc
-adc FX_TEMP + 1
-sta FX_VOICES + 2,Y
-bcc @JSTORE_LOW
-lda FX_VOICES + 3,Y
+adc SFX_TEMP + 1
+sta SFX_VOICES + 2,Y
+bcc @jstore_low
+lda SFX_VOICES + 3,Y
 adc #0
-sta FX_VOICES + 3,Y
-jmp @STORE_HIGH
-@JSTORE_LOW:
-jmp @STORE_LOW
-@NFX6:
+sta SFX_VOICES + 3,Y
+jmp @store_high
+@jstore_low:
+jmp @store_low
+@nfx6:
 cmp #7
-bne @NFX7
-lda FX_DATA1,X
-jsr FX_SETUP
-@NFX7:
+bne @nfx7
+lda SFX_DATA_1,X
+jsr fx_setup
+@nfx7:
 rts
-FX_REALSPEED:
-bmi @REAL2
-sty FX_REAL_SAVE
-sta FX_TEMP + 1
-lsr FX_TEMP + 1
-lsr FX_TEMP + 1
+fx_realspeed:
+bmi @real2
+sty SFX_REAL_SAVE
+sta SFX_TEMP + 1
+lsr SFX_TEMP + 1
+lsr SFX_TEMP + 1
 and #3
 tay
-lda FX_COUNTERZ
+lda SFX_COUNTER
 and #3
-cmp @RE,Y
-bcc @_1
-inc FX_TEMP + 1
-@_1:
-ldy FX_REAL_SAVE
-lda FX_TEMP + 1
+cmp @re,Y
+bcc @fx_realspeed_skip_if_no_carry
+inc SFX_TEMP + 1
+@fx_realspeed_skip_if_no_carry:
+ldy SFX_REAL_SAVE
+lda SFX_TEMP + 1
 rts
-@RE:
+@re:
 .byte $04
 .byte $03
 .byte $02
 .byte $01
-@REAL2:
-sty FX_REAL_SAVE
+@real2:
+sty SFX_REAL_SAVE
 eor #255
 clc
 adc #1
-sta FX_TEMP + 1
-lsr FX_TEMP + 1
-lsr FX_TEMP + 1
+sta SFX_TEMP + 1
+lsr SFX_TEMP + 1
+lsr SFX_TEMP + 1
 and #3
 tay
-lda FX_COUNTERZ
+lda SFX_COUNTER
 and #3
-cmp @RE,Y
-bcc @_2
-inc FX_TEMP + 1
-@_2:
-lda FX_TEMP + 1
+cmp @re,Y
+bcc @fx_realspeed_skip_if_no_carry_2
+inc SFX_TEMP + 1
+@fx_realspeed_skip_if_no_carry_2:
+lda SFX_TEMP + 1
 eor #255
 clc
 adc #1
-ldy FX_REAL_SAVE
-sta FX_TEMP + 1
+ldy SFX_REAL_SAVE
+sta SFX_TEMP + 1
 rts

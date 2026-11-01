@@ -1,201 +1,201 @@
-MEND = 255
-MGOSUB = 254
-MHORVERT = 253
-MLEN = 252
-MLOOP = 251
-MENDLOOP = 250
-MDOWNLINE = 249
-MJUMP = 248
-MDOWNATTR = 247
-MADDR = 128
-MBUFFERHORVERT = 1
-MESSAGEPOINTER = TOPLEVVAR1
-LASTADDRESS = TOPLEVVAR3
-TEMPSTORE = TOPLEVVAR5
-PRTMESSAGEFLY:
-asl FLYFLAG
-@M952__1:
-bit FLYFLAG
-bpl @M952__1
-PRTMESSAGE:
-stx MESSAGEPOINTER
-sty MESSAGEPOINTER + 1
-PRINTWHATATADDRESS:
+MESSAGE_END = 255
+MESSAGE_GOSUB = 254
+MESSAGE_HORIZONTAL_VERTICAL = 253
+MESSAGE_LENGTH = 252
+MESSAGE_LOOP = 251
+MESSAGE_END_LOOP = 250
+MESSAGE_DOWN_LINE = 249
+MESSAGE_JUMP = 248
+MESSAGE_DOWN_ATTRIBUTE = 247
+MESSAGE_ADDRESS = 128
+MESSAGE_BUFFER_HORIZONTAL_VERTICAL = 1
+MESSAGE_POINTER = SCRATCH_BYTE_1
+LAST_ADDRESS = SCRATCH_BYTE_3
+TEMP_STORE = SCRATCH_BYTE_5
+prtmessagefly:
+asl VBLANK_FLAG
+@prtmessagefly_wait_vblank:
+bit VBLANK_FLAG
+bpl @prtmessagefly_wait_vblank
+prtmessage:
+stx MESSAGE_POINTER
+sty MESSAGE_POINTER + 1
+printwhatataddress:
 ldy #0
-PRINTWHATATADDRESS1:
-lda (MESSAGEPOINTER),Y
-NOTENDYET:
+printwhatataddress1:
+lda (MESSAGE_POINTER),Y
+notendyet:
 iny
 cmp #128
-bcs NOTCHR
-sta _VRAMDATA
-bcc PRINTWHATATADDRESS1
-NOTCHR:
+bcs notchr
+sta PPU_DATA_REGISTER
+bcc printwhatataddress1
+notchr:
 cmp #240
-bcc MUSTBEADDRESS
-cmp #MEND
-bne @_1
+bcc mustbeaddress
+cmp #MESSAGE_END
+bne @notchr_skip_if_not_equal
 rts
-@_1:
-cmp #MLEN
-beq SETSTRINGLEN
-cmp #MGOSUB
-beq GOSUB
-cmp #MLOOP
-beq STARTLOOP
-cmp #MENDLOOP
-beq ENDLOOP
-cmp #MDOWNLINE
-beq DOWNLINEROU
-cmp #MDOWNATTR
-beq ATTRDOWNROU
-jmp JUMPNEWMESSAGEJUMP
-PRINTWHATATADDRESS2:
+@notchr_skip_if_not_equal:
+cmp #MESSAGE_LENGTH
+beq setstringlen
+cmp #MESSAGE_GOSUB
+beq gosub
+cmp #MESSAGE_LOOP
+beq startloop
+cmp #MESSAGE_END_LOOP
+beq endloop
+cmp #MESSAGE_DOWN_LINE
+beq downlinerou
+cmp #MESSAGE_DOWN_ATTRIBUTE
+beq attrdownrou
+jmp jumpnewmessagejump
+printwhatataddress2:
 iny
-bne PRINTWHATATADDRESS1
-MUSTBEADDRESS:
+bne printwhatataddress1
+mustbeaddress:
 and #127
-sta LASTADDRESS + 1
-sta _VRAMADDR
-lda (MESSAGEPOINTER),Y
-sta LASTADDRESS
-sta _VRAMADDR
-jmp PRINTWHATATADDRESS2
-SETSTRINGLEN:
-lda (MESSAGEPOINTER),Y
+sta LAST_ADDRESS + 1
+sta PPU_ADDRESS_REGISTER
+lda (MESSAGE_POINTER),Y
+sta LAST_ADDRESS
+sta PPU_ADDRESS_REGISTER
+jmp printwhatataddress2
+setstringlen:
+lda (MESSAGE_POINTER),Y
 iny
 tax
-STRINGLEN1:
-lda (MESSAGEPOINTER),Y
+stringlen1:
+lda (MESSAGE_POINTER),Y
 iny
-sta _VRAMDATA
+sta PPU_DATA_REGISTER
 dex
-bne STRINGLEN1
-beq PRINTWHATATADDRESS1
-STARTLOOP:
-lda (MESSAGEPOINTER),Y
+bne stringlen1
+beq printwhatataddress1
+startloop:
+lda (MESSAGE_POINTER),Y
 iny
-REPEATINGLOOP:
+repeatingloop:
 pha
 tya
 pha
-jmp PRINTWHATATADDRESS1
-ENDLOOP:
-sty TEMPSTORE
+jmp printwhatataddress1
+endloop:
+sty TEMP_STORE
 pla
 tay
 pla
 sec
 sbc #1
-bne REPEATINGLOOP
-ldy TEMPSTORE
-jmp PRINTWHATATADDRESS1
-GOSUB:
-lda MESSAGEPOINTER
+bne repeatingloop
+ldy TEMP_STORE
+jmp printwhatataddress1
+gosub:
+lda MESSAGE_POINTER
 pha
-lda MESSAGEPOINTER + 1
+lda MESSAGE_POINTER + 1
 pha
-lda (MESSAGEPOINTER),Y
+lda (MESSAGE_POINTER),Y
 tax
 iny
-lda (MESSAGEPOINTER),Y
+lda (MESSAGE_POINTER),Y
 iny
-sta MESSAGEPOINTER + 1
-stx MESSAGEPOINTER
+sta MESSAGE_POINTER + 1
+stx MESSAGE_POINTER
 tya
 pha
-jsr PRINTWHATATADDRESS
+jsr printwhatataddress
 pla
 tay
 pla
-sta MESSAGEPOINTER + 1
+sta MESSAGE_POINTER + 1
 pla
-sta MESSAGEPOINTER
-jmp PRINTWHATATADDRESS1
-DOWNLINEROU:
+sta MESSAGE_POINTER
+jmp printwhatataddress1
+downlinerou:
 lda #32
-JOINDOWNLINE:
+joindownline:
 clc
-adc LASTADDRESS
-sta LASTADDRESS
+adc LAST_ADDRESS
+sta LAST_ADDRESS
 tax
-bcc @_1
-inc LASTADDRESS + 1
-@_1:
-lda LASTADDRESS + 1
-sta _VRAMADDR
-stx _VRAMADDR
-jmp PRINTWHATATADDRESS1
-ATTRDOWNROU:
+bcc @joindownline_skip_if_no_carry
+inc LAST_ADDRESS + 1
+@joindownline_skip_if_no_carry:
+lda LAST_ADDRESS + 1
+sta PPU_ADDRESS_REGISTER
+stx PPU_ADDRESS_REGISTER
+jmp printwhatataddress1
+attrdownrou:
 lda #8
-bne JOINDOWNLINE
-JUMPNEWMESSAGEJUMP:
-lda (MESSAGEPOINTER),Y
+bne joindownline
+jumpnewmessagejump:
+lda (MESSAGE_POINTER),Y
 tax
 iny
-lda (MESSAGEPOINTER),Y
-sta MESSAGEPOINTER + 1
-stx MESSAGEPOINTER
-jmp PRINTWHATATADDRESS
-ADDTOPRINTBUFFER:
-stx MESSAGEPOINTER
-sty MESSAGEPOINTER + 1
+lda (MESSAGE_POINTER),Y
+sta MESSAGE_POINTER + 1
+stx MESSAGE_POINTER
+jmp printwhatataddress
+addtoprintbuffer:
+stx MESSAGE_POINTER
+sty MESSAGE_POINTER + 1
 ldy #0
-ldx VRAMPOINTER
-CONTADDTOBUFFER:
-lda (MESSAGEPOINTER),Y
-sta VRAMBUFFER,X
+ldx VRAM_WRITE_POINTER
+contaddtobuffer:
+lda (MESSAGE_POINTER),Y
+sta VRAM_BUFFER_ADDRESS,X
 iny
 inx
-lda (MESSAGEPOINTER),Y
-sta VRAMBUFFER,X
+lda (MESSAGE_POINTER),Y
+sta VRAM_BUFFER_ADDRESS,X
 iny
 inx
-lda (MESSAGEPOINTER),Y
-sta VRAMBUFFER,X
+lda (MESSAGE_POINTER),Y
+sta VRAM_BUFFER_ADDRESS,X
 inx
-sta TEMPSTORE
+sta TEMP_STORE
 iny
-ADDTOPRINTBUFFERLP:
-lda (MESSAGEPOINTER),Y
-sta VRAMBUFFER,X
+addtoprintbufferlp:
+lda (MESSAGE_POINTER),Y
+sta VRAM_BUFFER_ADDRESS,X
 iny
 inx
-dec TEMPSTORE
-bne ADDTOPRINTBUFFERLP
-stx VRAMPOINTER
+dec TEMP_STORE
+bne addtoprintbufferlp
+stx VRAM_WRITE_POINTER
 rts
-EMPTYPRINTBUFFERFLYADD:
-jsr ADDTOPRINTBUFFER
-EMPTYPRINTBUFFERFLY:
-asl FLYFLAG
-@M953__1:
-bit FLYFLAG
-bpl @M953__1
-EMPTYPRINTBUFFER:
-lda VRAMPOINTER
-beq RETMESSAGE
+emptyprintbufferflyadd:
+jsr addtoprintbuffer
+emptyprintbufferfly:
+asl VBLANK_FLAG
+@emptyprintbufferfly_wait_vblank:
+bit VBLANK_FLAG
+bpl @emptyprintbufferfly_wait_vblank
+emptyprintbuffer:
+lda VRAM_WRITE_POINTER
+beq retmessage
 ldy #0
-VERYFASTPRINTOUT:
-lda VRAMBUFFER,Y
+veryfastprintout:
+lda VRAM_BUFFER_ADDRESS,Y
 and #127
-sta _VRAMADDR
+sta PPU_ADDRESS_REGISTER
 iny
-lda VRAMBUFFER,Y
-sta _VRAMADDR
+lda VRAM_BUFFER_ADDRESS,Y
+sta PPU_ADDRESS_REGISTER
 iny
-ldx VRAMBUFFER,Y
+ldx VRAM_BUFFER_ADDRESS,Y
 iny
-STRINGLEN:
-lda VRAMBUFFER,Y
-sta _VRAMDATA
+stringlen:
+lda VRAM_BUFFER_ADDRESS,Y
+sta PPU_DATA_REGISTER
 iny
 dex
-bne STRINGLEN
-cpy VRAMPOINTER
-bne VERYFASTPRINTOUT
-NOMOREMESSAGE:
+bne stringlen
+cpy VRAM_WRITE_POINTER
+bne veryfastprintout
+nomoremessage:
 lda #0
-sta VRAMPOINTER
-RETMESSAGE:
+sta VRAM_WRITE_POINTER
+retmessage:
 rts

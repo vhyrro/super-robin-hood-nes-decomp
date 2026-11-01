@@ -1,152 +1,152 @@
-ANEWGAME:
-jsr CHANGEBANK13ROU
-jsr TITLESCREEN
-jsr CHANGEBANK12ROU
-jsr CLEARFULLSPRITEBLOCK
-asl FLYFLAG
-@M732__1:
-bit FLYFLAG
-bpl @M732__1
+anewgame:
+jsr change_bank13_routine
+jsr titlescreen
+jsr change_bank12_routine
+jsr clearfullspriteblock
+asl VBLANK_FLAG
+@anewgame_wait_vblank:
+bit VBLANK_FLAG
+bpl @anewgame_wait_vblank
 lda #0
-sta COMPLETEDGAME
-STARTLIVES:
+sta GAME_COMPLETED
+startlives:
 ldx #3
-lda PAD
-and #LMASK + AMASK
-cmp #LMASK + AMASK
-bne NORMAL3LIVES
+lda JOYPAD_STATE
+and #BUTTON_LEFT_MASK + BUTTON_A_MASK
+cmp #BUTTON_LEFT_MASK + BUTTON_A_MASK
+bne normal3lives
 ldx #4
-NORMAL3LIVES:
-stx LIVES
+normal3lives:
+stx PLAYER_LIVES
 lda #0
-sta HEARTS
-jsr RESETSCORE
-jsr RESETEXTRAS
+sta PLAYER_HEARTS
+jsr resetscore
+jsr resetextras
 lda #1
-sta INGAME
-lda #ROBINCHRS0_255
-jsr COPYBLOCKOFCOMPACTEDCHRS
-jsr RESETROBINVARS
-jsr RESETROBINVARS1
-lda #STARTLEVEL
-sta MAPNO
-jsr GOINTONEWMAP
-INGAMELOOP:
+sta IN_GAME
+lda #CHARSET_ROBIN
+jsr copyblockofcompactedchrs
+jsr resetrobinvars
+jsr resetrobinvars1
+lda #START_LEVEL
+sta MAP_NUMBER
+jsr gointonewmap
+ingameloop:
 lda #0
-sta FINISHEDLOOP
-sta FILLEDBLOCKBUFFER
-asl FLYFLAG
-@M733__1:
-bit FLYFLAG
-bpl @M733__1
+sta FRAME_FINISHED
+sta FILLED_BLOCK_BUFFER
+asl VBLANK_FLAG
+@ingameloop_wait_vblank:
+bit VBLANK_FLAG
+bpl @ingameloop_wait_vblank
 lda #1
-sta FINISHEDLOOP
-sta FILLEDBLOCKBUFFER
-lda JUSTSTARTEDLIFE
-beq @_11
-jsr ZOOMINSTARS
-@_11:
-lda PAUSE
-beq @_12
-lda PAD
-and #STMASK
-bne @_21
+sta FRAME_FINISHED
+sta FILLED_BLOCK_BUFFER
+lda JUST_STARTED_LIFE
+beq @ingameloop_skip_if_equal
+jsr zoominstars
+@ingameloop_skip_if_equal:
+lda GAME_PAUSED
+beq @ingameloop_skip_if_equal_2
+lda JOYPAD_STATE
+and #BUTTON_START_MASK
+bne @ingameloop_skip_if_not_equal
 lda #256 - 4 * 6
-sta SPRITEBLOCKPOINTER
+sta SPRITE_BLOCK_POINTER
 ldy #80
-lda ROBINY
+lda PLAYER_Y
 cmp #124
-bcs @_20
+bcs @ingameloop_skip_if_carry
 ldy #128
-@_20:
+@ingameloop_skip_if_carry:
 ldx #128 - 25 - 4
-lda #PAUSESPR
-jsr PRINTSPRITE
-@_21:
-jmp ENDOFMAINLOOP
-@_12:
-jsr DOORROU
-jsr PRINTLIVES
-jsr PRINTSCORE
-jsr PRINTHEARTS
-jsr MOVEMAN
-jsr ANIMATELEGS
-jsr SETXSCROLL
-jsr UPDATEARROWS
-jsr CHANGEBANK13ROU
-jsr PRINTROBIN
-jsr FLOATUPNUMBER
-jsr CHANGEBANK12ROU
-jsr UPDATESPITTERS
-lda COUNTER
+lda #SPRITE_PAUSE
+jsr printsprite
+@ingameloop_skip_if_not_equal:
+jmp endofmainloop
+@ingameloop_skip_if_equal_2:
+jsr doorrou
+jsr printlives
+jsr printscore
+jsr printhearts
+jsr moveman
+jsr animatelegs
+jsr setxscroll
+jsr updatearrows
+jsr change_bank13_routine
+jsr printrobin
+jsr float_up_number
+jsr change_bank12_routine
+jsr updatespitters
+lda FRAME_COUNTER
 and #1
-bne @_5
-jsr UPDATEONSCREENS
-jsr PUTEXTRASON
-jsr CHANGEBANK13ROU
-jsr UPDATEHEARTS
-jsr CHANGEBANK12ROU
-jmp @_6
-@_5:
-jsr CHANGEBANK13ROU
-jsr UPDATEHEARTS
-jsr CHANGEBANK12ROU
-jsr PUTEXTRASON
-jsr UPDATEONSCREENS
-@_6:
-ENDOFMAINLOOP:
-jsr CHECKFORPAUSEKEY
-jsr CHECKOFFSCREEN
-NEARENDOFMAINLOOP:
-lda KILLED
-beq @_5
+bne @ingameloop_skip_if_not_equal_2
+jsr updateonscreens
+jsr putextrason
+jsr change_bank13_routine
+jsr updatehearts
+jsr change_bank12_routine
+jmp @ingameloop_skip
+@ingameloop_skip_if_not_equal_2:
+jsr change_bank13_routine
+jsr updatehearts
+jsr change_bank12_routine
+jsr putextrason
+jsr updateonscreens
+@ingameloop_skip:
+endofmainloop:
+jsr checkforpausekey
+jsr checkoffscreen
+nearendofmainloop:
+lda PLAYER_KILLED
+beq @nearendofmainloop_skip_if_equal
 cmp #1
-bne @_7
+bne @nearendofmainloop_skip_if_not_equal
 lda #255
-sta ROBINY
-@_7:
-lda PAUSE
-bne @_5
-dec KILLED
-bne @_5
-@_8:
-lda LIVES
-beq THEEND
-jsr RESETROBINVARS1
-jsr RESTOREOLDROBIN
+sta PLAYER_Y
+@nearendofmainloop_skip_if_not_equal:
+lda GAME_PAUSED
+bne @nearendofmainloop_skip_if_equal
+dec PLAYER_KILLED
+bne @nearendofmainloop_skip_if_equal
+@nearendofmainloop_body:
+lda PLAYER_LIVES
+beq theend
+jsr resetrobinvars1
+jsr restoreoldrobin
 lda #190
-sta ROBININVINC
-jsr GOINTONEWMAP
-@_5:
-lda FADECOUNTER
+sta PLAYER_INVINCIBILITY_TIMER
+jsr gointonewmap
+@nearendofmainloop_skip_if_equal:
+lda FADE_COUNTER
 cmp #255
-beq @_2
-jmp INGAMELOOP
-@_2:
-THEEND:
-lda COMPLETEDGAME
-bne COMPLETEDTHEGAME
+beq @nearendofmainloop_skip_if_equal_2
+jmp ingameloop
+@nearendofmainloop_skip_if_equal_2:
+theend:
+lda GAME_COMPLETED
+bne completedthegame
 lda #255
-sta HEARTS
-COMPLETEDTHEGAME:
-jsr RESETROBINVARS1
-jsr TURNINTEROFF
+sta PLAYER_HEARTS
+completedthegame:
+jsr resetrobinvars1
+jsr turninteroff
 lda #0
-sta INGAME
-jsr CHANGEBANK13ROU
-jsr TRYTOENTERNAME
-jsr CHANGEBANK12ROU
-jmp ANEWGAME
-ZOOMINSTARS:
-dec JUSTSTARTEDLIFE
-lda JUSTSTARTEDLIFE
+sta IN_GAME
+jsr change_bank13_routine
+jsr try_to_enter_name
+jsr change_bank12_routine
+jmp anewgame
+zoominstars:
+dec JUST_STARTED_LIFE
+lda JUST_STARTED_LIFE
 cmp #30
-bcc @_1
+bcc @zoominstars_skip_if_no_carry
 and #3
-bne @_1
-lda #FIRSTAPPEARFX
-jsr SOUNDFX
+bne @zoominstars_skip_if_no_carry
+lda #SFX_FIRST_APPEAR
+jsr soundfx
 lda #2
-jmp STARTSTARS
-@_1:
+jmp startstars
+@zoominstars_skip_if_no_carry:
 rts

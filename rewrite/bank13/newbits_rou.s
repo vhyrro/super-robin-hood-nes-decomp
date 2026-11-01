@@ -1,62 +1,62 @@
-RESTUPDATECOIN:
-stx ADDRESS8
-lda ONSCREENCOUNT2,Y
+restupdatecoin:
+stx TEMP_POINTER_8
+lda ONSCREEN_COUNTER_2,Y
 and #15
-sta TEMP1
+sta TEMP_BYTE_1
 cmp #6
-bcs NOSPARKLE
-lda ONSCREENCOUNT2,Y
+bcs nosparkle
+lda ONSCREEN_COUNTER_2,Y
 and #240
-bne @_3
-lda SEED + 1
-bne NOSPARKLE
-@_3:
-lda ONSCREENCOUNT2,Y
+bne @restupdatecoin_skip_if_not_equal
+lda RANDOM_SEED + 1
+bne nosparkle
+@restupdatecoin_skip_if_not_equal:
+lda ONSCREEN_COUNTER_2,Y
 clc
 adc #16
-sta ONSCREENCOUNT2,Y
+sta ONSCREEN_COUNTER_2,Y
 lsr
 lsr
 lsr
 lsr
 lsr
-sta TEMP2
+sta TEMP_BYTE_2
 txa
-ldx XCOORDH
+ldx SPRITE_X_COORD_HIGH
 sec
 sbc #7
-bcs @_1
+bcs @restupdatecoin_skip_if_carry
 dex
-@_1:
+@restupdatecoin_skip_if_carry:
 cpx #0
-bne @_2
-sta TEMP3
-lda ONSCREENY,Y
+bne @restupdatecoin_skip_if_not_equal_2
+sta TEMP_BYTE_3
+lda ONSCREEN_Y,Y
 clc
 adc #4
 tay
 lda #2
-sta TEMP
-ldx TEMP2
-lda SPARKLE,X
-ldx TEMP3
-jsr POKESPRITE
-@_2:
-NOSPARKLE:
-ldy ADDRESS9
-lda ONSCREENY,Y
-sta ADDRESS8 + 1
-jsr PICKUPCOLLISION
-bcs ENDCOIN
-jsr STOREOUTOLDROBIN
-ldy ADDRESS9
-lda ONSCREENXL,Y
-sta ADDRESS7
-lda ONSCREENXH,Y
-sta ADDRESS7 + 1
+sta TEMP_BYTE
+ldx TEMP_BYTE_2
+lda sparkle,X
+ldx TEMP_BYTE_3
+jsr pokesprite
+@restupdatecoin_skip_if_not_equal_2:
+nosparkle:
+ldy TEMP_POINTER_9
+lda ONSCREEN_Y,Y
+sta TEMP_POINTER_8 + 1
+jsr pickupcollision
+bcs endcoin
+jsr storeoutoldrobin
+ldy TEMP_POINTER_9
+lda ONSCREEN_X_LOW,Y
+sta TEMP_POINTER_7
+lda ONSCREEN_X_HIGH,Y
+sta TEMP_POINTER_7 + 1
 lda #0
-sta ONSCREENROU,Y
-lda ONSCREENCOUNT1,Y
+sta ONSCREEN_ROUTINE,Y
+lda ONSCREEN_COUNTER_1,Y
 tay
 and #7
 tax
@@ -65,83 +65,83 @@ lsr
 lsr
 lsr
 tay
-lda SECRET + 3,Y
-and BITPATTERN,X
-bne @_3
-lda SECRET + 3,Y
-eor BITPATTERN,X
-sta SECRET + 3,Y
-ldy ADDRESS9
-lda ONSCREENCOUNT2,Y
+lda SECRET_TABLE + 3,Y
+and bitpattern,X
+bne @nosparkle_skip_if_not_equal
+lda SECRET_TABLE + 3,Y
+eor bitpattern,X
+sta SECRET_TABLE + 3,Y
+ldy TEMP_POINTER_9
+lda ONSCREEN_COUNTER_2,Y
 and #15
 cmp #6
-bcc @_1
-jsr ADDTOHEARTS
+bcc @nosparkle_skip_if_no_carry
+jsr addtohearts
 lda #7
-jsr STARTSTARS
-lda #PICKUPHEARTFX
-jsr SOUNDFX
+jsr startstars
+lda #SFX_PICKUP_HEART
+jsr soundfx
 lda #72
-jsr ADDTOSCORE
-jmp @_2
-@_1:
-jsr STARTFLOATUPNUMBER
+jsr addtoscore
+jmp @nosparkle_skip
+@nosparkle_skip_if_no_carry:
+jsr start_float_up_number
 lda #6
-jsr STARTSTARS
-lda #PICKUPTREASUREFX
-jsr SOUNDFX
+jsr startstars
+lda #SFX_PICKUP_TREASURE
+jsr soundfx
 lda #50
-jsr ADDTOSCORE
-@_2:
-@_3:
+jsr addtoscore
+@nosparkle_skip:
+@nosparkle_skip_if_not_equal:
 rts
-ENDCOIN:
-ldy ADDRESS9
-lda XCOORDH
-bne @_1
-lda ONSCREENY,Y
+endcoin:
+ldy TEMP_POINTER_9
+lda SPRITE_X_COORD_HIGH
+bne @endcoin_skip_if_not_equal
+lda ONSCREEN_Y,Y
 tay
-lda TEMP1
+lda TEMP_BYTE_1
 cmp #6
-bcs PULSINGHEART
+bcs pulsing_heart
 tax
-lda TREASPAL,X
-sta TEMP
-lda COUNTER
+lda treaspal,X
+sta TEMP_BYTE
+lda FRAME_COUNTER
 lsr
 lsr
 and #3
-sta TEMP
-lda TEMP1
+sta TEMP_BYTE
+lda TEMP_BYTE_1
 asl
 asl
 clc
 adc #204
-ldx ADDRESS8
-jmp POKESPRITE2BY2
-@_1:
+ldx TEMP_POINTER_8
+jmp pokesprite2by2
+@endcoin_skip_if_not_equal:
 rts
-PULSINGHEART:
+pulsing_heart:
 lda #3
-sta TEMP
+sta TEMP_BYTE
 tya
 clc
 adc #12
 tay
-lda COUNTER
+lda FRAME_COUNTER
 lsr
 lsr
 lsr
 and #3
 tax
-lda HEARTSDEFS,X
-ldx ADDRESS8
+lda heartsdefs,X
+ldx TEMP_POINTER_8
 dex
 dex
 dex
 dex
-jmp POKESPRITE
-SPARKLE:
+jmp pokesprite
+sparkle:
 .byte $8D
 .byte $8D
 .byte $8E
@@ -150,34 +150,34 @@ SPARKLE:
 .byte $8E
 .byte $8D
 .byte $8D
-PUTINHEARTBANK:
-lda MAPNO
-FINDINITCOIN:
-cmp COINCO + 1,Y
-bne @_2
-lda COINCO,Y
-cmp BLOCKX
-beq GOTRIGHTCOIN
-lda MAPNO
-@_2:
+putinheartbank:
+lda MAP_NUMBER
+findinitcoin:
+cmp initial_coin_table + 1,Y
+bne @findinitcoin_skip_if_not_equal
+lda initial_coin_table,Y
+cmp BLOCK_X
+beq gotrightcoin
+lda MAP_NUMBER
+@findinitcoin_skip_if_not_equal:
 iny
 iny
 cpy #(8 * 6 + 24) * 2
-bne FINDINITCOIN
+bne findinitcoin
 dey
 dey
-GOTRIGHTCOIN:
+gotrightcoin:
 tya
 lsr
-sta ONSCREENCOUNT1,X
+sta ONSCREEN_COUNTER_1,X
 lsr
 lsr
 lsr
-sta ONSCREENCOUNT2,X
-GOTCOIN:
+sta ONSCREEN_COUNTER_2,X
+gotcoin:
 tya
 lsr
-stx TEMP
+stx TEMP_BYTE
 tax
 and #7
 tay
@@ -186,22 +186,22 @@ lsr
 lsr
 lsr
 tax
-lda SECRET + 3,X
-ldx TEMP
-and BITPATTERN,Y
-beq @_1
+lda SECRET_TABLE + 3,X
+ldx TEMP_BYTE
+and bitpattern,Y
+beq @gotcoin_skip_if_equal
 lda #0
-sta ONSCREENROU,X
+sta ONSCREEN_ROUTINE,X
 rts
-@_1:
+@gotcoin_skip_if_equal:
 lda #8
-jsr ONSCRXANDY
-lda ONSCREENY,X
+jsr onscrxandy
+lda ONSCREEN_Y,X
 clc
 adc #8
-sta ONSCREENY,X
+sta ONSCREEN_Y,X
 rts
-COINCO:
+initial_coin_table:
 .byte $11
 .byte $05
 .byte $2C
@@ -346,174 +346,174 @@ COINCO:
 .byte $08
 .byte $0C
 .byte $0B
-STARTFLOATUPNUMBER:
-lda ONSCREENCOUNT2,Y
+start_float_up_number:
+lda ONSCREEN_COUNTER_2,Y
 and #15
 tax
-dec TREASURES,X
-lda TREASURES,X
-sta COINNUM
-@_1:
-lda ONSCREENCOUNT1,Y
+dec TREASURE_FLAGS,X
+lda TREASURE_FLAGS,X
+sta COIN_NUMBER
+@set_coin_position:
+lda ONSCREEN_COUNTER_1,Y
 asl
 tax
-lda COINCO,X
-sta COINNUMX
-lda ONSCREENY,Y
-sta COINNUMY
+lda initial_coin_table,X
+sta COIN_NUMBER_X
+lda ONSCREEN_Y,Y
+sta COIN_NUMBER_Y
 lda #64
-sta COINNUMCOUNT
+sta COIN_NUMBER_COUNT
 rts
-FLOATUPNUMBER:
-lda COINNUMY
-beq @END
-lda COINNUMCOUNT
-beq @END
-lda COUNTER
+float_up_number:
+lda COIN_NUMBER_Y
+beq @end
+lda COIN_NUMBER_COUNT
+beq @end
+lda FRAME_COUNTER
 lsr
 lsr
 and #3
-sta TEMP
-lda COUNTER
+sta TEMP_BYTE
+lda FRAME_COUNTER
 and #1
-bne @_3
-dec COINNUMCOUNT
-dec COINNUMY
-@_3:
-ldy COINNUMY
-ldx COINNUMX
-lda TIMES16LO - 1,X
+bne @float_up_number_skip_if_not_equal
+dec COIN_NUMBER_COUNT
+dec COIN_NUMBER_Y
+@float_up_number_skip_if_not_equal:
+ldy COIN_NUMBER_Y
+ldx COIN_NUMBER_X
+lda multiply_by_16_lo - 1,X
 clc
 adc #6
 sec
-sbc SCRXL
-sta TEMP1
-lda TIMES16HI - 1,X
-sbc SCRXH
-bne @END
-lda COINNUM
+sbc SCREEN_X_LOW
+sta TEMP_BYTE_1
+lda multiply_by_16_hi - 1,X
+sbc SCREEN_X_HIGH
+bne @end
+lda COIN_NUMBER
 clc
 adc #128
-ldx TEMP1
-jsr POKESPRITE
-@END:
+ldx TEMP_BYTE_1
+jsr pokesprite
+@end:
 rts
-PRINTLIVESINFOMESS:
-.byte <(MGOSUB)
-.word CLEARSCR
-.byte <(MADDR + 35)
+print_lives_info_message:
+.byte <(MESSAGE_GOSUB)
+.word clearscr
+.byte <(MESSAGE_ADDRESS + 35)
 .byte $C0
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $40
-.byte <(MLEN)
+.byte <(MESSAGE_LENGTH)
 .byte $01
 .byte $FF
-.byte <(MENDLOOP)
-.byte <(MADDR + 32)
+.byte <(MESSAGE_END_LOOP)
+.byte <(MESSAGE_ADDRESS + 32)
 .byte $8D
 .byte $13,$03,$0F,$12,$05
-.byte <(MADDR + 33)
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4E
 .byte $0C,$09,$16,$05,$13
-.byte <(MADDR + 34)
+.byte <(MESSAGE_ADDRESS + 34)
 .byte $46
 .byte $14,$12,$05,$01,$13,$15,$12,$05,$20,$14,$0F,$20,$03,$0F,$0C,$0C,$05,$03,$14
-.byte <(MADDR + 35)
+.byte <(MESSAGE_ADDRESS + 35)
 .byte $D2
-.byte <(MLEN)
+.byte <(MESSAGE_LENGTH)
 .byte $03
 .byte $AA
 .byte $AA
 .byte $AA
-.byte <(MEND)
-LIVESBIT:
-.byte <(GAMEOVERBIT - LIFE1MESS)
+.byte <(MESSAGE_END)
+lives_bit_table:
+.byte <(game_over_bit - life1mess)
 .byte $00
-.byte <(LIVES2MESS - LIFE1MESS)
-.byte <(LIVES3MESS - LIFE1MESS)
-.byte <(LIVES4MESS - LIFE1MESS)
-.byte <(LIVES5MESS - LIFE1MESS)
-.byte <(LIVES6MESS - LIFE1MESS)
-LIFE1MESS:
-.byte <(MADDR + 33)
+.byte <(lives2mess - life1mess)
+.byte <(lives3mess - life1mess)
+.byte <(lives4mess - life1mess)
+.byte <(lives5mess - life1mess)
+.byte <(lives6mess - life1mess)
+life1mess:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $22
 .byte $20,$0C,$09,$06,$05,$20
-.byte <(MEND)
-LIVES2MESS:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+lives2mess:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $23
-.byte <(MEND)
-LIVES3MESS:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+lives3mess:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $24
-.byte <(MEND)
-LIVES4MESS:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+lives4mess:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $25
-.byte <(MEND)
-LIVES5MESS:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+lives5mess:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $26
-.byte <(MEND)
-LIVES6MESS:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+lives6mess:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $27
-.byte <(MEND)
-GAMEOVERBIT:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+game_over_bit:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4B
 .byte $07,$01,$0D,$05,$20,$0F,$16,$05,$12
-.byte <(MEND)
-COMPLETEDGAMEMESSAGE:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+completed_game_message:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $4B
 .byte $20,$20,$20,$20,$20,$20,$20,$20,$20
-.byte <(MADDR + 32)
+.byte <(MESSAGE_ADDRESS + 32)
 .byte $EC
 .byte $14,$08,$05,$20,$05,$0E,$04
-.byte <(MADDR + 33)
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $C8
 .byte $03,$0F,$0E,$07,$12,$01,$14,$15,$0C,$01,$14,$09,$0F,$0E,$13
 .byte $1B
-.byte <(MADDR + 34)
+.byte <(MESSAGE_ADDRESS + 34)
 .byte $01
 .byte $20,$01,$06,$14,$05,$12,$20,$05,$18,$10,$0C,$0F,$12,$09,$0E,$07,$20,$01,$0E,$04,$20,$06,$09,$07,$08,$14,$09,$0E,$07
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$19,$0F,$15,$12,$20,$17,$01,$19,$20,$08,$05,$12,$0F,$09,$03,$01,$0C,$0C,$19,$20,$14,$08,$12,$0F,$15,$07,$08
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$14,$08,$05,$20,$04,$05,$01,$04,$0C,$19,$20,$0E,$0F,$14,$14,$09,$0E,$07,$08,$01,$0D,$20,$03,$01,$13,$14,$0C,$05
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$19,$0F,$15,$20,$08,$01,$16,$05,$20,$05,$16,$05,$0E,$14,$15,$01,$0C,$0C,$19,$20,$12,$05,$13,$03,$15,$05,$04
-.byte <(MDOWNLINE)
-.byte <(MJUMP)
-.word COMPLETED2
-COMPLETED2:
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_JUMP)
+.word completed_game_message_2
+completed_game_message_2:
 .byte $20,$19,$0F,$15,$12,$20,$14,$12,$15,$05,$20,$0C,$0F,$16,$05,$20,$0D,$01,$09,$04,$20,$0D,$01,$12,$09,$0F,$0E
 .byte $1B
-.byte <(MDOWNLINE)
-.byte <(MLOOP)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LOOP)
 .byte $1C
 .byte $20
-.byte <(MENDLOOP)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_END_LOOP)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$19,$0F,$15,$20,$08,$01,$16,$05,$20,$01,$0C,$13,$0F,$20,$12,$05,$03,$0F,$16,$05,$12,$05,$04
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$01,$0C,$0C,$20,$14,$08,$05,$20,$13,$14,$0F,$0C,$05,$0E,$20,$14,$12,$05,$01,$13,$15,$12,$05
-.byte <(MDOWNLINE)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $0B,$09,$0E,$07,$20,$12,$09,$03,$08,$01,$12,$04,$20,$17,$09,$0C,$0C,$20,$12,$05,$14,$15,$12,$0E,$20,$13,$0F,$0F,$0E,$1E
-.byte <(MDOWNLINE)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$20,$20,$0C,$0F,$0E,$07,$20,$0C,$09,$16,$05,$20,$14,$08,$05,$20,$0B,$09,$0E,$07
 .byte $1B
-.byte <(MEND)
-TREASURELEFTMESS:
+.byte <(MESSAGE_END)
+treasure_left_message:
 .byte $22
 .byte $A8
 .byte $01
@@ -538,27 +538,27 @@ TREASURELEFTMESS:
 .byte $38
 .byte $01
 .byte $00
-PRINT6TREASURES:
-jsr ADDSPARKLETOTREASURES
+print_6_treasures:
+jsr add_sparkle_to_treasures
 ldx #5
-@_2:
-stx ADDRESS9
-lda TREASPAL,X
-sta TEMP
-ldy SHOWALLTREASURE + 6,X
-lda SHOWALLTREASURE,X
+@print_6_treasures_loop:
+stx TEMP_POINTER_9
+lda treaspal,X
+sta TEMP_BYTE
+ldy show_all_treasure + 6,X
+lda show_all_treasure,X
 tax
-lda ADDRESS9
+lda TEMP_POINTER_9
 asl
 asl
 clc
 adc #204
-jsr POKESPRITE2BY2
-dec ADDRESS9
-ldx ADDRESS9
-bpl @_2
+jsr pokesprite2by2
+dec TEMP_POINTER_9
+ldx TEMP_POINTER_9
+bpl @print_6_treasures_loop
 rts
-SHOWALLTREASURE:
+show_all_treasure:
 .byte $30
 .byte $70
 .byte $B0
@@ -571,136 +571,136 @@ SHOWALLTREASURE:
 .byte $C0
 .byte $C0
 .byte $C0
-ADDSPARKLETOTREASURES:
+add_sparkle_to_treasures:
 ldx #1
-DONEXTSPARKLE:
-lda HEARTSTABLE + 8,X
-bne ALREADYGOTSPARKLE
-lsr SEED
-bcc NEXTSPARKLE
-lda SEED + 2
+do_next_sparkle:
+lda HEART_TABLE + 8,X
+bne already_got_sparkle
+lsr RANDOM_SEED
+bcc next_sparkle
+lda RANDOM_SEED + 2
 and #7
 cmp #6
-bcs NEXTSPARKLE
+bcs next_sparkle
 tay
-lda SEED + 1
+lda RANDOM_SEED + 1
 and #7
 clc
 adc #($FC)
 clc
-adc SHOWALLTREASURE,Y
-sta HEARTSTABLE,X
-lda SEED + 1
+adc show_all_treasure,Y
+sta HEART_TABLE,X
+lda RANDOM_SEED + 1
 and #7
 clc
 adc #2
 clc
-adc SHOWALLTREASURE + 6,Y
-sta HEARTSTABLE + 4,X
+adc show_all_treasure + 6,Y
+sta HEART_TABLE + 4,X
 lda #7 * 4
-sta HEARTSTABLE + 8,X
-ALREADYGOTSPARKLE:
-dec HEARTSTABLE + 8,X
-lda HEARTSTABLE + 8,X
+sta HEART_TABLE + 8,X
+already_got_sparkle:
+dec HEART_TABLE + 8,X
+lda HEART_TABLE + 8,X
 lsr
 lsr
 tay
 lda #2
-sta TEMP
-lda HEARTSTABLE,X
-sta TEMP1
-stx TEMP2
-lda SPARKLE,Y
-ldy HEARTSTABLE + 4,X
-ldx TEMP1
-jsr POKESPRITE
-ldx TEMP2
-NEXTSPARKLE:
+sta TEMP_BYTE
+lda HEART_TABLE,X
+sta TEMP_BYTE_1
+stx TEMP_BYTE_2
+lda sparkle,Y
+ldy HEART_TABLE + 4,X
+ldx TEMP_BYTE_1
+jsr pokesprite
+ldx TEMP_BYTE_2
+next_sparkle:
 dex
-bpl DONEXTSPARKLE
+bpl do_next_sparkle
 rts
-REDEFINEWATER:
-lda MAPNO
+redefine_water:
+lda MAP_NUMBER
 cmp #5
-bcs @_1
-ldy VRAMPOINTER
-lda COUNTER
+bcs @redefine_water_skip_if_carry
+ldy VRAM_WRITE_POINTER
+lda FRAME_COUNTER
 lsr
 lsr
 and #6
 tax
 lda #>(254 * 16 + 4104)
-sta VRAMBUFFER,Y
+sta VRAM_BUFFER_ADDRESS,Y
 lda #<(254 * 16 + 4104)
-sta VRAMBUFFER + 1,Y
+sta VRAM_BUFFER_ADDRESS + 1,Y
 lda #2
-sta VRAMBUFFER + 2,Y
-lda WATERCHRS,X
-sta VRAMBUFFER + 3,Y
-lda WATERCHRS + 1,X
-sta VRAMBUFFER + 4,Y
-lda COUNTER
+sta VRAM_BUFFER_ADDRESS + 2,Y
+lda water_chrs,X
+sta VRAM_BUFFER_ADDRESS + 3,Y
+lda water_chrs + 1,X
+sta VRAM_BUFFER_ADDRESS + 4,Y
+lda FRAME_COUNTER
 lsr
 and #6
 tax
 lda #>(255 * 16 + 4096)
-sta VRAMBUFFER + 5,Y
+sta VRAM_BUFFER_ADDRESS + 5,Y
 lda #<(255 * 16 + 4096)
-sta VRAMBUFFER + 6,Y
+sta VRAM_BUFFER_ADDRESS + 6,Y
 lda #2
-sta VRAMBUFFER + 7,Y
-lda WATERCHRS + 8,X
-sta VRAMBUFFER + 8,Y
-lda WATERCHRS + 9,X
-sta VRAMBUFFER + 9,Y
+sta VRAM_BUFFER_ADDRESS + 7,Y
+lda water_chrs + 8,X
+sta VRAM_BUFFER_ADDRESS + 8,Y
+lda water_chrs + 9,X
+sta VRAM_BUFFER_ADDRESS + 9,Y
 lda #>(255 * 16 + 4104)
-sta VRAMBUFFER + 10,Y
+sta VRAM_BUFFER_ADDRESS + 10,Y
 lda #<(255 * 16 + 4104)
-sta VRAMBUFFER + 11,Y
+sta VRAM_BUFFER_ADDRESS + 11,Y
 lda #2
-sta VRAMBUFFER + 12,Y
-lda WATERCHRS + 8,X
-sta VRAMBUFFER + 13,Y
-lda WATERCHRS + 9,X
-sta VRAMBUFFER + 14,Y
+sta VRAM_BUFFER_ADDRESS + 12,Y
+lda water_chrs + 8,X
+sta VRAM_BUFFER_ADDRESS + 13,Y
+lda water_chrs + 9,X
+sta VRAM_BUFFER_ADDRESS + 14,Y
 tya
 clc
 adc #15
-sta VRAMPOINTER
-@_1:
+sta VRAM_WRITE_POINTER
+@redefine_water_skip_if_carry:
 rts
-SECRETTABLE:
-.word SECRET0
-.word SECRET1
-.word SECRET2
-.word SECRET3
-.word SECRET4
-.word SECRET5
-.word SECRET6
-.word SECRET7
-.word SECRET8
-.word SECRET9
-.word SECRET10
-.word SECRET11
-.word SECRET12
-.word SECRET13
-.word SECRET14
-.word SECRET15
-.word SECRET16
-.word SECRET17
-.word SECRET18
-.word SECRET19
-.word SECRET20
-.word SECRET21
-.word SECRET22
-.word SECRET23
-SECRET0:
+secret_table:
+.word secret_0
+.word secret_1
+.word secret_2
+.word secret_3
+.word secret_4
+.word secret_5
+.word secret_6
+.word secret_7
+.word secret_8
+.word secret_9
+.word secret_10
+.word secret_11
+.word secret_12
+.word secret_13
+.word secret_14
+.word secret_15
+.word secret_16
+.word secret_17
+.word secret_18
+.word secret_19
+.word secret_20
+.word secret_21
+.word secret_22
+.word secret_23
+secret_0:
 .byte $04
 .byte $26
 .byte $06
 .byte $20
 .byte $FF
-SECRET1:
+secret_1:
 .byte $04
 .byte $04
 .byte $0A
@@ -710,7 +710,7 @@ SECRET1:
 .byte $0B
 .byte $00
 .byte $FF
-SECRET2:
+secret_2:
 .byte $07
 .byte $99
 .byte $0C
@@ -720,13 +720,13 @@ SECRET2:
 .byte $0C
 .byte $AB
 .byte $FF
-SECRET3:
+secret_3:
 .byte $06
 .byte $AE
 .byte $08
 .byte $F8
 .byte $FF
-SECRET4:
+secret_4:
 .byte $09
 .byte $0A
 .byte $0B
@@ -744,7 +744,7 @@ SECRET4:
 .byte $0C
 .byte $00
 .byte $FF
-SECRET5:
+secret_5:
 .byte $07
 .byte $66
 .byte $00
@@ -762,7 +762,7 @@ SECRET5:
 .byte $03
 .byte $AD
 .byte $FF
-SECRET6:
+secret_6:
 .byte $0A
 .byte $16
 .byte $0C
@@ -772,7 +772,7 @@ SECRET6:
 .byte $0D
 .byte $20
 .byte $FF
-SECRET7:
+secret_7:
 .byte $04
 .byte $BD
 .byte $04
@@ -782,7 +782,7 @@ SECRET7:
 .byte $04
 .byte $49
 .byte $FF
-SECRET8:
+secret_8:
 .byte $01
 .byte $19
 .byte $04
@@ -808,13 +808,13 @@ SECRET8:
 .byte $09
 .byte $20
 .byte $FF
-SECRET9:
+secret_9:
 .byte $05
 .byte $71
 .byte $00
 .byte $24
 .byte $FF
-SECRET10:
+secret_10:
 .byte $00
 .byte $02
 .byte $07
@@ -848,7 +848,7 @@ SECRET10:
 .byte $00
 .byte $20
 .byte $FF
-SECRET11:
+secret_11:
 .byte $05
 .byte $77
 .byte $06
@@ -858,7 +858,7 @@ SECRET11:
 .byte $07
 .byte $00
 .byte $FF
-SECRET12:
+secret_12:
 .byte $08
 .byte $19
 .byte $0C
@@ -868,13 +868,13 @@ SECRET12:
 .byte $0A
 .byte $2B
 .byte $FF
-SECRET13:
+secret_13:
 .byte $07
 .byte $07
 .byte $0C
 .byte $AD
 .byte $FF
-SECRET14:
+secret_14:
 .byte $05
 .byte $23
 .byte $0C
@@ -888,13 +888,13 @@ SECRET14:
 .byte $0C
 .byte $00
 .byte $FF
-SECRET15:
+secret_15:
 .byte $04
 .byte $02
 .byte $02
 .byte $04
 .byte $FF
-SECRET16:
+secret_16:
 .byte $04
 .byte $26
 .byte $0C
@@ -908,7 +908,7 @@ SECRET16:
 .byte $0C
 .byte $4B
 .byte $FF
-SECRET17:
+secret_17:
 .byte $06
 .byte $10
 .byte $0B
@@ -918,7 +918,7 @@ SECRET17:
 .byte $0C
 .byte $49
 .byte $FF
-SECRET18:
+secret_18:
 .byte $06
 .byte $28
 .byte $0A
@@ -932,7 +932,7 @@ SECRET18:
 .byte $0A
 .byte $49
 .byte $FF
-SECRET19:
+secret_19:
 .byte $06
 .byte $85
 .byte $07
@@ -942,19 +942,19 @@ SECRET19:
 .byte $08
 .byte $20
 .byte $FF
-SECRET20:
+secret_20:
 .byte $09
 .byte $0E
 .byte $08
 .byte $F8
 .byte $FF
-SECRET21:
+secret_21:
 .byte $07
 .byte $96
 .byte $05
 .byte $AB
 .byte $FF
-SECRET22:
+secret_22:
 .byte $05
 .byte $01
 .byte $0B
@@ -972,7 +972,7 @@ SECRET22:
 .byte $0C
 .byte $00
 .byte $FF
-SECRET23:
+secret_23:
 .byte $05
 .byte $8A
 .byte $0C

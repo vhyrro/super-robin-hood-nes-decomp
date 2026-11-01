@@ -1,180 +1,180 @@
-FLASHBLOCK:
-lda EXTRAVARS,X
-bne ENDFLASHBLOCK
-NEWFLASHBLOCK:
-lda (ADDRESS9),Y
-sta TOPLEVVAR1
+flashblock:
+lda EXTRA_VARS,X
+bne endflashblock
+newflashblock:
+lda (TEMP_POINTER_9),Y
+sta SCRATCH_BYTE_1
 sec
-sbc MAPSTRIP
+sbc MAP_STRIP
 clc
 adc #16
 cmp #48
-bcs ENDFLASHBLOCK
+bcs endflashblock
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 and #31
-sta TOPLEVVAR2
-lda (ADDRESS9),Y
+sta SCRATCH_BYTE_2
+lda (TEMP_POINTER_9),Y
 rol
 iny
-lda (ADDRESS9),Y
-sta TOPLEVVAR3
-sty TEMPY
-lda EXTRAVARS + 1,X
+lda (TEMP_POINTER_9),Y
+sta SCRATCH_BYTE_3
+sty TEMP_Y
+lda EXTRA_VARS + 1,X
 adc #0
 and #1
-bne TURNBLOCKOFF
-jsr ADDACHANGEDBLOCK1
-jmp ENDFLASHBLOCK
-TURNBLOCKOFF:
-jsr DELETEACHANGEDBLOCK1
-ENDFLASHBLOCK:
+bne turnblockoff
+jsr addachangedblock1
+jmp endflashblock
+turnblockoff:
+jsr deleteachangedblock1
+endflashblock:
 ldy #4
-jsr DECTIMING
+jsr dectiming
 lda #2
-jmp BACKFROMROU
-STANDGUARD:
-jsr CHECKIFEXTRAON
-bne @_1
-jmp GUARDTURNEDOFF
-@_1:
+jmp backfromrou
+standguard:
+jsr checkifextraon
+bne @standguard_skip_if_not_equal
+jmp guardturnedoff
+@standguard_skip_if_not_equal:
 ldy #3
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc MAPSTRIP
+sbc MAP_STRIP
 clc
 adc #8
 cmp #34
-bcc @_2
-jmp VERYENDSTANDGUARD
-@_2:
-lda (ADDRESS9),Y
-jsr MULTSTRIPBY16
-sta ADDRESS7
-ldx EXTRAVARPOINTER
-lda EXTRAVARS,X
-bne ENDSTANDGUARD
+bcc @standguard_skip_if_no_carry
+jmp veryendstandguard
+@standguard_skip_if_no_carry:
+lda (TEMP_POINTER_9),Y
+jsr multiply_strip_by_16
+sta TEMP_POINTER_7
+ldx EXTRA_VAR_POINTER
+lda EXTRA_VARS,X
+bne endstandguard
 ldy #6
-lda (ADDRESS9),Y
-sta TEMP
+lda (TEMP_POINTER_9),Y
+sta TEMP_BYTE
 ldy #4
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 clc
 adc #($EA)
-bit TEMP
-bpl @_3
+bit TEMP_BYTE
+bpl @standguard_skip_if_positive
 clc
 adc #($F9)
-@_3:
+@standguard_skip_if_positive:
 iny
-jsr SHOOTARROW
-lda #THEMFIRINGFX
-jsr SOUNDFX
-ldx EXTRAVARPOINTER
-lda EXTRAVARS + 2,X
+jsr shootarrow
+lda #SFX_THEM_FIRING
+jsr soundfx
+ldx EXTRA_VAR_POINTER
+lda EXTRA_VARS + 2,X
 clc
 adc #64
-sta EXTRAVARS + 2,X
-ENDSTANDGUARD:
-PRINTTHEGUARD:
-lda ADDRESS7
+sta EXTRA_VARS + 2,X
+endstandguard:
+printtheguard:
+lda TEMP_POINTER_7
 sec
-sbc SCRXL
-sta ADDRESS8
-lda ADDRESS7 + 1
-sbc SCRXH
-sta XCOORDH
-bne @_3
-jsr PICKUPCOLLISION1
-bcs @_3
-lda ROBININVINC
-bne @_3
+sbc SCREEN_X_LOW
+sta TEMP_POINTER_8
+lda TEMP_POINTER_7 + 1
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+bne @printtheguard_loop
+jsr pickupcollision1
+bcs @printtheguard_loop
+lda PLAYER_INVINCIBILITY_TIMER
+bne @printtheguard_loop
 lda #1
-sta EXTRAVARS + 2,X
+sta EXTRA_VARS + 2,X
 lda #3
-jsr SUBFROMHEARTS
-jmp @_11
-@_3:
-lda EXTRAVARS + 2,X
+jsr subfromhearts
+jmp @printtheguard_skip
+@printtheguard_loop:
+lda EXTRA_VARS + 2,X
 and #15
 tay
-bne @_8
+bne @printtheguard_skip_if_not_equal
 ldy #6
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 and #15
-sta EXTRAVARS + 2,X
-bne @_3
-@_8:
-lda GUARDCOLOURS,Y
-sta SPRITECOLOUR
-lda ARROWCOUNTER
-beq @_1
-jsr COLLIDEWITHARROW
-bcs @_1
+sta EXTRA_VARS + 2,X
+bne @printtheguard_loop
+@printtheguard_skip_if_not_equal:
+lda guardcolours,Y
+sta SPRITE_COLOUR
+lda ARROW_COUNTER
+beq @printtheguard_skip_if_equal
+jsr collidewitharrow
+bcs @printtheguard_skip_if_equal
 ldx #0
-jsr TAKEARROWOFFROU
-@_11:
-ldx EXTRAVARPOINTER
-dec EXTRAVARS + 2,X
-@_2:
+jsr takearrowoffrou
+@printtheguard_skip:
+ldx EXTRA_VAR_POINTER
+dec EXTRA_VARS + 2,X
+@printtheguard_body:
 ldy #4
-lda (ADDRESS9),Y
-sta ADDRESS8 + 1
-lda EXTRAVARS + 2,X
+lda (TEMP_POINTER_9),Y
+sta TEMP_POINTER_8 + 1
+lda EXTRA_VARS + 2,X
 and #15
-bne @_5
-jsr TURNOFFEXTRA
+bne @printtheguard_skip_if_not_equal_2
+jsr turnoffextra
 lda #5
-jsr STARTSTARS
-lda #KILLTHEMTOTALLYFX
-jsr SOUNDFX
+jsr startstars
+lda #SFX_KILL_THEM_TOTALLY
+jsr soundfx
 lda #69
-jsr ADDTOSCORE
-jmp @_1
-@_5:
+jsr addtoscore
+jmp @printtheguard_skip_if_equal
+@printtheguard_skip_if_not_equal_2:
 lda #4
-jsr STARTSTARS
+jsr startstars
 lda #66
-jsr ADDTOSCORE
-lda #KILLTHEMFX
-jsr SOUNDFX
-@_1:
-ldx EXTRAVARPOINTER
-lda EXTRAVARS + 2,X
+jsr addtoscore
+lda #SFX_KILL_THEM
+jsr soundfx
+@printtheguard_skip_if_equal:
+ldx EXTRA_VAR_POINTER
+lda EXTRA_VARS + 2,X
 and #240
-beq @_9
-lda EXTRAVARS + 2,X
+beq @printtheguard_skip_if_equal_2
+lda EXTRA_VARS + 2,X
 clc
 adc #($F0)
-sta EXTRAVARS + 2,X
+sta EXTRA_VARS + 2,X
 lda #2
-@_9:
-sta TEMP2
+@printtheguard_skip_if_equal_2:
+sta TEMP_BYTE_2
 ldy #4
-lda (ADDRESS9),Y
-sta TEMP
+lda (TEMP_POINTER_9),Y
+sta TEMP_BYTE
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 asl
 php
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 asl
-lda #GUARD
+lda #SPRITE_GUARD
 adc #0
 clc
-adc TEMP2
+adc TEMP_BYTE_2
 plp
-ldx ADDRESS8
-ldy TEMP
-jsr WINPRINTSPRITEPOSREV
-VERYENDSTANDGUARD:
+ldx TEMP_POINTER_8
+ldy TEMP_BYTE
+jsr winprintspriteposrev
+veryendstandguard:
 ldy #6
-jsr DECTIMING
-GUARDTURNEDOFF:
+jsr dectiming
+guardturnedoff:
 lda #3
-jmp BACKFROMROU
-GUARDCOLOURS:
+jmp backfromrou
+guardcolours:
 .byte $FF
 .byte $03
 .byte $01
@@ -184,296 +184,296 @@ GUARDCOLOURS:
 .byte $02
 .byte $02
 .byte $02
-COLLIDEWITHARROW:
+collidewitharrow:
 ldy #4
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc ARROWY
+sbc ARROW_Y
 cmp #32
-bcs NOTCOLLIDEWITHARROW
-COLLIDEBATWITHARROW:
-lda ADDRESS7
+bcs notcollidewitharrow
+collidebatwitharrow:
+lda TEMP_POINTER_7
 sec
-sbc ARROWXL
-sta TEMP
-lda ADDRESS7 + 1
-sbc ARROWXH
+sbc ARROW_X_LOW
+sta TEMP_BYTE
+lda TEMP_POINTER_7 + 1
+sbc ARROW_X_HIGH
 tax
-lda TEMP
+lda TEMP_BYTE
 clc
 adc #12
-bcc @_2
+bcc @collidebatwitharrow_skip_if_no_carry
 inx
-@_2:
+@collidebatwitharrow_skip_if_no_carry:
 cpx #0
-bne @_1
+bne @collidebatwitharrow_skip_if_not_equal
 cmp #24
-@_1:
-NOTCOLLIDEWITHARROW:
+@collidebatwitharrow_skip_if_not_equal:
+notcollidewitharrow:
 rts
-PLATFORMH:
+platformh:
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc SCRXL
+sbc SCREEN_X_LOW
 iny
-lda (ADDRESS9),Y
-sbc SCRXH
+lda (TEMP_POINTER_9),Y
+sbc SCREEN_X_HIGH
 clc
 adc #1
-bmi ENDPLATFORMH
+bmi endplatformh
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc SCRXL
+sbc SCREEN_X_LOW
 iny
-lda (ADDRESS9),Y
-sbc SCRXH
+lda (TEMP_POINTER_9),Y
+sbc SCREEN_X_HIGH
 cmp #3
-bcs ENDPLATFORMH
-jsr MOVEPLATFORMH
-ldx EXTRAVARPOINTER
-COLLIDEPLATWITHROBIN:
-lda XCOORDH
-bne ENDPLATFORMH
-jsr COLLPLATWITHROB
-bcs ENDPLATFORMH
-lda EXTRAVARS + 3,X
-beq @_3
-bmi @_2
-inc ROBINXL
-bne @M820__1
-inc ROBINXL + 1
-@M820__1:
-jmp @_3
-@_2:
-dec ROBINXL
+bcs endplatformh
+jsr moveplatformh
+ldx EXTRA_VAR_POINTER
+collideplatwithrobin:
+lda SPRITE_X_COORD_HIGH
+bne endplatformh
+jsr collplatwithrob
+bcs endplatformh
+lda EXTRA_VARS + 3,X
+beq @collideplatwithrobin_skip_if_equal
+bmi @collideplatwithrobin_skip_if_negative
+inc PLAYER_X_LOW
+bne @collideplatwithrobin_skip_if_not_equal
+inc PLAYER_X_LOW + 1
+@collideplatwithrobin_skip_if_not_equal:
+jmp @collideplatwithrobin_skip_if_equal
+@collideplatwithrobin_skip_if_negative:
+dec PLAYER_X_LOW
 pha
 lda #255
-cmp ROBINXL
-bne @M821__1
-dec ROBINXL + 1
-@M821__1:
+cmp PLAYER_X_LOW
+bne @collideplatwithrobin_skip_if_not_equal_2
+dec PLAYER_X_LOW + 1
+@collideplatwithrobin_skip_if_not_equal_2:
 pla
-@_3:
-lda OROBINXL
-cmp ROBINXL
-beq PLATNOTMOVING
-bcc PLATMOVINGRIGHT
-jsr FINDWALLLEFT
-beq PLATNOTMOVING
-jsr RESTOREX
-beq PLATNOTMOVING
-PLATMOVINGRIGHT:
-jsr FINDWALLRIGHT
-beq PLATNOTMOVING
-jsr RESTOREX
-PLATNOTMOVING:
-jsr ROBINJUMPOFFPLATFORM
-ENDPLATFORMH:
+@collideplatwithrobin_skip_if_equal:
+lda PREVIOUS_PLAYER_X_LOW
+cmp PLAYER_X_LOW
+beq platnotmoving
+bcc platmovingright
+jsr findwallleft
+beq platnotmoving
+jsr restorex
+beq platnotmoving
+platmovingright:
+jsr findwallright
+beq platnotmoving
+jsr restorex
+platnotmoving:
+jsr robinjumpoffplatform
+endplatformh:
 lda #4
-jmp BACKFROMROU
-COLLPLATWITHROB:
-lda EXTRAVARS + 2,X
+jmp backfromrou
+collplatwithrob:
+lda EXTRA_VARS + 2,X
 sec
-sbc ROBINY
+sbc PLAYER_Y
 clc
 adc #4
 cmp #6
-bcs @_1
-lda ADDRESS7
+bcs @collplatwithrob_skip_if_carry
+lda TEMP_POINTER_7
 sec
-sbc ROBINONSCRX
+sbc PLAYER_ONSCREEN_X
 clc
 adc #14
 cmp #28
-@_1:
+@collplatwithrob_skip_if_carry:
 rts
-CHECKIFPLATON:
-lda EXTRAVARS + 3,X
-bne @_1
+checkifplaton:
+lda EXTRA_VARS + 3,X
+bne @checkifplaton_skip_if_not_equal
 ldy #3
-lda (ADDRESS9),Y
-sta EXTRAVARS + 0,X
+lda (TEMP_POINTER_9),Y
+sta EXTRA_VARS + 0,X
 iny
-lda (ADDRESS9),Y
-sta EXTRAVARS + 1,X
+lda (TEMP_POINTER_9),Y
+sta EXTRA_VARS + 1,X
 ldy #7
-lda (ADDRESS9),Y
-sta EXTRAVARS + 2,X
+lda (TEMP_POINTER_9),Y
+sta EXTRA_VARS + 2,X
 ldy #2
-jsr CHECKIFEXTRAON
-ldx EXTRAVARPOINTER
+jsr checkifextraon
+ldx EXTRA_VAR_POINTER
 cmp #0
-bne @_2
+bne @checkifplaton_skip_if_not_equal_2
 lda #1
-sta EXTRAVARS + 3,X
-@_1:
+sta EXTRA_VARS + 3,X
+@checkifplaton_skip_if_not_equal:
 rts
-@_2:
+@checkifplaton_skip_if_not_equal_2:
 lda #0
 rts
-MOVEPLATFORMH:
-jsr CHECKIFPLATON
-beq PRINTPLATFORM
-@_1:
-bmi PLATHMINUS
+moveplatformh:
+jsr checkifplaton
+beq printplatform
+@moveplatformh_body:
+bmi platform_h_negative
 ldy #5
-inc EXTRAVARS + 0,X
-bne @_2
-inc EXTRAVARS + 1,X
-@_2:
-jmp MOVEDPLATH
-PLATHMINUS:
+inc EXTRA_VARS + 0,X
+bne @moveplatformh_skip_if_not_equal
+inc EXTRA_VARS + 1,X
+@moveplatformh_skip_if_not_equal:
+jmp platform_h_moved
+platform_h_negative:
 ldy #3
-dec EXTRAVARS + 0,X
-lda EXTRAVARS + 0,X
+dec EXTRA_VARS + 0,X
+lda EXTRA_VARS + 0,X
 cmp #255
-bne MOVEDPLATH
-dec EXTRAVARS + 1,X
-MOVEDPLATH:
-lda EXTRAVARS + 0,X
-cmp (ADDRESS9),Y
-bne PRINTPLATFORM
+bne platform_h_moved
+dec EXTRA_VARS + 1,X
+platform_h_moved:
+lda EXTRA_VARS + 0,X
+cmp (TEMP_POINTER_9),Y
+bne printplatform
 iny
-lda EXTRAVARS + 1,X
-cmp (ADDRESS9),Y
-bne PRINTPLATFORM
-REVERSEPLATDIR:
-lda EXTRAVARS + 3,X
+lda EXTRA_VARS + 1,X
+cmp (TEMP_POINTER_9),Y
+bne printplatform
+reverseplatdir:
+lda EXTRA_VARS + 3,X
 eor #255
-sta EXTRAVARS + 3,X
-PRINTPLATFORM:
-lda EXTRAVARS + 0,X
+sta EXTRA_VARS + 3,X
+printplatform:
+lda EXTRA_VARS + 0,X
 sec
-sbc SCRXL
-sta ADDRESS7
-lda EXTRAVARS + 1,X
-sbc SCRXH
-sta XCOORDH
-ldy EXTRAVARS + 2,X
-sty ADDRESS7 + 1
-ldx ADDRESS7
-lda #PLATFORM
-jmp WINPRINTSPRITE
-PLATFORMV:
+sbc SCREEN_X_LOW
+sta TEMP_POINTER_7
+lda EXTRA_VARS + 1,X
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+ldy EXTRA_VARS + 2,X
+sty TEMP_POINTER_7 + 1
+ldx TEMP_POINTER_7
+lda #SPRITE_PLATFORM
+jmp winprintsprite
+platformv:
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc SCRXL
+sbc SCREEN_X_LOW
 iny
-lda (ADDRESS9),Y
-sbc SCRXH
+lda (TEMP_POINTER_9),Y
+sbc SCREEN_X_HIGH
 clc
 adc #1
 cmp #3
-bcs ENDPLATFORMV
-jsr MOVEPLATFORMV
-ldx EXTRAVARPOINTER
-COLLIDEPLATWITHROBINV:
-lda XCOORDH
-bne ENDPLATFORMV
-jsr COLLPLATWITHROB
-bcs ENDPLATFORMV
-jsr ROBINJUMPOFFPLATFORM
-ENDPLATFORMV:
+bcs endplatformv
+jsr moveplatformv
+ldx EXTRA_VAR_POINTER
+collideplatwithrobinv:
+lda SPRITE_X_COORD_HIGH
+bne endplatformv
+jsr collplatwithrob
+bcs endplatformv
+jsr robinjumpoffplatform
+endplatformv:
 lda #4
-jmp BACKFROMROU
-MOVEPLATFORMV:
-lda COUNTER
+jmp backfromrou
+moveplatformv:
+lda FRAME_COUNTER
 and #1
-bne PRINTPLATFORM
-jsr CHECKIFPLATON
-beq PRINTPLATFORM
-@_1:
-bmi PLATHMINUSV
+bne printplatform
+jsr checkifplaton
+beq printplatform
+@moveplatformv_body:
+bmi platform_v_negative
 ldy #6
-inc EXTRAVARS + 2,X
-bne MOVEDPLATHV
-PLATHMINUSV:
+inc EXTRA_VARS + 2,X
+bne platform_v_moved
+platform_v_negative:
 ldy #7
-dec EXTRAVARS + 2,X
-MOVEDPLATHV:
-lda EXTRAVARS + 2,X
-cmp (ADDRESS9),Y
-beq REVERSEPLATDIR
-bne PRINTPLATFORM
-ROBINJUMPOFFPLATFORM:
-lda ROBINGRAVITY
+dec EXTRA_VARS + 2,X
+platform_v_moved:
+lda EXTRA_VARS + 2,X
+cmp (TEMP_POINTER_9),Y
+beq reverseplatdir
+bne printplatform
+robinjumpoffplatform:
+lda PLAYER_GRAVITY
 cmp #128
-beq @_4
+beq @robinjumpoffplatform_skip_if_equal
 cmp #0
-bmi ENDJUMPOFFPLATFORM
-@_4:
+bmi endjumpoffplatform
+@robinjumpoffplatform_skip_if_equal:
 lda #0
-sta ROBINJUMPING
-lda ADDRESS7 + 1
-sta ROBINY
+sta PLAYER_JUMPING
+lda TEMP_POINTER_7 + 1
+sta PLAYER_Y
 lda #128
-sta ROBINGRAVITY
-lda PAD
-and #AMASK
-beq ENDJUMPOFFPLATFORM
-jmp JUMPINGOK
-ENDJUMPOFFPLATFORM:
+sta PLAYER_GRAVITY
+lda JOYPAD_STATE
+and #BUTTON_A_MASK
+beq endjumpoffplatform
+jmp jumpingok
+endjumpoffplatform:
 rts
-KEYROU:
-jsr CHECKIFEXTRAON
-beq @_2
+key_routine:
+jsr checkifextraon
+beq @key_routine_skip_if_equal
 ldy #3
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc MAPSTRIP
+sbc MAP_STRIP
 cmp #18
-bcs @_2
-lda (ADDRESS9),Y
-jsr MULTSTRIPBY16SUB
-jsr PICKUPCOLLISION1
-bcs @_1
-sty ADDRESS8 + 1
+bcs @key_routine_skip_if_equal
+lda (TEMP_POINTER_9),Y
+jsr multiply_strip_by_16_sub
+jsr pickupcollision1
+bcs @key_routine_skip_if_carry_2
+sty TEMP_POINTER_8 + 1
 ldy #3
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 tay
-lda TIMES16LO,Y
-sta ADDRESS7
-lda TIMES16HI,Y
-sta ADDRESS7 + 1
+lda multiply_by_16_lo,Y
+sta TEMP_POINTER_7
+lda multiply_by_16_hi,Y
+sta TEMP_POINTER_7 + 1
 lda #3
-jsr STARTSTARS
+jsr startstars
 lda #49
-jsr ADDTOSCORE
+jsr addtoscore
 lda #69
-jsr ADDTOSCORE
-jsr TURNOFFEXTRA
-lda #PICKUPKEYFX
-jsr SOUNDFX
+jsr addtoscore
+jsr turnoffextra
+lda #SFX_PICKUP_KEY
+jsr soundfx
 ldy #5
-lda (ADDRESS9),Y
-beq @_2
-cmp #255 - NOOFDOORS
-bcs @_3
-jsr TURNOFFDOOR
-jmp @_2
-@_3:
-jsr OPENADOOR
-jmp @_2
-@_1:
-lda XCOORDH
-bne @_2
+lda (TEMP_POINTER_9),Y
+beq @key_routine_skip_if_equal
+cmp #255 - NUMBER_OF_DOORS
+bcs @key_routine_skip_if_carry
+jsr turnoffdoor
+jmp @key_routine_skip_if_equal
+@key_routine_skip_if_carry:
+jsr openadoor
+jmp @key_routine_skip_if_equal
+@key_routine_skip_if_carry_2:
+lda SPRITE_X_COORD_HIGH
+bne @key_routine_skip_if_equal
 lda #1
-sta TEMP
-lda COUNTER
+sta TEMP_BYTE
+lda FRAME_COUNTER
 lsr
 lsr
 and #3
-sta TEMP
-ldx ADDRESS8
+sta TEMP_BYTE
+ldx TEMP_POINTER_8
 lda #155
-jsr POKESPRITE2BY2
-@_2:
-jmp BACKFROMROUNOVARS
-UPDATESPITTERS:
-lda COUNTER
+jsr pokesprite2by2
+@key_routine_skip_if_equal:
+jmp backfromrounovars
+updatespitters:
+lda FRAME_COUNTER
 asl
 asl
 asl
@@ -481,144 +481,144 @@ asl
 and #128 + 64
 clc
 adc #3
-sta TEMP
-ldx #NOOFSPITTERS - 1
-LOOPSPIT:
-stx TEMP8
-lda SPITTERY,X
-beq ENDLOOPSPIT
-inc SPITTERY,X
-inc SPITTERY,X
-lda SPITTERY,X
+sta TEMP_BYTE
+ldx #NUMBER_OF_SPITTERS - 1
+loopspit:
+stx TEMP_BYTE_8
+lda SPITTER_Y,X
+beq endloopspit
+inc SPITTER_Y,X
+inc SPITTER_Y,X
+lda SPITTER_Y,X
 cmp #220
-bcs TAKESPITOFF1
+bcs takespitoff1
 ldy #2
-lda SPITTERDIR,X
-bpl @_1
+lda SPITTER_DIRECTION,X
+bpl @loopspit_skip_if_positive
 ldy #($FE)
-@_1:
+@loopspit_skip_if_positive:
 tya
 clc
-adc SPITTERXL,X
-sta SPITTERXL,X
-lda SPITTERXH,X
-adc SPITTERDIR,X
-sta SPITTERXH,X
-@_5:
-lda SPITTERXL,X
+adc SPITTER_X_LOW,X
+sta SPITTER_X_LOW,X
+lda SPITTER_X_HIGH,X
+adc SPITTER_DIRECTION,X
+sta SPITTER_X_HIGH,X
+@loopspit_body:
+lda SPITTER_X_LOW,X
 sec
-sbc SCRXL
-sta TEMP9
-lda SPITTERXH,X
-sbc SCRXH
-bne ENDLOOPSPIT
-lda SPITTERY,X
-sta ADDRESS7
+sbc SCREEN_X_LOW
+sta TEMP_BYTE_9
+lda SPITTER_X_HIGH,X
+sbc SCREEN_X_HIGH
+bne endloopspit
+lda SPITTER_Y,X
+sta TEMP_POINTER_7
 clc
-adc #YDISPLACE
+adc #SPRITE_Y_DISPLACE
 tay
-ldx TEMP9
+ldx TEMP_BYTE_9
 lda #153
-jsr POKESPRITE
-ldy ADDRESS7
-ldx TEMP9
-jsr CHECKCHRCOLLISION
-bcc ENDLOOPSPIT
-TAKESPITTEROFF:
-ldx TEMP8
-TAKESPITOFF1:
+jsr pokesprite
+ldy TEMP_POINTER_7
+ldx TEMP_BYTE_9
+jsr checkchrcollision
+bcc endloopspit
+takespitteroff:
+ldx TEMP_BYTE_8
+takespitoff1:
 lda #0
-sta SPITTERY,X
-SPITTERNOTHITROBIN:
-ENDLOOPSPIT:
-ldx TEMP8
+sta SPITTER_Y,X
+spitternothitrobin:
+endloopspit:
+ldx TEMP_BYTE_8
 dex
-bpl LOOPSPIT
+bpl loopspit
 rts
-CHECKCHRCOLLISION:
+checkchrcollision:
 txa
 sec
-sbc ROBINONSCRX
+sbc PLAYER_ONSCREEN_X
 clc
 adc #10
 cmp #20
-bcs SPITNOCOLLISION
+bcs spitnocollision
 tya
-NOWCHRCHECKY:
+nowchrchecky:
 sec
-sbc ROBINY
-bcs SPITNOCOLLISION
+sbc PLAYER_Y
+bcs spitnocollision
 tya
 sec
-sbc ROBINHEIGHT
-bcc SPITNOCOLLISION
-lda ROBININVINC
-bne SPITNOCOLLISION
+sbc PLAYER_HEIGHT
+bcc spitnocollision
+lda PLAYER_INVINCIBILITY_TIMER
+bne spitnocollision
 lda #1
-jsr SUBFROMHEARTS
+jsr subfromhearts
 sec
 rts
-SPITNOCOLLISION:
+spitnocollision:
 clc
 rts
-CANONROU:
-lda (ADDRESS9),Y
+canonrou:
+lda (TEMP_POINTER_9),Y
 sec
-sbc MAPSTRIP
+sbc MAP_STRIP
 clc
 adc #8
 cmp #34
-bcs VERYENDCANON
-@_3:
-lda (ADDRESS9),Y
-jsr MULTSTRIPBY16
-sta ADDRESS7
-lda EXTRAVARS,X
-bne ENDCANON
+bcs veryendcanon
+@canonrou_body:
+lda (TEMP_POINTER_9),Y
+jsr multiply_strip_by_16
+sta TEMP_POINTER_7
+lda EXTRA_VARS,X
+bne endcanon
 ldy #3
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 iny
-jsr SHOOTARROW
+jsr shootarrow
 lda #2
-sta ARROWCANON,X
-ENDCANON:
-lda ADDRESS7
+sta ARROW_CANNON,X
+endcanon:
+lda TEMP_POINTER_7
 sec
-sbc SCRXL
+sbc SCREEN_X_LOW
 tax
-lda ADDRESS7 + 1
-sbc SCRXH
-sta XCOORDH
+lda TEMP_POINTER_7 + 1
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
 ldy #3
-lda (ADDRESS9),Y
-sta TEMP
+lda (TEMP_POINTER_9),Y
+sta TEMP_BYTE
 iny
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 asl
-lda #CANON
-ldy TEMP
-jsr WINPRINTSPRITEPOSREV
-VERYENDCANON:
+lda #SPRITE_CANNON
+ldy TEMP_BYTE
+jsr winprintspriteposrev
+veryendcanon:
 ldy #4
-jsr DECTIMING
+jsr dectiming
 lda #2
-jmp BACKFROMROU
-SECRETROU:
-jsr CHECKIFEXTRAON
-beq @_2
+jmp backfromrou
+secretrou:
+jsr checkifextraon
+beq @secretrou_skip_if_equal
 ldy #3
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 sec
-sbc MAPSTRIP
+sbc MAP_STRIP
 cmp #18
-bcs @_2
-lda (ADDRESS9),Y
-jsr MULTSTRIPBY16SUB
-jsr PICKUPCOLLISION1
-bcs @_1
-jsr TURNOFFEXTRA
+bcs @secretrou_skip_if_equal
+lda (TEMP_POINTER_9),Y
+jsr multiply_strip_by_16_sub
+jsr pickupcollision1
+bcs @secretrou_skip_if_carry
+jsr turnoffextra
 ldy #5
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 tay
 and #7
 tax
@@ -627,19 +627,19 @@ lsr
 lsr
 lsr
 tay
-lda SECRET,Y
-eor BITPATTERN,X
-sta SECRET,Y
+lda SECRET_TABLE,Y
+eor bitpattern,X
+sta SECRET_TABLE,Y
 ldy #5
-lda (ADDRESS9),Y
-jsr TURNONSECRET
-jmp @_2
-@_1:
-@_2:
-jmp BACKFROMROUNOVARS
-DOALLSECRETS:
+lda (TEMP_POINTER_9),Y
+jsr turnonsecret
+jmp @secretrou_skip_if_equal
+@secretrou_skip_if_carry:
+@secretrou_skip_if_equal:
+jmp backfromrounovars
+doallsecrets:
 lda #23
-SECRETLOOP:
+secretloop:
 pha
 tay
 and #7
@@ -649,230 +649,230 @@ lsr
 lsr
 lsr
 tay
-lda SECRET,Y
-and BITPATTERN,X
-beq @_1
+lda SECRET_TABLE,Y
+and bitpattern,X
+beq @secretloop_skip_if_equal
 pla
 pha
-jsr TURNONSECRET
-@_1:
+jsr turnonsecret
+@secretloop_skip_if_equal:
 pla
 sec
 sbc #1
-bpl SECRETLOOP
+bpl secretloop
 rts
-TURNONSECRET:
+turnonsecret:
 asl
 tax
-jsr CHANGEBANK13ROU
-lda SECRETTABLE,X
-sta ADDRESS
-lda SECRETTABLE + 1,X
-sta ADDRESS + 1
+jsr change_bank13_routine
+lda secret_table,X
+sta TEMP_POINTER
+lda secret_table + 1,X
+sta TEMP_POINTER + 1
 lda #0
-DOSECRET:
+dosecret:
 pha
 tay
-jsr CHANGEBANK13ROU
-lda (ADDRESS),Y
-bpl @_1
+jsr change_bank13_routine
+lda (TEMP_POINTER),Y
+bpl @dosecret_skip_if_positive
 pla
-jsr CHANGEBANK12ROU
+jsr change_bank12_routine
 rts
-@_1:
-cmp MAPNO
-bne @_2
+@dosecret_skip_if_positive:
+cmp MAP_NUMBER
+bne @dosecret_skip_if_not_equal
 iny
-lda (ADDRESS),Y
-sta TOPLEVVAR1
+lda (TEMP_POINTER),Y
+sta SCRATCH_BYTE_1
 iny
-lda (ADDRESS),Y
-sta TOPLEVVAR2
+lda (TEMP_POINTER),Y
+sta SCRATCH_BYTE_2
 iny
-lda (ADDRESS),Y
-sta TOPLEVVAR3
-jsr CHANGEBANK12ROU
-jsr ADDACHANGEDBLOCK1
-@_2:
+lda (TEMP_POINTER),Y
+sta SCRATCH_BYTE_3
+jsr change_bank12_routine
+jsr addachangedblock1
+@dosecret_skip_if_not_equal:
 pla
 clc
 adc #4
-jmp DOSECRET
-MARIONROU:
+jmp dosecret
+marionrou:
 ldy #3
-lda (ADDRESS9),Y
-jsr MULTSTRIPBY16SUB
-@_2:
-lda EXTRAVARS,X
+lda (TEMP_POINTER_9),Y
+jsr multiply_strip_by_16_sub
+@marionrou_body:
+lda EXTRA_VARS,X
 cmp #6 * 32 + 1
-beq @_1
-inc EXTRAVARS,X
+beq @marionrou_skip_if_equal
+inc EXTRA_VARS,X
 and #31
-bne @_1
-lda EXTRAVARS,X
+bne @marionrou_skip_if_equal
+lda EXTRA_VARS,X
 lsr
 lsr
 lsr
 lsr
 lsr
 cmp #6
-bne @_3
-lda CHANGEDBLOCKSPOINTER
+bne @marionrou_skip_if_not_equal
+lda CHANGED_BLOCKS_POINTER
 cmp #18
-bne @_1
+bne @marionrou_skip_if_equal
 ldy #6
-bne @_4
-@_3:
+bne @marionrou_skip_if_not_equal_2
+@marionrou_skip_if_not_equal:
 tay
-lda TREASURES,Y
-bne @_1
-@_4:
-sty TEMP
+lda TREASURE_FLAGS,Y
+bne @marionrou_skip_if_equal
+@marionrou_skip_if_not_equal_2:
+sty TEMP_BYTE
 lda #12
 sec
-sbc TEMP
+sbc TEMP_BYTE
 tay
 ldx #13
 lda #32
-jsr ADDACHANGEDBLOCK
-@_1:
-CHECKROBINANIM:
-ldx EXTRAVARPOINTER
-lda EXTRAVARS + 1,X
-bne ALREADYANIM
-lda ROBINY
+jsr addachangedblock
+@marionrou_skip_if_equal:
+checkrobinanim:
+ldx EXTRA_VAR_POINTER
+lda EXTRA_VARS + 1,X
+bne alreadyanim
+lda PLAYER_Y
 cmp #95
-bne @_2
+bne @checkrobinanim_skip_if_not_equal
 lda #2
-jsr STARTTUNE
-ldx EXTRAVARPOINTER
-ldy #NOOFONSCREENS - 1
+jsr starttune
+ldx EXTRA_VAR_POINTER
+ldy #NUMBER_OF_ONSCREEN_OBJECTS - 1
 lda #0
-sta EXTRASON + 157 / 8
-@_1:
-sta ONSCREENROU,Y
+sta EXTRAS_ON + 157 / 8
+@checkrobinanim_loop:
+sta ONSCREEN_ROUTINE,Y
 dey
-bpl @_1
-inc EXTRAVARS + 1,X
-@_2:
-jmp PRINTMARION
-ALREADYANIM:
-lda EXTRAVARS + 1,X
+bpl @checkrobinanim_loop
+inc EXTRA_VARS + 1,X
+@checkrobinanim_skip_if_not_equal:
+jmp printmarion
+alreadyanim:
+lda EXTRA_VARS + 1,X
 cmp #150
-bne @_1
-jmp FIREWORKDISPLAY
-@_1:
-inc EXTRAVARS + 1,X
-PRINTROBINEND:
-lda MINMAP
+bne @alreadyanim_skip_if_not_equal
+jmp fireworkdisplay
+@alreadyanim_skip_if_not_equal:
+inc EXTRA_VARS + 1,X
+printrobinend:
+lda MIN_MAP
 cmp #255
-beq @_11
+beq @printrobinend_skip_if_equal
 lda #66
-jsr ADDTOSCORE
+jsr addtoscore
 lda #85
-jsr ADDTOSCORE
-@_11:
+jsr addtoscore
+@printrobinend_skip_if_equal:
 lda #200
-sta ROBININVINC
+sta PLAYER_INVINCIBILITY_TIMER
 lda #0
-sta ROBINJUMPING
-sta ROBINLADDER
-lda EXTRAVARS + 1,X
-bmi @_3
+sta PLAYER_JUMPING
+sta PLAYER_ON_LADDER
+lda EXTRA_VARS + 1,X
+bmi @printrobinend_skip_if_negative
 lda #200
 sec
-sbc EXTRAVARS + 1,X
-bmi @_1
-@_3:
+sbc EXTRA_VARS + 1,X
+bmi @printrobinend_skip_if_negative_2
+@printrobinend_skip_if_negative:
 lda #128
-@_1:
-sta ROBINXL
+@printrobinend_skip_if_negative_2:
+sta PLAYER_X_LOW
 lda #($FF)
-sta OLEFTRIGHT
+sta OLD_PLAYER_FACING
 lda #0
-sta ROBINFIRING
-sta ROBINCROUCH
-lda EXTRAVARS + 1,X
-bmi @_2
+sta PLAYER_FIRING
+sta PLAYER_CROUCHING
+lda EXTRA_VARS + 1,X
+bmi @printrobinend_skip_if_negative_3
 cmp #55
-bcs @_4
-lda EXTRAVARS + 1,X
+bcs @printrobinend_skip_if_carry
+lda EXTRA_VARS + 1,X
 lsr
 lsr
 lsr
 and #7
-sta ROBINANIM
-jmp @_5
-@_4:
-jsr DOHEART
+sta PLAYER_ANIMATION
+jmp @printrobinend_skip
+@printrobinend_skip_if_carry:
+jsr do_heart
 lda #254
-sta ROBINCROUCH
-@_2:
+sta PLAYER_CROUCHING
+@printrobinend_skip_if_negative_3:
 lda #255
-sta ROBINANIM
-@_5:
-jsr CHANGEBANK13ROU
-jsr PRINTROBIN1
-jsr CHANGEBANK12ROU
-lda ROBINXL
-sta OROBINXL
-PRINTMARION:
+sta PLAYER_ANIMATION
+@printrobinend_skip:
+jsr change_bank13_routine
+jsr printrobin1
+jsr change_bank12_routine
+lda PLAYER_X_LOW
+sta PREVIOUS_PLAYER_X_LOW
+printmarion:
 ldx #128 - 32 + 10
 ldy #56
-lda #MARION
-jsr PRINTSPRITE
+lda #SPRITE_MARIONETTE
+jsr printsprite
 lda #3
-jmp BACKFROMROU
-FIREWORKDISPLAY:
-inc EXTRAVARS + 2,X
-lda EXTRAVARS + 2,X
+jmp backfromrou
+fireworkdisplay:
+inc EXTRA_VARS + 2,X
+lda EXTRA_VARS + 2,X
 cmp #256 - 7
-bne @_3
+bne @fireworkdisplay_skip_if_not_equal
 lda #253
-sta FADECOUNTER
-sta COMPLETEDGAME
-@_3:
-lda COUNTER
+sta FADE_COUNTER
+sta GAME_COMPLETED
+@fireworkdisplay_skip_if_not_equal:
+lda FRAME_COUNTER
 and #254
 clc
 adc #1
-sta COUNTER
+sta FRAME_COUNTER
 ldy #4
-lda HEARTSTABLE
-beq @_2
+lda HEART_TABLE
+beq @fireworkdisplay_skip_if_equal
 iny
-lda HEARTSTABLE + 16
-bne @_1
-@_2:
-lda SEED + 1
+lda HEART_TABLE + 16
+bne @fireworkdisplay_skip_if_not_equal_2
+@fireworkdisplay_skip_if_equal:
+lda RANDOM_SEED + 1
 and #127
 clc
 adc #64
-sta ADDRESS8 + 1
+sta TEMP_POINTER_8 + 1
 lda #0
-sta ADDRESS7 + 1
-lda SEED + 2
+sta TEMP_POINTER_7 + 1
+lda RANDOM_SEED + 2
 and #127
 clc
 adc #64
-sta ADDRESS7
+sta TEMP_POINTER_7
 tya
-jsr STARTSTARS
-ldx EXTRAVARPOINTER
-@_1:
-jmp PRINTROBINEND
-DOHEART:
+jsr startstars
+ldx EXTRA_VAR_POINTER
+@fireworkdisplay_skip_if_not_equal_2:
+jmp printrobinend
+do_heart:
 lda #12
-sta COINNUM
+sta COIN_NUMBER
 lda #8
-sta COINNUMX
+sta COIN_NUMBER_X
 lda #65
-sta COINNUMY
+sta COIN_NUMBER_Y
 lda #64
-sta COINNUMCOUNT
+sta COIN_NUMBER_COUNT
 rts
-REDEFINEWATERBANK:
-jsr CHANGEBANK13ROU
-jsr REDEFINEWATER
-jsr CHANGEBANK12ROU
-jmp BACKFROMROUNOVARS
+redefinewaterbank:
+jsr change_bank13_routine
+jsr redefine_water
+jsr change_bank12_routine
+jmp backfromrounovars

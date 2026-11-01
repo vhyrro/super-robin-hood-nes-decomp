@@ -1,5 +1,5 @@
-ED12:
-B12 = 49152 - ED12
-BANK12:
-.byte >(B12)
-.byte <(B12)
+end_of_bank12_data:
+BANK_12_SIZE = 49152 - end_of_bank12_data
+bank12_size_word:
+.byte >(BANK_12_SIZE)
+.byte <(BANK_12_SIZE)

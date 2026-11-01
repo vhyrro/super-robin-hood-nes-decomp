@@ -1,4 +1,4 @@
-BLKSTL:
+block_strip_top_left:
 .byte $00,$01,$03,$05,$07,$08,$0B,$08,$07,$0D,$08,$11,$13,$17,$1B,$1F
 .byte $23,$27,$2B,$2F,$33,$34,$34,$34,$3B,$36,$33,$34,$34,$34,$37,$36
 .byte $3F,$41,$45,$45,$49,$4D,$51,$55,$55,$59,$59,$5C,$5C,$5C,$5C,$62
@@ -15,7 +15,7 @@ BLKSTL:
 .byte $A0,$A4,$A8,$AC,$00,$B1,$00,$B6,$B9,$00,$00,$00,$A0,$A4,$C6,$CA
 .byte $CC,$CF,$07,$D3,$D5,$D9,$DD,$D3,$E0,$07,$E0,$08,$E9,$ED,$EE,$08
 .byte $07,$F5,$F9,$FD,$FE,$9F,$FF,$00,$07,$08,$0B,$08,$07,$0D,$08,$11
-BLKSTR:
+block_strip_top_right:
 .byte $00,$02,$04,$06,$08,$07,$07,$0B,$0D,$08,$07,$12,$14,$18,$1C,$20
 .byte $24,$28,$2C,$30,$34,$37,$37,$3B,$37,$38,$34,$37,$37,$3B,$33,$38
 .byte $40,$42,$46,$46,$4A,$4E,$52,$52,$57,$59,$59,$5C,$5C,$5C,$5C,$63
@@ -32,7 +32,7 @@ BLKSTR:
 .byte $A1,$A5,$A9,$AD,$00,$00,$00,$B7,$00,$BB,$BD,$BF,$C1,$A5,$C7,$00
 .byte $CD,$00,$08,$D4,$D6,$DA,$DD,$D4,$E1,$08,$E1,$E8,$EA,$07,$EF,$F2
 .byte $F4,$F6,$FA,$FD,$FE,$9F,$FF,$00,$08,$07,$07,$0B,$0D,$08,$07,$12
-BLKSBL:
+block_strip_bottom_left:
 .byte $00,$00,$01,$03,$09,$0A,$0C,$0A,$09,$0E,$0F,$09,$15,$19,$1D,$21
 .byte $25,$29,$2D,$31,$35,$36,$39,$36,$3C,$3D,$35,$36,$39,$36,$38,$3D
 .byte $3F,$43,$45,$47,$4B,$4F,$53,$56,$56,$00,$5A,$5D,$5F,$00,$61,$62
@@ -49,7 +49,7 @@ BLKSBL:
 .byte $A2,$A6,$AA,$AE,$00,$B2,$B4,$B8,$AE,$00,$00,$00,$C2,$C4,$C8,$CB
 .byte $AA,$D0,$D1,$0A,$D7,$DB,$DD,$DE,$E2,$E4,$E6,$0A,$EB,$0A,$F0,$0A
 .byte $09,$F7,$FB,$FD,$9D,$9F,$9F,$FF,$09,$0A,$0C,$0A,$09,$0E,$0F,$09
-BLKSBR:
+block_strip_bottom_right:
 .byte $00,$00,$02,$04,$0A,$09,$09,$0C,$0E,$0A,$10,$0A,$16,$1A,$1E,$22
 .byte $26,$2A,$2E,$32,$36,$38,$3A,$3C,$38,$3E,$36,$38,$3A,$3C,$35,$3E
 .byte $40,$44,$46,$48,$4C,$50,$54,$54,$58,$00,$5B,$5E,$60,$00,$5F,$00
@@ -66,7 +66,7 @@ BLKSBR:
 .byte $A3,$A7,$AB,$AF,$B0,$B3,$B5,$AB,$BA,$BC,$BE,$C0,$C3,$C5,$C9,$00
 .byte $CE,$AF,$D2,$09,$D8,$DC,$DD,$DF,$E3,$E5,$E7,$09,$EC,$09,$F1,$F3
 .byte $0A,$F8,$FC,$FD,$9D,$9F,$9F,$FF,$0A,$09,$09,$0C,$0E,$0A,$10,$0A
-BLKSATTR:
+block_strip_attributes:
 .byte $00,$00,$00,$00,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08
 .byte $08,$08,$08,$08,$04,$04,$04,$04,$04,$04,$00,$00,$00,$00,$00,$00
 .byte $00,$00,$00,$00,$08,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -83,7 +83,7 @@ BLKSATTR:
 .byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$04,$04
 .byte $00,$00,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08,$08
 .byte $08,$08,$08,$04,$04,$0C,$0C,$0C,$00,$00,$00,$00,$00,$00,$00,$00
-SOLIDCHRS:
+solidchrs:
 .byte $00
 .byte $F0
 .byte $FF
@@ -340,7 +340,7 @@ SOLIDCHRS:
 .byte $FF
 .byte $FF
 .byte $FF
-MAPHEIGHTS:
+mapheights:
 .byte $00
 .byte $01
 .byte $01
@@ -355,30 +355,30 @@ MAPHEIGHTS:
 .byte $06
 .byte $07
 .byte $08
-MAPCHRSDEFS:
-DUNGEONSCHRS = * - MAPCHRSDEFS
-.byte <(BASECHR0_157)
-.byte <(ROCKCHR157_99)
+mapchrsdefs:
+CHARSET_DUNGEON = * - mapchrsdefs
+.byte <(CHARSET_BASE)
+.byte <(CHARSET_ROCK)
 .byte $FF
-HALLSCHRS = * - MAPCHRSDEFS
-.byte <(BASECHR0_157)
-.byte <(BEADCHR157_23)
-.byte <(DOORCHR180_73)
+CHARSET_HALL = * - mapchrsdefs
+.byte <(CHARSET_BASE)
+.byte <(CHARSET_BEAD)
+.byte <(CHARSET_DOOR)
 .byte $FF
-CHURCHCHRS = * - MAPCHRSDEFS
-.byte <(BASECHR0_157)
-.byte <(ARCHCHR157_85)
-.byte <(BOXCHR247_9)
+CHARSET_CHURCH = * - mapchrsdefs
+.byte <(CHARSET_BASE)
+.byte <(CHARSET_ARCH)
+.byte <(CHARSET_BOX)
 .byte $FF
-SKYCHRS = * - MAPCHRSDEFS
-.byte <(BASECHR0_157)
-.byte <(BEADCHR157_23)
-.byte <(BEDCHR180_66)
-.byte <(BOXCHR247_9)
+CHARSET_SKY = * - mapchrsdefs
+.byte <(CHARSET_BASE)
+.byte <(CHARSET_BEAD)
+.byte <(CHARSET_BED)
+.byte <(CHARSET_BOX)
 .byte $FF
-GAMEPALLETTES:
-KITCHENSPAL = * - GAMEPALLETTES
-SKYPAL = * - GAMEPALLETTES
+gamepallettes:
+PALETTE_KITCHEN = * - gamepallettes
+PALETTE_SKY = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -395,7 +395,7 @@ SKYPAL = * - GAMEPALLETTES
 .byte $37
 .byte $26
 .byte $04
-WATERPAL = * - GAMEPALLETTES
+PALETTE_WATER = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -412,7 +412,7 @@ WATERPAL = * - GAMEPALLETTES
 .byte $3A
 .byte $2A
 .byte $16
-LAVAPAL = * - GAMEPALLETTES
+PALETTE_LAVA = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -429,7 +429,7 @@ LAVAPAL = * - GAMEPALLETTES
 .byte $35
 .byte $25
 .byte $16
-DUNGEONSPAL = * - GAMEPALLETTES
+PALETTE_DUNGEON = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -446,7 +446,7 @@ DUNGEONSPAL = * - GAMEPALLETTES
 .byte $36
 .byte $26
 .byte $16
-HALLSPAL = * - GAMEPALLETTES
+PALETTE_HALL = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -463,7 +463,7 @@ HALLSPAL = * - GAMEPALLETTES
 .byte $36
 .byte $26
 .byte $04
-BEDROOMSPAL = * - GAMEPALLETTES
+PALETTE_BEDROOM = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -480,7 +480,7 @@ BEDROOMSPAL = * - GAMEPALLETTES
 .byte $3A
 .byte $19
 .byte $07
-CHURCHPAL = * - GAMEPALLETTES
+PALETTE_CHURCH = * - gamepallettes
 .byte $0E
 .byte $27
 .byte $17
@@ -497,16 +497,16 @@ CHURCHPAL = * - GAMEPALLETTES
 .byte $36
 .byte $26
 .byte $04
-SHOWLIVESCOLOURS = * - 8
+SHOW_LIVES_COLOURS = * - 8
 .byte $0E,$0E,$0E,$0E
 .byte $0E,$20,$0E,$0E
-SPRITECOLOURS:
+spritecolours:
 .byte $0E,$27,$1A,$06
 .byte $0E,$37,$27,$06
 .byte $0E,$20,$2D,$0C
 .byte $0E,$37,$15,$06
-MAPA:
-MAPB:
+map_a:
+map_b:
 .byte $1A,$1D,$1C,$1F,$1A,$1D,$1C,$1F,$1B,$1B,$1C,$1F,$1A,$1D
 .byte $1E,$1E,$1A,$1D,$1E,$1E,$1A,$1D,$00,$00,$1A,$1D,$1E,$1E
 .byte $1C,$1F,$1E,$1E,$1C,$1F,$1E,$1E,$00,$00,$1E,$1E,$1C,$1F
@@ -579,7 +579,7 @@ MAPB:
 .byte $1D,$1A,$00,$00,$00,$00,$3D,$3F,$00,$00,$1C,$1F,$1D,$1A
 .byte $1E,$1E,$1A,$1C,$1F,$00,$00,$00,$00,$00,$1A,$1D,$1E,$1E
 .byte $1C,$1F,$1E,$1B,$1C,$1F,$1B,$1B,$1C,$1F,$1E,$1E,$1C,$1F
-MAPC:
+map_c:
 .byte $06,$FC,$06,$FC,$06,$FC,$06,$FC,$06,$FC,$06,$FC,$06,$FC
 .byte $05,$FD,$05,$FD,$05,$FD,$05,$FD,$07,$FD,$07,$FD,$05,$FD
 .byte $05,$E2,$E7,$E8,$EB,$04,$05,$04,$00,$00,$CD,$04,$05,$04
@@ -612,7 +612,7 @@ MAPC:
 .byte $05,$E2,$E7,$EA,$ED,$04,$00,$00,$00,$00,$05,$04,$05,$04
 .byte $05,$FC,$05,$FC,$05,$FC,$06,$FC,$06,$FC,$05,$FC,$05,$FC
 .byte $07,$FD,$05,$FD,$05,$FD,$05,$FD,$05,$FD,$07,$FD,$05,$FD
-MAPD:
+map_d:
 .byte $06,$04,$06,$04,$06,$04,$07,$04,$06,$04,$06,$04,$06,$04
 .byte $05,$04,$07,$04,$07,$04,$00,$00,$00,$04,$00,$00,$F4,$04
 .byte $07,$04,$00,$00,$00,$04,$00,$49,$49,$04,$00,$00,$F4,$04
@@ -629,7 +629,7 @@ MAPD:
 .byte $05,$04,$00,$49,$F3,$04,$05,$35,$4B,$49,$49,$4A,$21,$21
 .byte $05,$04,$06,$04,$06,$04,$0A,$0B,$06,$04,$06,$04,$06,$04
 .byte $07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$05,$04
-MAPE:
+map_e:
 .byte $04,$06,$FC,$06,$04,$06,$FC,$06,$04,$06,$FC,$06,$04,$06
 .byte $04,$05,$FD,$07,$F8,$07,$FD,$05,$F8,$07,$FD,$07,$04,$05
 .byte $04,$05,$34,$00,$00,$25,$04,$05,$00,$00,$00,$25,$04,$05
@@ -694,7 +694,7 @@ MAPE:
 .byte $04,$00,$00,$35,$00,$00,$00,$F3,$F8,$00,$00,$25,$F8,$05
 .byte $F8,$06,$FC,$06,$F8,$06,$FC,$06,$04,$06,$FC,$06,$F8,$05
 .byte $04,$07,$FD,$07,$04,$07,$FD,$07,$04,$07,$FD,$07,$04,$07
-MAPF:
+map_f:
 .byte $04,$00,$00,$07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$06
 .byte $04,$5B,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$04,$05
 .byte $04,$06,$F8,$00,$FC,$06,$FC,$06,$FC,$06,$00,$00,$E2,$E3
@@ -903,7 +903,7 @@ MAPF:
 .byte $04,$05,$04,$05,$E9,$EC,$EE,$EF,$F0,$06,$04,$06,$04,$05
 .byte $04,$05,$E2,$E7,$EA,$ED,$04,$05,$04,$05,$04,$05,$04,$05
 .byte $04,$07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$07
-MAPG:
+map_g:
 .byte $04,$FC,$04,$06,$04,$06,$04,$FC,$04,$06,$04,$06,$04,$06
 .byte $04,$FD,$04,$07,$F8,$07,$04,$FD,$04,$07,$F8,$07,$04,$05
 .byte $04,$00,$00,$00,$00,$00,$04,$00,$00,$00,$04,$00,$00,$05
@@ -1080,7 +1080,7 @@ MAPG:
 .byte $04,$05,$2A,$49,$49,$49,$49,$49,$49,$49,$49,$05,$04,$05
 .byte $04,$05,$04,$FC,$04,$06,$FC,$06,$04,$FC,$04,$05,$FC,$05
 .byte $04,$07,$04,$FD,$04,$07,$FD,$07,$04,$FD,$04,$07,$FD,$07
-MAPH:
+map_h:
 .byte $F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA
 .byte $F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$F9
 .byte $F8,$00,$00,$00,$00,$00,$00,$20,$20,$20,$20,$20,$20,$F9
@@ -1257,7 +1257,7 @@ MAPH:
 .byte $F8,$11,$10,$10,$10,$10,$5C,$10,$10,$10,$10,$10,$10,$F9
 .byte $F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$F9
 .byte $F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$F9
-MAPI:
+map_i:
 .byte $04,$06,$04,$06,$04,$06,$04,$06,$04,$06,$04,$06,$04,$06
 .byte $04,$07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$07,$04,$07
 .byte $20,$20,$20,$AB,$AB,$AB,$AB,$2A,$AB,$AB,$04,$56,$AB,$BC
@@ -1418,7 +1418,7 @@ MAPI:
 .byte $BC,$AB,$51,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$A9,$51,$A9,$BC
 .byte $BC,$06,$04,$06,$04,$06,$04,$06,$04,$06,$04,$06,$04,$BC
 .byte $BC,$07,$04,$07,$04,$05,$04,$05,$04,$05,$04,$05,$04,$BC
-MAPJ:
+map_j:
 .byte $F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA
 .byte $F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB
 .byte $F8,$34,$00,$55,$00,$2B,$F8,$34,$9C,$11,$11,$11,$11,$20
@@ -1459,7 +1459,7 @@ MAPJ:
 .byte $F8,$35,$10,$10,$F3,$F8,$BF,$10,$F8,$BF,$10,$10,$F8,$F9
 .byte $F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$F9
 .byte $F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB
-MAPL:
+map_l:
 .byte $CA,$CA,$CA,$CA,$CA,$CA,$CA,$CA,$CA,$C0,$F8,$FA,$F8,$FA
 .byte $CA,$CA,$CA,$CA,$CA,$CA,$CA,$CA,$CA,$CA,$F8,$FB,$F8,$F9
 .byte $CA,$CA,$CA,$CA,$CA,$CA,$CA,$CA,$F3,$C0,$F8,$00,$00,$F9
@@ -1493,7 +1493,7 @@ MAPL:
 .byte $CA,$CA,$CA,$CA,$CA,$F3,$F8,$FA,$F8,$F9,$F8,$FA,$F8,$F9
 .byte $CA,$CA,$CA,$CA,$CA,$CA,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB
 .res 8, 3
-MAPM:
+map_m:
 .byte $CA,$CA,$CA,$CB,$CA,$CA,$CA,$CA,$CA,$F8,$F8,$F8,$F8,$FA
 .byte $CA,$BD,$C7,$C7,$C7,$C7,$C7,$C7,$C7,$C7,$C4,$C2,$C2,$F9
 .byte $CA,$C9,$10,$12,$13,$10,$12,$13,$10,$C0,$C1,$C2,$C2,$20
@@ -1518,7 +1518,7 @@ MAPM:
 .byte $CA,$CA,$CA,$CA,$CA,$CA,$CA,$BE,$C8,$C8,$C4,$C2,$F8,$F9
 .byte $CA,$CA,$CB,$CA,$CA,$CA,$CA,$CA,$CA,$C0,$C1,$F3,$F8,$F9
 .byte $CA,$CA,$CC,$CA,$CA,$CA,$CA,$CA,$CA,$F8,$F8,$FA,$F8,$FB
-MAPN:
+map_n:
 .byte $F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA,$F8,$FA
 .byte $F8,$FB,$F8,$FB,$F8,$FB,$F8,$F9,$F8,$FB,$F8,$FB,$F8,$F9
 .byte $F8,$00,$34,$00,$00,$00,$00,$F9,$34,$00,$00,$00,$00,$FB
@@ -1551,7 +1551,7 @@ MAPN:
 .byte $F8,$35,$00,$00,$00,$00,$00,$29,$00,$00,$00,$00,$00,$20
 .byte $F8,$FA,$F8,$FA,$F8,$FA,$F8,$F9,$F8,$FA,$F8,$FA,$F8,$FA
 .byte $F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB,$F8,$FB
-MAPO:
+map_o:
 .byte $CA,$CA,$CA,$CA,$CA,$CA,$CC,$CA,$CA,$CA,$C9,$F8,$F8,$F8
 .byte $CA,$CA,$CB,$CA,$CA,$CA,$BD,$C7,$C7,$C7,$C0,$C5,$00,$F8
 .byte $CA,$CA,$CC,$CA,$CA,$CA,$C9,$10,$12,$13,$10,$C2,$C5,$F8

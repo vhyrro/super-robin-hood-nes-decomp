@@ -1,132 +1,132 @@
-AMASK = 128
-BMASK = 64
-SELMASK = 32
-STMASK = 16
-UMASK = 8
-DMASK = 4
-LMASK = 2
-RMASK = 1
-READKEYPADS:
+BUTTON_A_MASK = 128
+BUTTON_B_MASK = 64
+BUTTON_SELECT_MASK = 32
+BUTTON_START_MASK = 16
+BUTTON_UP_MASK = 8
+BUTTON_DOWN_MASK = 4
+BUTTON_LEFT_MASK = 2
+BUTTON_RIGHT_MASK = 1
+readkeypads:
 ldx #1
 stx 16406
 dex
 stx 16406
-PADLOOP1:
-lda PAD
-sta DEBOUNCE
+padloop1:
+lda JOYPAD_STATE
+sta JOYPAD_DEBOUNCE
 ldy #8
-PADLOOP2:
+padloop2:
 lda 16406
 lsr A
-rol PAD
+rol JOYPAD_STATE
 dey
-bne PADLOOP2
+bne padloop2
 rts
-RANDOM:
-lda COUNTER
+random:
+lda FRAME_COUNTER
 ror A
-eor SEED + 1
-eor SEED
+eor RANDOM_SEED + 1
+eor RANDOM_SEED
 rol A
-ror SEED + 2
-sta SEED + 1
+ror RANDOM_SEED + 2
+sta RANDOM_SEED + 1
 eor #255
 rol A
-eor SEED
-sta SEED
+eor RANDOM_SEED
+sta RANDOM_SEED
 rts
-TESTSTARTKEY:
-lda #STMASK
-bne GENERALKEYTEST
-TESTSELECTKEY:
-lda #SELMASK
-bne GENERALKEYTEST
-TESTANYKEY:
+teststartkey:
+lda #BUTTON_START_MASK
+bne generalkeytest
+testselectkey:
+lda #BUTTON_SELECT_MASK
+bne generalkeytest
+testanykey:
 lda #255
-GENERALKEYTEST:
-sta TEMP
-lda PAD
-and TEMP
-beq @_3
-lda DEBOUNCE
-and TEMP1
-beq @_4
+generalkeytest:
+sta TEMP_BYTE
+lda JOYPAD_STATE
+and TEMP_BYTE
+beq @generalkeytest_skip_if_equal
+lda JOYPAD_DEBOUNCE
+and TEMP_BYTE_1
+beq @generalkeytest_skip_if_equal_2
 lda #0
-@_3:
+@generalkeytest_skip_if_equal:
 rts
-@_4:
+@generalkeytest_skip_if_equal_2:
 lda #1
 rts
-CHECKFORPAUSEKEY:
-lda DONTPAUSE
-bne @_7
-@_6:
-lda PAD
-and #STMASK
-beq @_1
-lda DEBOUNCE
-and #STMASK
-bne @_1
-lda PAUSE
-@_7:
+checkforpausekey:
+lda PAUSE_DISABLED
+bne @checkforpausekey_skip_if_not_equal
+@checkforpausekey_body:
+lda JOYPAD_STATE
+and #BUTTON_START_MASK
+beq @checkforpausekey_skip_if_equal_2
+lda JOYPAD_DEBOUNCE
+and #BUTTON_START_MASK
+bne @checkforpausekey_skip_if_equal_2
+lda GAME_PAUSED
+@checkforpausekey_skip_if_not_equal:
 eor #1
-sta PAUSE
-beq @_2
+sta GAME_PAUSED
+beq @checkforpausekey_skip_if_equal
 lda #0
 sta 16405
 rts
-@_2:
+@checkforpausekey_skip_if_equal:
 lda #15
 sta 16405
-@_1:
+@checkforpausekey_skip_if_equal_2:
 rts
-CLEARFULLSPRITEBLOCK:
+clearfullspriteblock:
 ldx #0
-jsr CLEARSPRITEBLOCK1
-SENDSPRITEBLOCK:
+jsr clearspriteblock1
+sendspriteblock:
 lda #0
-sta _SPRITEADDR
-lda #>(SPRITEBLOCK)
+sta OAM_ADDRESS_REGISTER
+lda #>(SPRITE_BLOCK_ADDRESS)
 sta 16404
 rts
-TURNOFFTUNE:
+turnofftune:
 lda #0
-STARTTUNE:
+starttune:
 tay
-lda BANKNO
+lda CURRENT_BANK
 pha
-jsr CHANGEBANK13ROU
+jsr change_bank13_routine
 lda #0
 sta 16405
 tya
-jsr START_MUSIC
+jsr start_music
 pla
-jmp CHANGEBANKROU
-SOUNDFX:
-sta FFX_AD1L
+jmp change_bank_routine
+soundfx:
+sta SFX_FREQUENCY_ADDRESS_1_LOW
 txa
 pha
 tya
 pha
-lda BANKNO
+lda CURRENT_BANK
 pha
-jsr CHANGEBANK13ROU
-lda FFX_AD1L
-jsr FX_SETUP
+jsr change_bank13_routine
+lda SFX_FREQUENCY_ADDRESS_1_LOW
+jsr fx_setup
 pla
-jsr CHANGEBANKROU
+jsr change_bank_routine
 pla
 tay
 pla
 tax
 rts
-CHANGEBANKROU:
-sta BANKNO
-CHANGEBANKROU1:
+change_bank_routine:
+sta CURRENT_BANK
+change_bank_routine_1:
 tax
-sta BANK_TBL,X
+sta bank_table,X
 rts
-CLEARSCR:
+clearscr:
 .byte $A0
 .byte $00
 .byte $FB
@@ -137,153 +137,153 @@ CLEARSCR:
 .byte $FA
 .byte $FA
 .byte $FF
-CLEARSPRITEBLOCK:
+clearspriteblock:
 ldx #4
-CLEARSPRITEBLOCK1:
-stx SPRITEBLOCKPOINTER
-@_1:
+clearspriteblock1:
+stx SPRITE_BLOCK_POINTER
+@clearspriteblock1_loop:
 lda #254
-sta SPRITEBLOCK,X
+sta SPRITE_BLOCK_ADDRESS,X
 lda #0
-sta SPRITEBLOCK + 3,X
-sta SPRITEBLOCK + 2,X
-sta SPRITEBLOCK + 1,X
+sta SPRITE_BLOCK_ADDRESS + 3,X
+sta SPRITE_BLOCK_ADDRESS + 2,X
+sta SPRITE_BLOCK_ADDRESS + 1,X
 inx
 inx
 inx
 inx
-bne @_1
+bne @clearspriteblock1_loop
 rts
-TURNINTERON1:
-asl FLYFLAG
-@M968__1:
-bit FLYFLAG
-bpl @M968__1
-jsr SENDSPRITEBLOCK
-TURNINTERON:
+turninteron1:
+asl VBLANK_FLAG
+@turninteron1_wait_vblank:
+bit VBLANK_FLAG
+bpl @turninteron1_wait_vblank
+jsr sendspriteblock
+turninteron:
 lda #255
-sta DEBOUNCE
-ldx X_SCROLL
-ldy Y_SCROLL
-stx _SCROLLCON
-sty _SCROLLCON
-lda CONTROL0
-ldy CONTROL1
-sta _CONTROL0
-sty _CONTROL1
+sta JOYPAD_DEBOUNCE
+ldx SCROLL_X
+ldy SCROLL_Y
+stx PPU_SCROLL_REGISTER
+sty PPU_SCROLL_REGISTER
+lda PPU_CONTROL_SHADOW
+ldy PPU_MASK_SHADOW
+sta PPU_CONTROL_REGISTER
+sty PPU_MASK_REGISTER
 lda #255
-sta INTERON
+sta INTERRUPT_ENABLED
 rts
-TURNINTEROFFFADE:
+turninterofffade:
 lda #0
-sta FINISHEDLOOP
+sta FRAME_FINISHED
 lda #252
-sta FADECOUNTER
-FADEOFFSCREEN:
-asl FLYFLAG
-@M969__1:
-bit FLYFLAG
-bpl @M969__1
-lda FADECOUNTER
+sta FADE_COUNTER
+fadeoffscreen:
+asl VBLANK_FLAG
+@fadeoffscreen_wait_vblank:
+bit VBLANK_FLAG
+bpl @fadeoffscreen_wait_vblank
+lda FADE_COUNTER
 cmp #255
-bne FADEOFFSCREEN
-jmp TURNINTEROFF1
-TURNINTEROFF:
-asl FLYFLAG
-@M970__1:
-bit FLYFLAG
-bpl @M970__1
-TURNINTEROFF1:
+bne fadeoffscreen
+jmp turninteroff1
+turninteroff:
+asl VBLANK_FLAG
+@turninteroff_wait_vblank:
+bit VBLANK_FLAG
+bpl @turninteroff_wait_vblank
+turninteroff1:
 lda #0
-sta FINISHEDLOOP
-sta INTERON
-sta _CONTROL1
-sta X_SCROLL
-sta Y_SCROLL
-sta _SCROLLCON
-sta _SCROLLCON
-sta VRAMPOINTER
-sta PAUSE
+sta FRAME_FINISHED
+sta INTERRUPT_ENABLED
+sta PPU_MASK_REGISTER
+sta SCROLL_X
+sta SCROLL_Y
+sta PPU_SCROLL_REGISTER
+sta PPU_SCROLL_REGISTER
+sta VRAM_WRITE_POINTER
+sta GAME_PAUSED
 lda #30
-sta CONTROL1
+sta PPU_MASK_SHADOW
 lda #144
-sta CONTROL0
-sta _CONTROL0
-jmp CLEARFULLSPRITEBLOCK
-ADDTOLIVES:
-inc LIVES
+sta PPU_CONTROL_SHADOW
+sta PPU_CONTROL_REGISTER
+jmp clearfullspriteblock
+addtolives:
+inc PLAYER_LIVES
 rts
-HIGHBITADD:
+high_bit_add_table:
 .byte $FF
 .byte $00
 .byte $00
-PRINTLIVES:
-lda LIVES
-beq @_2
-bmi @_2
+printlives:
+lda PLAYER_LIVES
+beq @printlives_skip_if_equal
+bmi @printlives_skip_if_equal
 cmp #3
-bcc @_3
+bcc @printlives_skip_if_no_carry
 lda #3
-@_3:
-sta TEMP9
+@printlives_skip_if_no_carry:
+sta TEMP_BYTE_9
 lda #0 + 64
-sta TEMP
-lda #32 - YDISPLACE
-sta ADDRESS5
-@_1:
-ldy ADDRESS5
+sta TEMP_BYTE
+lda #32 - SPRITE_Y_DISPLACE
+sta TEMP_POINTER_5
+@printlives_loop:
+ldy TEMP_POINTER_5
 ldx #240
 lda #1
-jsr POKESPRITE2BY2
-lda ADDRESS5
+jsr pokesprite2by2
+lda TEMP_POINTER_5
 clc
 adc #24
-sta ADDRESS5
-dec TEMP9
-bne @_1
-@_2:
+sta TEMP_POINTER_5
+dec TEMP_BYTE_9
+bne @printlives_loop
+@printlives_skip_if_equal:
 rts
-PRINTSCORE:
+printscore:
 lda #128 - 10 * 3 - 4
 ldy #0
-@_3:
-ldx SCORE,Y
-bne @_4
+@printscore_loop:
+ldx PLAYER_SCORE,Y
+bne @printscore_skip_if_not_equal
 clc
 adc #5
 iny
 cpy #3
-bne @_3
-@_4:
-sta TEMP
-@_2:
-lda SCORE,Y
+bne @printscore_loop
+@printscore_skip_if_not_equal:
+sta TEMP_BYTE
+@printscore_loop_2:
+lda PLAYER_SCORE,Y
 clc
 adc #128
-ldx SPRITEBLOCKPOINTER
-beq @_1
-sta SPRITEBLOCK + 1,X
-lda TEMP1
+ldx SPRITE_BLOCK_POINTER
+beq @printscore_skip_if_equal
+sta SPRITE_BLOCK_ADDRESS + 1,X
+lda TEMP_BYTE_1
 lda #2
-sta SPRITEBLOCK + 2,X
-lda TEMP
-sta SPRITEBLOCK + 3,X
+sta SPRITE_BLOCK_ADDRESS + 2,X
+lda TEMP_BYTE
+sta SPRITE_BLOCK_ADDRESS + 3,X
 clc
 adc #10
-sta TEMP
+sta TEMP_BYTE
 lda #16
-sta SPRITEBLOCK + 0,X
+sta SPRITE_BLOCK_ADDRESS + 0,X
 txa
 clc
 adc #4
-sta SPRITEBLOCKPOINTER
+sta SPRITE_BLOCK_POINTER
 iny
 cpy #6
-bne @_2
-@_1:
+bne @printscore_loop_2
+@printscore_skip_if_equal:
 rts
-ADDTOSCORE:
-sty TEMPY
+addtoscore:
+sty TEMP_Y
 pha
 lsr
 lsr
@@ -292,98 +292,98 @@ lsr
 tay
 pla
 and #15
-ADDTOLP:
+add_to_score_loop:
 clc
-adc SCORE,Y
-sta SCORE,Y
+adc PLAYER_SCORE,Y
+sta PLAYER_SCORE,Y
 cmp #10
-bcc ENDUPDATESCORE
+bcc endupdatescore
 sec
 sbc #10
-sta SCORE,Y
+sta PLAYER_SCORE,Y
 lda #1
 dey
-bpl ADDTOLP
-ENDUPDATESCORE:
-ldy TEMPY
+bpl add_to_score_loop
+endupdatescore:
+ldy TEMP_Y
 rts
-RESETSCORE:
+resetscore:
 ldy #6
-@_1:
+@resetscore_loop:
 lda #0
-sta SCORE,Y
+sta PLAYER_SCORE,Y
 lda #8
-sta TREASURES,Y
+sta TREASURE_FLAGS,Y
 dey
-bpl @_1
+bpl @resetscore_loop
 rts
-ADDTOHEARTS:
-lda HEARTS
+addtohearts:
+lda PLAYER_HEARTS
 clc
 adc #1
-sta HEARTS
+sta PLAYER_HEARTS
 cmp #5
-bcc @_2
-inc LIVES
+bcc @addtohearts_skip_if_no_carry
+inc PLAYER_LIVES
 clc
 adc #($FD)
-sta HEARTS
-lda #EXTRALIFEFX
-jsr SOUNDFX
-@_2:
+sta PLAYER_HEARTS
+lda #SFX_EXTRA_LIFE
+jsr soundfx
+@addtohearts_skip_if_no_carry:
 rts
-SUBFROMHEARTS:
-ldy ROBININVINC
-beq @_2
+subfromhearts:
+ldy PLAYER_INVINCIBILITY_TIMER
+beq @subfromhearts_skip_if_equal
 rts
-@_2:
-SUBFROMHEARTS1:
+@subfromhearts_skip_if_equal:
+subfromhearts1:
 eor #255
 clc
 adc #1
 clc
-adc HEARTS
-sta HEARTS
+adc PLAYER_HEARTS
+sta PLAYER_HEARTS
 ldy #150
-sty ROBININVINC
+sty PLAYER_INVINCIBILITY_TIMER
 cmp #0
-beq KILLYOU1
-bpl LITTLEKILL
-KILLYOUTOTALLY:
+beq killyou1
+bpl littlekill
+killyoutotally:
 lda #0
-sta HEARTS
-KILLYOU1:
+sta PLAYER_HEARTS
+killyou1:
 lda #100
-sta KILLED
+sta PLAYER_KILLED
 lda #1
-sta TEMP2
+sta TEMP_BYTE_2
 lda #0
-sta HEARTSTABLE + 0
-sta HEARTSTABLE + 16
-sta HEARTSTABLE + 32
+sta HEART_TABLE + 0
+sta HEART_TABLE + 16
+sta HEART_TABLE + 32
 ldx #32
-jsr GOTSTARSX
-lda #KILLYOUTOTALLYFX
-jmp SOUNDFX
-LITTLEKILL:
+jsr gotstarsx
+lda #SFX_KILL_YOU_TOTALLY
+jmp soundfx
+littlekill:
 lda #0
-jsr STARTSTARS
-lda #KILLYOUFX
-jmp SOUNDFX
-PRINTHEARTS:
+jsr startstars
+lda #SFX_KILL_YOU
+jmp soundfx
+printhearts:
 lda #24
-sta TEMP
-ldy HEARTS
-bmi @_1
-beq @_1
-lda HEARTCOUNTER
-bit PAUSE
-bne @_3
+sta TEMP_BYTE
+ldy PLAYER_HEARTS
+bmi @printhearts_skip_if_negative
+beq @printhearts_skip_if_negative
+lda HEART_COUNTER
+bit GAME_PAUSED
+bne @printhearts_skip_if_not_equal
 clc
-adc HEARTBEAT - 1,Y
-sta HEARTCOUNTER
-@_3:
-lda HEARTCOUNTER
+adc heartbeat - 1,Y
+sta HEART_COUNTER
+@printhearts_skip_if_not_equal:
+lda HEART_COUNTER
 lsr
 lsr
 lsr
@@ -391,37 +391,37 @@ lsr
 lsr
 lsr
 tax
-lda HEARTSDEFS,X
-sta TEMP1
-@_2:
-ldx SPRITEBLOCKPOINTER
-beq @_1
-lda TEMP1
-sta SPRITEBLOCK + 1,X
+lda heartsdefs,X
+sta TEMP_BYTE_1
+@printhearts_loop:
+ldx SPRITE_BLOCK_POINTER
+beq @printhearts_skip_if_negative
+lda TEMP_BYTE_1
+sta SPRITE_BLOCK_ADDRESS + 1,X
 lda #3
-sta SPRITEBLOCK + 2,X
-sta SPRITEBLOCK + 2 + 4,X
+sta SPRITE_BLOCK_ADDRESS + 2,X
+sta SPRITE_BLOCK_ADDRESS + 2 + 4,X
 lda #16
-sta SPRITEBLOCK + 3,X
-lda TEMP
-sta SPRITEBLOCK + 0,X
+sta SPRITE_BLOCK_ADDRESS + 3,X
+lda TEMP_BYTE
+sta SPRITE_BLOCK_ADDRESS + 0,X
 clc
 adc #24
-sta TEMP
+sta TEMP_BYTE
 txa
 clc
 adc #4
-sta SPRITEBLOCKPOINTER
+sta SPRITE_BLOCK_POINTER
 dey
-bne @_2
-@_1:
+bne @printhearts_loop
+@printhearts_skip_if_negative:
 rts
-HEARTSDEFS:
+heartsdefs:
 .byte $8A
 .byte $8B
 .byte $8C
 .byte $8B
-HEARTBEAT:
+heartbeat:
 .byte $12
 .byte $0E
 .byte $0A
@@ -429,38 +429,38 @@ HEARTBEAT:
 .byte $06
 .byte $04
 .byte $02
-TREASPAL:
+treaspal:
 .byte $01
 .byte $01
 .byte $02
 .byte $01
 .byte $01
 .byte $03
-WAITFORSTARTKEY:
-lda FADECOUNTER
+waitforstartkey:
+lda FADE_COUNTER
 cmp #255
-beq @_2
+beq @waitforstartkey_skip_if_equal
 cmp #0
-bne @_4
-lda PAD
-and #STMASK
-beq @_1
-lda DEBOUNCE
-and #STMASK
-bne @_4
-lda SOLIDFOUND
+bne @waitforstartkey_skip_if_not_equal
+lda JOYPAD_STATE
+and #BUTTON_START_MASK
+beq @waitforstartkey_skip_if_equal_2
+lda JOYPAD_DEBOUNCE
+and #BUTTON_START_MASK
+bne @waitforstartkey_skip_if_not_equal
+lda SOLID_TILE_FOUND
 clc
 adc #128
-sta SOLIDFOUND
-@_3:
+sta SOLID_TILE_FOUND
+@waitforstartkey_body:
 lda #251
-sta FADECOUNTER
-bne @_4
-@_2:
-jsr TURNINTEROFF1
+sta FADE_COUNTER
+bne @waitforstartkey_skip_if_not_equal
+@waitforstartkey_skip_if_equal:
+jsr turninteroff1
 lda #1
 rts
-@_4:
+@waitforstartkey_skip_if_not_equal:
 lda #0
-@_1:
+@waitforstartkey_skip_if_equal_2:
 rts

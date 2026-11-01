@@ -1,49 +1,49 @@
-START:
+start:
 sei
 cld
 ldx #255
 txs
-NUM = 10
-DIF = 128
-lda #NUM
+LOCK_CHIP_ITERATIONS = 10
+LOCK_CHIP_DELAY_STEP = 128
+lda #LOCK_CHIP_ITERATIONS
 sta 114
-lda #<(1631 + NUM / 2 * DIF)
+lda #<(1631 + LOCK_CHIP_ITERATIONS / 2 * LOCK_CHIP_DELAY_STEP)
 sta 112
-lda #>(1631 + NUM / 2 * DIF)
+lda #>(1631 + LOCK_CHIP_ITERATIONS / 2 * LOCK_CHIP_DELAY_STEP)
 sta 113
-GHFH:
+lock_chip_retry:
 lda #4
 sta 2032
-LOCK1:
+lock_chip_write_loop:
 sta 65520
-jsr LOCK2
+jsr lock_chip_delay
 sta 65521
-jsr LOCK2
+jsr lock_chip_delay
 dec 2032
-bne LOCK1
+bne lock_chip_write_loop
 lda 112
 sec
-sbc #DIF
+sbc #LOCK_CHIP_DELAY_STEP
 sta 112
-bcs @_1
+bcs @lock_chip_write_loop_skip_if_carry
 dec 113
-@_1:
+@lock_chip_write_loop_skip_if_carry:
 dec 114
-bne GHFH
+bne lock_chip_retry
 sta 65520
-jmp PASTLOCK
-LOCK2:
+jmp lock_chip_done
+lock_chip_delay:
 ldx 112
 ldy 113
 bit 255
-LOCK3:
+lock_chip_delay_loop:
 dex
-bne LOCK3
+bne lock_chip_delay_loop
 dey
-bne LOCK3
+bne lock_chip_delay_loop
 rts
-PASTLOCK:
-NOPS22:
+lock_chip_done:
+boot_delay_nops:
 nop
 nop
 nop
@@ -75,50 +75,50 @@ nop
 nop
 nop
 lda #14
-sta BANKNO
-sta BANK_TBL + 14
-jsr SMILEY
-jsr CHANGEBANK12ROU
-PASTNOPS:
-lda CM_POWERUP
+sta CURRENT_BANK
+sta bank_table + 14
+jsr smiley
+jsr change_bank12_routine
+boot_delay_done:
+lda CODEMASTERS_POWERUP
 pha
 lda #14
-sta BANKNO
-sta BANK_TBL + 14
-jsr CM_LOGO
-jsr CHANGEBANK12ROU
+sta CURRENT_BANK
+sta bank_table + 14
+jsr cm_logo
+jsr change_bank12_routine
 pla
 tax
 ldy #0
-sty _CONTROL0
-sty _CONTROL1
-sty ADDRESS
-sty ADDRESS + 1
-CLEARRAM:
-@_2:
+sty PPU_CONTROL_REGISTER
+sty PPU_MASK_REGISTER
+sty TEMP_POINTER
+sty TEMP_POINTER + 1
+clear_ram:
+@clear_ram_loop:
 lda #0
-@_1:
-sta (ADDRESS),Y
+@clear_ram_loop_2:
+sta (TEMP_POINTER),Y
 iny
-bne @_1
-@_3:
-inc ADDRESS + 1
-lda ADDRESS + 1
+bne @clear_ram_loop_2
+@clear_ram_loop_3:
+inc TEMP_POINTER + 1
+lda TEMP_POINTER + 1
 cmp #1
-beq @_3
+beq @clear_ram_loop_3
 cmp #7
-bne @_2
-jsr CHANGEBANK13ROU
-jsr COPYHISCORESTORAM
-jsr CHANGEBANK12ROU
+bne @clear_ram_loop
+jsr change_bank13_routine
+jsr copy_high_scores_to_ram
+jsr change_bank12_routine
 lda #144
-sta CONTROL0
-sta _CONTROL0
-sta SEED
+sta PPU_CONTROL_SHADOW
+sta PPU_CONTROL_REGISTER
+sta RANDOM_SEED
 lda #30
-sta CONTROL1
-sta SEED + 1
-jsr TURNINTEROFF1
-jsr CHANGEBANK12ROU
+sta PPU_MASK_SHADOW
+sta RANDOM_SEED + 1
+jsr turninteroff1
+jsr change_bank12_routine
 lda #10
-jsr STARTTUNE
+jsr starttune

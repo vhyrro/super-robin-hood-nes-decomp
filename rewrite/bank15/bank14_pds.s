@@ -1,8 +1,8 @@
-jmp PASTNOPS
-jmp CM_NMI
-BANK_TABLE:
-BANKTABLE:
-BANK_TBL:
+jmp boot_delay_done
+jmp cm_nmi
+bank_table_alias1:
+bank_table_alias2:
+bank_table:
 .byte $00
 .byte $01
 .byte $02

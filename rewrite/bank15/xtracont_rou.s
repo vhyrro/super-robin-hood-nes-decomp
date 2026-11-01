@@ -1,97 +1,97 @@
-PUTEXTRASON:
+putextrason:
 lda #0
-sta EXTRAVARPOINTER
-lda MAPNO
+sta EXTRA_VAR_POINTER
+lda MAP_NUMBER
 asl
 tax
-lda MAPROUSPOINTER,X
-sta ADDRESS9
-lda MAPROUSPOINTER + 1,X
-sta ADDRESS9 + 1
-ANOTHERROU:
+lda maprouspointer,X
+sta TEMP_POINTER_9
+lda maprouspointer + 1,X
+sta TEMP_POINTER_9 + 1
+anotherrou:
 ldy #0
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 asl
 tax
-lda ROUTINEPOINTERS,X
-sta ADDRESS8
-lda ROUTINEPOINTERS + 1,X
-sta ADDRESS8 + 1
+lda routinepointers,X
+sta TEMP_POINTER_8
+lda routinepointers + 1,X
+sta TEMP_POINTER_8 + 1
 iny
-lda (ADDRESS9),Y
-sta NOOFPARAS
+lda (TEMP_POINTER_9),Y
+sta NUMBER_OF_PARAMETERS
 iny
-ldx EXTRAVARPOINTER
-jmp (ADDRESS8)
-BACKFROMROU:
+ldx EXTRA_VAR_POINTER
+jmp (TEMP_POINTER_8)
+backfromrou:
 clc
-adc EXTRAVARPOINTER
-sta EXTRAVARPOINTER
-BACKFROMROUNOVARS:
-lda NOOFPARAS
+adc EXTRA_VAR_POINTER
+sta EXTRA_VAR_POINTER
+backfromrounovars:
+lda NUMBER_OF_PARAMETERS
 clc
-adc ADDRESS9
-sta ADDRESS9
-bcc @_1
-inc ADDRESS9 + 1
-@_1:
-jmp ANOTHERROU
-ENDOFROUS:
-cpx #NOOFEXTRAVARS
-bcc @_1
-jsr TURNINTERON
-@M787__1:
+adc TEMP_POINTER_9
+sta TEMP_POINTER_9
+bcc @backfromrounovars_skip_if_no_carry
+inc TEMP_POINTER_9 + 1
+@backfromrounovars_skip_if_no_carry:
+jmp anotherrou
+endofrous:
+cpx #NUMBER_OF_EXTRA_VARS
+bcc @endofrous_skip_if_no_carry
+jsr turninteron
+@endofrous_skip:
 php
 pha
-lda CONTROL1
+lda PPU_MASK_SHADOW
 and #30
 clc
 adc #1
-sta _CONTROL1
+sta PPU_MASK_REGISTER
 pla
 plp
-lda CONTROL1
+lda PPU_MASK_SHADOW
 and #30
-sta _CONTROL1
-jmp @M787__1
-@_1:
+sta PPU_MASK_REGISTER
+jmp @endofrous_skip
+@endofrous_skip_if_no_carry:
 rts
-MAPROUSPOINTER:
-.word MAP1ROUS
-.word MAP2ROUS
-.word MAP3ROUS
-.word MAP4ROUS
-.word MAP5ROUS
-.word MAP6ROUS
-.word MAP7ROUS
-.word MAP8ROUS
-.word MAP9ROUS
-.word MAP11ROUS
-.word MAP12ROUS
-.word MAP13ROUS
-.word MAP14ROUS
-XENDROUS = 0
-XFLASHBLOCK = 1
-XSTANDGUARD = 2
-XPLATFORMH = 3
-XPLATFORMV = 4
-XKEY = 5
-XCANON = 6
-XSECRET = 7
-XMARION = 8
-XWATER = 9
-ROUTINEPOINTERS:
-.word ENDOFROUS
-.word FLASHBLOCK
-.word STANDGUARD
-.word PLATFORMH
-.word PLATFORMV
-.word KEYROU
-.word CANONROU
-.word SECRETROU
-.word MARIONROU
-.word REDEFINEWATERBANK
-MAP1ROUS:
+maprouspointer:
+.word map1rous
+.word map2rous
+.word map3rous
+.word map4rous
+.word map5rous
+.word map6rous
+.word map7rous
+.word map8rous
+.word map9rous
+.word map11rous
+.word map12rous
+.word map13rous
+.word map14rous
+EXTRA_TYPE_END = 0
+EXTRA_TYPE_FLASH_BLOCK = 1
+EXTRA_TYPE_STANDING_GUARD = 2
+EXTRA_TYPE_PLATFORM_HORIZONTAL = 3
+EXTRA_TYPE_PLATFORM_VERTICAL = 4
+EXTRA_TYPE_KEY = 5
+EXTRA_TYPE_CANNON = 6
+EXTRA_TYPE_SECRET = 7
+EXTRA_TYPE_MARIONETTE = 8
+EXTRA_TYPE_WATER = 9
+routinepointers:
+.word endofrous
+.word flashblock
+.word standguard
+.word platformh
+.word platformv
+.word key_routine
+.word canonrou
+.word secretrou
+.word marionrou
+.word redefinewaterbank
+map1rous:
 .byte $05
 .byte $06
 .byte $15
@@ -189,7 +189,7 @@ MAP1ROUS:
 .byte $09
 .byte $02
 .byte $00
-MAP2ROUS:
+map2rous:
 .byte $03
 .byte $08
 .byte $0C
@@ -247,7 +247,7 @@ MAP2ROUS:
 .byte $09
 .byte $02
 .byte $00
-MAP3ROUS:
+map3rous:
 .byte $05
 .byte $06
 .byte $0F
@@ -272,7 +272,7 @@ MAP3ROUS:
 .byte $09
 .byte $02
 .byte $00
-MAP4ROUS:
+map4rous:
 .byte $05
 .byte $06
 .byte $13
@@ -351,7 +351,7 @@ MAP4ROUS:
 .byte $09
 .byte $02
 .byte $00
-MAP5ROUS:
+map5rous:
 .byte $05
 .byte $06
 .byte $07
@@ -553,7 +553,7 @@ MAP5ROUS:
 .byte $09
 .byte $02
 .byte $00
-MAP6ROUS:
+map6rous:
 .byte $05
 .byte $06
 .byte $00
@@ -721,7 +721,7 @@ MAP6ROUS:
 .byte $28
 .byte $17
 .byte $00
-MAP7ROUS:
+map7rous:
 .byte $05
 .byte $06
 .byte $26
@@ -855,7 +855,7 @@ MAP7ROUS:
 .byte $18
 .byte $13
 .byte $00
-MAP8ROUS:
+map8rous:
 .byte $07
 .byte $06
 .byte $28
@@ -1091,7 +1091,7 @@ MAP8ROUS:
 .byte $18
 .byte $15
 .byte $00
-MAP9ROUS:
+map9rous:
 .byte $05
 .byte $06
 .byte $39
@@ -1131,7 +1131,7 @@ MAP9ROUS:
 .byte $03
 .byte $09
 .byte $00
-MAP11ROUS:
+map11rous:
 .byte $05
 .byte $06
 .byte $2C
@@ -1170,7 +1170,7 @@ MAP11ROUS:
 .byte $20
 .byte $14
 .byte $00
-MAP12ROUS:
+map12rous:
 .byte $05
 .byte $06
 .byte $3B
@@ -1198,7 +1198,7 @@ MAP12ROUS:
 .byte $04
 .byte $05
 .byte $00
-MAP13ROUS:
+map13rous:
 .byte $05
 .byte $06
 .byte $32
@@ -1222,7 +1222,7 @@ MAP13ROUS:
 .byte $04
 .byte $0C
 .byte $00
-MAP14ROUS:
+map14rous:
 .byte $08
 .byte $05
 .byte $00
@@ -1237,12 +1237,12 @@ MAP14ROUS:
 .byte $05
 .byte $09
 .byte $00
-NOOFEXTRAS = 255
-EXTRASON = VARLIM
-VARLIM .set VARLIM + 32
-SECRET = VARLIM
-VARLIM .set VARLIM + 3 + 6 + 6
-DOORDATA:
+NUMBER_OF_EXTRAS = 255
+EXTRAS_ON = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 32
+SECRET_TABLE = RAM_ALLOCATION
+RAM_ALLOCATION .set RAM_ALLOCATION + 3 + 6 + 6
+doordata:
 .byte $05
 .byte $0E
 .byte $45
@@ -1294,71 +1294,71 @@ DOORDATA:
 .byte $05
 .byte $80
 .byte $1C
-ENDOFDOORDATA:
-NOOFDOORS = (ENDOFDOORDATA - DOORDATA) / 3 + 1
-RESETEXTRAVARS:
-lda #>(RESETVARS)
-sta ADDRESS + 1
+endofdoordata:
+NUMBER_OF_DOORS = (endofdoordata - doordata) / 3 + 1
+resetextravars:
+lda #>(RESET_VARIABLES_START)
+sta TEMP_POINTER + 1
 lda #0
-sta ADDRESS
-ldy #<(RESETVARS)
-@_1:
-sta (ADDRESS),Y
+sta TEMP_POINTER
+ldy #<(RESET_VARIABLES_START)
+@resetextravars_loop:
+sta (TEMP_POINTER),Y
 iny
-bne @_2
-inc ADDRESS + 1
-@_2:
-cpy #<(ENDOFRESETVARS)
-bne @_1
-ldx #>(ENDOFRESETVARS)
-cpx ADDRESS + 1
-bne @_1
+bne @resetextravars_skip_if_not_equal
+inc TEMP_POINTER + 1
+@resetextravars_skip_if_not_equal:
+cpy #<(END_OF_RESET_VARIABLES)
+bne @resetextravars_loop
+ldx #>(END_OF_RESET_VARIABLES)
+cpx TEMP_POINTER + 1
+bne @resetextravars_loop
 rts
-RESETEXTRAS:
+resetextras:
 lda #255
-ldx #NOOFEXTRAS / 8 + 1
-@_1:
-sta EXTRASON,X
+ldx #NUMBER_OF_EXTRAS / 8 + 1
+@resetextras_loop:
+sta EXTRAS_ON,X
 dex
-bpl @_1
+bpl @resetextras_loop
 lda #0
 ldx #3 + 6 + 6 - 1
-@_2:
-sta SECRET,X
+@resetextras_loop_2:
+sta SECRET_TABLE,X
 dex
-bpl @_2
+bpl @resetextras_loop_2
 rts
-PICKUPCOLLISION1:
+pickupcollision1:
 ldy #4
-lda (ADDRESS9),Y
+lda (TEMP_POINTER_9),Y
 tay
-PICKUPCOLLISION:
-bit ROBINCROUCH
-bmi CROUCHCOLLIDE
+pickupcollision:
+bit PLAYER_CROUCHING
+bmi crouchcollide
 sec
-sbc ROBINY
+sbc PLAYER_Y
 clc
 adc #32 + 2
 cmp #40 + 2
-bcs NOPICKCOLL
-bcc NOWTHEX
-CROUCHCOLLIDE:
+bcs nopickcoll
+bcc now_check_x
+crouchcollide:
 sec
-sbc ROBINY
+sbc PLAYER_Y
 clc
 adc #32 + 8 - 16
 cmp #40 + 8 - 16
-bcs NOPICKCOLL
-NOWTHEX:
-lda ADDRESS8
+bcs nopickcoll
+now_check_x:
+lda TEMP_POINTER_8
 sec
-sbc ROBINONSCRX
+sbc PLAYER_ONSCREEN_X
 clc
 adc #12
 cmp #24
-NOPICKCOLL:
+nopickcoll:
 rts
-BITPATTERN:
+bitpattern:
 .byte $80
 .byte $40
 .byte $20
@@ -1367,9 +1367,9 @@ BITPATTERN:
 .byte $04
 .byte $02
 .byte $01
-CHECKIFEXTRAON:
-lda (ADDRESS9),Y
-CHECKIFDOORON:
+checkifextraon:
+lda (TEMP_POINTER_9),Y
+checkifdooron:
 tay
 and #7
 tax
@@ -1378,13 +1378,13 @@ lsr
 lsr
 lsr
 tay
-lda EXTRASON,Y
-and BITPATTERN,X
+lda EXTRAS_ON,Y
+and bitpattern,X
 rts
-TURNOFFEXTRA:
+turnoffextra:
 ldy #2
-lda (ADDRESS9),Y
-TURNOFFDOOR:
+lda (TEMP_POINTER_9),Y
+turnoffdoor:
 tay
 and #7
 tax
@@ -1393,39 +1393,39 @@ lsr
 lsr
 lsr
 tay
-lda EXTRASON,Y
-eor BITPATTERN,X
-sta EXTRASON,Y
+lda EXTRAS_ON,Y
+eor bitpattern,X
+sta EXTRAS_ON,Y
 rts
-CHECKONSCREENSIDES:
+checkonscreensides:
 ldy #3
-CHECKONSCREENSIDES1:
-lda (ADDRESS9),Y
+checkonscreensides1:
+lda (TEMP_POINTER_9),Y
 sec
-sbc SCRXL
-sta ADDRESS7
+sbc SCREEN_X_LOW
+sta TEMP_POINTER_7
 iny
-lda (ADDRESS9),Y
-sbc SCRXH
-sta XCOORDH
+lda (TEMP_POINTER_9),Y
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
 clc
 adc #1
 cmp #3
 rts
-HTEMPY = TEMP1
-HTEMPX = TEMP2
-YMINUS = TEMP3
-HTEMPCHR = TEMP4
-HTEMPPRTX = TEMP5
-HTEMPPRTY = TEMP6
-HTEMPANGLE = TEMP7
-HTEMPCOL = TEMP8
-HTEMPSIZE = TEMP9
-XMINUS = ADDRESS5 + 1
-NOOFHPARAS = ADDRESS7
-HTEMPROU = ADDRESS6
-HTEMPXREG = ADDRESS6 + 1
-STARTSTARSTABLE:
+HEIGHT_TEMP_Y = TEMP_BYTE_1
+HEIGHT_TEMP_X = TEMP_BYTE_2
+Y_MINUS = TEMP_BYTE_3
+HEIGHT_TEMP_CHARACTER = TEMP_BYTE_4
+HEIGHT_TEMP_PRINT_X = TEMP_BYTE_5
+HEIGHT_TEMP_PRINT_Y = TEMP_BYTE_6
+HEIGHT_TEMP_ANGLE = TEMP_BYTE_7
+HEIGHT_TEMP_COLOUR = TEMP_BYTE_8
+HEIGHT_TEMP_SIZE = TEMP_BYTE_9
+X_MINUS = TEMP_POINTER_5 + 1
+HEART_PIECE_COUNT = TEMP_POINTER_7
+HEIGHT_TEMP_ROUTINE = TEMP_POINTER_6
+HEIGHT_TEMP_X_REGISTER = TEMP_POINTER_6 + 1
+startstarstable:
 .byte $01
 .byte $00
 .byte $00
@@ -1554,380 +1554,380 @@ STARTSTARSTABLE:
 .byte $00
 .byte $00
 .byte $00
-STARTSTARS:
-sta TEMP2
+startstars:
+sta TEMP_BYTE_2
 ldx #0
-lda HEARTSTABLE,X
-beq GOTSTARSX
+lda HEART_TABLE,X
+beq gotstarsx
 ldx #16
-lda HEARTSTABLE,X
-beq GOTSTARSX
+lda HEART_TABLE,X
+beq gotstarsx
 ldx #32
-lda HEARTSTABLE,X
-beq GOTSTARSX
+lda HEART_TABLE,X
+beq gotstarsx
 ldx #0
-GOTSTARSX:
-stx TEMP1
-lda TEMP2
+gotstarsx:
+stx TEMP_BYTE_1
+lda TEMP_BYTE_2
 asl
 asl
 asl
 asl
 tay
 lda #16
-sta TEMP2
-@_2:
-lda STARTSTARSTABLE,Y
-sta HEARTSTABLE,X
+sta TEMP_BYTE_2
+@gotstarsx_loop:
+lda startstarstable,Y
+sta HEART_TABLE,X
 iny
 inx
-dec TEMP2
-bne @_2
-ldx TEMP1
-lda ADDRESS8 + 1
-sta HEARTSTABLE + 2,X
-lda ADDRESS7
-sta HEARTSTABLE + 0,X
-lda ADDRESS7 + 1
-sta HEARTSTABLE + 1,X
+dec TEMP_BYTE_2
+bne @gotstarsx_loop
+ldx TEMP_BYTE_1
+lda TEMP_POINTER_8 + 1
+sta HEART_TABLE + 2,X
+lda TEMP_POINTER_7
+sta HEART_TABLE + 0,X
+lda TEMP_POINTER_7 + 1
+sta HEART_TABLE + 1,X
 rts
-DOORROU:
-lda ANIMATEDOOR
-beq ENDDOOR
+doorrou:
+lda ANIMATED_DOOR
+beq enddoor
 and #7
-bne DONEDOOR
-lda #DOORLIFTINGFX
-jsr SOUNDFX
-lda ANIMATEDOOR
+bne donedoor
+lda #SFX_DOOR_LIFTING
+jsr soundfx
+lda ANIMATED_DOOR
 cmp #8
-beq FINISHDOOR
+beq finishdoor
 and #15
-beq OVERBOUNDRY
-ldx DOORX
-ldy DOORY
+beq over_boundary
+ldx DOOR_X
+ldy DOOR_Y
 lda #1
-jsr ADDACHANGEDBLOCK
-jmp DONEDOOR
-OVERBOUNDRY:
-ldx DOORX
-ldy DOORY
+jsr addachangedblock
+jmp donedoor
+over_boundary:
+ldx DOOR_X
+ldy DOOR_Y
 dey
 lda #2
-jsr ADDACHANGEDBLOCK
-FINISHDOOR:
-ldx DOORX
-ldy DOORY
-jsr DELETEACHANGEDBLOCK
-dec DOORY
-DONEDOOR:
-dec ANIMATEDOOR
-ENDDOOR:
+jsr addachangedblock
+finishdoor:
+ldx DOOR_X
+ldy DOOR_Y
+jsr deleteachangedblock
+dec DOOR_Y
+donedoor:
+dec ANIMATED_DOOR
+enddoor:
 rts
-CLOSEDOOR:
-ldx DOORX
-ldy DOORY
+closedoor:
+ldx DOOR_X
+ldy DOOR_Y
 lda #2
-jsr ADDACHANGEDBLOCK
-dec DOORY
-@_2:
-ldx DOORX
-ldy DOORY
+jsr addachangedblock
+dec DOOR_Y
+@closedoor_loop:
+ldx DOOR_X
+ldy DOOR_Y
 lda #3
-jsr ADDACHANGEDBLOCK
-dec DOORY
-lda ANIMATEDOOR
+jsr addachangedblock
+dec DOOR_Y
+lda ANIMATED_DOOR
 clc
 adc #($F0)
-sta ANIMATEDOOR
+sta ANIMATED_DOOR
 cmp #8
-bne @_2
-@_1:
+bne @closedoor_loop
+@closedoor_done:
 rts
-OPENADOOR:
-sta TEMP
-jsr TURNOFFDOOR
-OPENADOOR1:
+openadoor:
+sta TEMP_BYTE
+jsr turnoffdoor
+openadoor1:
 lda #255
 sec
-sbc TEMP
-sta TEMP1
+sbc TEMP_BYTE
+sta TEMP_BYTE_1
 asl
 clc
-adc TEMP1
+adc TEMP_BYTE_1
 tax
-lda DOORDATA,X
-cmp MAPNO
-bne @_1
-lda DOORDATA + 2,X
+lda doordata,X
+cmp MAP_NUMBER
+bne @openadoor1_skip_if_not_equal
+lda doordata + 2,X
 and #15
-sta DOORY
-lda DOORDATA + 2,X
+sta DOOR_Y
+lda doordata + 2,X
 and #240
 clc
 adc #8
-sta ANIMATEDOOR
-lda DOORDATA + 1,X
-sta DOORX
+sta ANIMATED_DOOR
+lda doordata + 1,X
+sta DOOR_X
 lda #0
-@_1:
+@openadoor1_skip_if_not_equal:
 rts
-RESETDOORSINTOMAP:
+resetdoorsintomap:
 lda #255
-@_1:
-sta TEMP
-jsr CHECKIFDOORON
-beq @_2
-jsr OPENADOOR1
-bne @_2
-@_3:
-lda TEMP
+@resetdoorsintomap_loop:
+sta TEMP_BYTE
+jsr checkifdooron
+beq @resetdoorsintomap_skip_if_equal
+jsr openadoor1
+bne @resetdoorsintomap_skip_if_equal
+@resetdoorsintomap_body:
+lda TEMP_BYTE
 pha
-jsr CLOSEDOOR
+jsr closedoor
 pla
-sta TEMP
-@_2:
-dec TEMP
-lda TEMP
-cmp #255 - NOOFDOORS
-bne @_1
+sta TEMP_BYTE
+@resetdoorsintomap_skip_if_equal:
+dec TEMP_BYTE
+lda TEMP_BYTE
+cmp #255 - NUMBER_OF_DOORS
+bne @resetdoorsintomap_loop
 rts
-ROBINSHOOTARROW:
-lda ROBINXL
-sta ARROWXL
-lda ROBINXH
-sta ARROWXH
-lda ROBINY
+robinshootarrow:
+lda PLAYER_X_LOW
+sta ARROW_X_LOW
+lda PLAYER_X_HIGH
+sta ARROW_X_HIGH
+lda PLAYER_Y
 clc
 adc #($E8)
-sta ARROWY
+sta ARROW_Y
 ldx #4
-lda OLEFTRIGHT
-bpl @_1
+lda OLD_PLAYER_FACING
+bpl @robinshootarrow_skip_if_positive
 ldx #($FC)
-lda ARROWXL
+lda ARROW_X_LOW
 sec
 sbc #8
-sta ARROWXL
-bcs @_1
-dec ARROWXH
-@_1:
-stx ARROWDIR
+sta ARROW_X_LOW
+bcs @robinshootarrow_skip_if_positive
+dec ARROW_X_HIGH
+@robinshootarrow_skip_if_positive:
+stx ARROW_DIRECTION
 lda #40
-sta ARROWCOUNTER
+sta ARROW_COUNTER
 rts
-SHOOTARROW:
-sta TEMP
+shootarrow:
+sta TEMP_BYTE
 ldx #1
-@_1:
-lda ARROWCOUNTER,X
-beq GOTARROWPOS
+@shootarrow_loop:
+lda ARROW_COUNTER,X
+beq gotarrowpos
 inx
-cpx #NOOFARROWS
-bne @_1
+cpx #NUMBER_OF_ARROWS
+bne @shootarrow_loop
 rts
-GOTARROWPOS:
-lda (ADDRESS9),Y
+gotarrowpos:
+lda (TEMP_POINTER_9),Y
 ldy #0
-sta ARROWDIR,X
+sta ARROW_DIRECTION,X
 cmp #0
-bpl @_1
+bpl @gotarrowpos_skip_if_positive
 ldy #255
-@_1:
+@gotarrowpos_skip_if_positive:
 lda #100
-sta ARROWCOUNTER,X
+sta ARROW_COUNTER,X
 lda #0
-sta ARROWCANON,X
-lda ARROWDIR,X
+sta ARROW_CANNON,X
+lda ARROW_DIRECTION,X
 asl
 asl
 clc
-adc ADDRESS7
-sta ARROWXL,X
+adc TEMP_POINTER_7
+sta ARROW_X_LOW,X
 tya
-adc ADDRESS7 + 1
-sta ARROWXH,X
-lda TEMP
-sta ARROWY,X
+adc TEMP_POINTER_7 + 1
+sta ARROW_X_HIGH,X
+lda TEMP_BYTE
+sta ARROW_Y,X
 rts
-ADDARROWDIR:
-lda ARROWDIR,X
-bpl @_3
-lda ARROWXL,X
+addarrowdir:
+lda ARROW_DIRECTION,X
+bpl @addarrowdir_skip_if_positive
+lda ARROW_X_LOW,X
 clc
-adc ARROWDIR,X
-sta ARROWXL,X
-bcs @_4
-dec ARROWXH,X
-@_4:
-jmp @_5
-@_3:
-lda ARROWXL,X
+adc ARROW_DIRECTION,X
+sta ARROW_X_LOW,X
+bcs @addarrowdir_skip_if_carry
+dec ARROW_X_HIGH,X
+@addarrowdir_skip_if_carry:
+jmp @addarrowdir_skip
+@addarrowdir_skip_if_positive:
+lda ARROW_X_LOW,X
 clc
-adc ARROWDIR,X
-sta ARROWXL,X
-bcc @_5
-inc ARROWXH,X
-@_5:
+adc ARROW_DIRECTION,X
+sta ARROW_X_LOW,X
+bcc @addarrowdir_skip
+inc ARROW_X_HIGH,X
+@addarrowdir_skip:
 rts
-UPDATEARROWS:
+updatearrows:
 ldx #0
-DOEACHARROW:
-lda ARROWCOUNTER,X
-beq @_2
-bpl @_1
-@_2:
-jmp NEXTARROW
-@_1:
-dec ARROWCOUNTER,X
-CONTARROW:
-jsr ADDARROWDIR
-PRINTARROW:
-stx TEMPX
-lda ARROWXH,X
-sta TEMP
-lda ARROWXL,X
+doeacharrow:
+lda ARROW_COUNTER,X
+beq @doeacharrow_skip_if_equal
+bpl @doeacharrow_skip_if_positive
+@doeacharrow_skip_if_equal:
+jmp nextarrow
+@doeacharrow_skip_if_positive:
+dec ARROW_COUNTER,X
+contarrow:
+jsr addarrowdir
+printarrow:
+stx TEMP_X
+lda ARROW_X_HIGH,X
+sta TEMP_BYTE
+lda ARROW_X_LOW,X
 clc
 adc #4
-bcc @_2
-inc TEMP
-@_2:
-ldy ARROWY,X
+bcc @printarrow_skip_if_no_carry
+inc TEMP_BYTE
+@printarrow_skip_if_no_carry:
+ldy ARROW_Y,X
 iny
 iny
 iny
 iny
 iny
 iny
-ldx TEMP
-jsr FINDSOLID
+ldx TEMP_BYTE
+jsr findsolid
 cmp #3
-bne ARROWNOTHITWALL
-TAKEARROWOFF:
-lda #ARROWHITWALLFX
-jsr SOUNDFX
-TAKEARROWOFF1:
-ldx TEMPX
-jsr TAKEARROWOFFROU
-jmp NEXTARROW
-ARROWNOTHITWALL:
-ldx TEMPX
-lda ARROWXL,X
+bne arrownothitwall
+takearrowoff:
+lda #SFX_ARROW_HIT_WALL
+jsr soundfx
+takearrowoff1:
+ldx TEMP_X
+jsr takearrowoffrou
+jmp nextarrow
+arrownothitwall:
+ldx TEMP_X
+lda ARROW_X_LOW,X
 sec
-sbc SCRXL
-sta TEMPY
-lda ARROWXH,X
-sbc SCRXH
-bne NEXTARROW
-lda ARROWDIR,X
+sbc SCREEN_X_LOW
+sta TEMP_Y
+lda ARROW_X_HIGH,X
+sbc SCREEN_X_HIGH
+bne nextarrow
+lda ARROW_DIRECTION,X
 and #64
-eor ARROWCANON,X
-sta TEMP
-lda ARROWY,X
+eor ARROW_CANNON,X
+sta TEMP_BYTE
+lda ARROW_Y,X
 clc
-adc #YDISPLACE
+adc #SPRITE_Y_DISPLACE
 tay
-lda ARROWCANON,X
-beq ISANARROW
+lda ARROW_CANNON,X
+beq isanarrow
 lda #150 - 121
-ISANARROW:
+isanarrow:
 clc
 adc #121
-ldx TEMPY
-jsr POKESPRITE
-ldx TEMPX
-beq NEXTARROW
-lda ARROWY,X
+ldx TEMP_Y
+jsr pokesprite
+ldx TEMP_X
+beq nextarrow
+lda ARROW_Y,X
 clc
 adc #6
 sec
-sbc ROBINY
-bcs ARROWNOTHITROBIN
-lda ARROWY,X
+sbc PLAYER_Y
+bcs arrownothitrobin
+lda ARROW_Y,X
 clc
 adc #2
 sec
-sbc ROBINHEIGHT
-bcc ARROWNOTHITROBIN
-lda TEMPY
+sbc PLAYER_HEIGHT
+bcc arrownothitrobin
+lda TEMP_Y
 sec
-sbc ROBINONSCRX
+sbc PLAYER_ONSCREEN_X
 clc
 adc #12
 cmp #24
-bcs ARROWNOTHITROBIN
-lda ROBININVINC
-bne ARROWNOTHITROBIN
+bcs arrownothitrobin
+lda PLAYER_INVINCIBILITY_TIMER
+bne arrownothitrobin
 lda #1
-jsr SUBFROMHEARTS
-jmp TAKEARROWOFF1
-ARROWNOTHITROBIN:
-NEXTARROW:
+jsr subfromhearts
+jmp takearrowoff1
+arrownothitrobin:
+nextarrow:
 inx
-cpx #NOOFARROWS
-beq @_1
-jmp DOEACHARROW
-@_1:
-lda DEADARROWCOUNT
-beq @_2
-dec DEADARROWCOUNT
-lda DEADARROWX
+cpx #NUMBER_OF_ARROWS
+beq @nextarrow_skip_if_equal
+jmp doeacharrow
+@nextarrow_skip_if_equal:
+lda DEAD_ARROW_COUNT
+beq @nextarrow_skip_if_equal_2
+dec DEAD_ARROW_COUNT
+lda DEAD_ARROW_X
 sec
-sbc SCRXL
+sbc SCREEN_X_LOW
 tax
-lda DEADARROWX + 1
-sbc SCRXH
-sta XCOORDH
-ldy DEADARROWY
-lda DEADARROWCOUNT
+lda DEAD_ARROW_X + 1
+sbc SCREEN_X_HIGH
+sta SPRITE_X_COORD_HIGH
+ldy DEAD_ARROW_Y
+lda DEAD_ARROW_COUNT
 lsr
 clc
-adc #DEADARROWS
-jsr WINPRINTSPRITE
-@_2:
+adc #SPRITE_DEAD_ARROWS
+jsr winprintsprite
+@nextarrow_skip_if_equal_2:
 rts
-TAKEARROWOFFROU:
-lda ARROWXL,X
-sta DEADARROWX
-lda ARROWXH,X
-sta DEADARROWX + 1
-lda ARROWY,X
-sta DEADARROWY
+takearrowoffrou:
+lda ARROW_X_LOW,X
+sta DEAD_ARROW_X
+lda ARROW_X_HIGH,X
+sta DEAD_ARROW_X + 1
+lda ARROW_Y,X
+sta DEAD_ARROW_Y
 lda #8
-sta DEADARROWCOUNT
+sta DEAD_ARROW_COUNT
 lda #0
-sta ARROWY,X
-sta ARROWCOUNTER,X
+sta ARROW_Y,X
+sta ARROW_COUNTER,X
 rts
-DECTIMING:
-ldx EXTRAVARPOINTER
-lda EXTRAVARS,X
-beq DOTIMINGPROBLEM
-lda COUNTER
+dectiming:
+ldx EXTRA_VAR_POINTER
+lda EXTRA_VARS,X
+beq dotimingproblem
+lda FRAME_COUNTER
 and #7
-bne @_1
-dec EXTRAVARS,X
-@_1:
+bne @dectiming_skip_if_not_equal
+dec EXTRA_VARS,X
+@dectiming_skip_if_not_equal:
 rts
-DOTIMINGPROBLEM:
+dotimingproblem:
 tya
 eor #255
 clc
-adc NOOFPARAS
-sta TEMP
-ldx EXTRAVARPOINTER
-inc EXTRAVARS + 1,X
-lda EXTRAVARS + 1,X
-cmp TEMP
-bne @_1
+adc NUMBER_OF_PARAMETERS
+sta TEMP_BYTE
+ldx EXTRA_VAR_POINTER
+inc EXTRA_VARS + 1,X
+lda EXTRA_VARS + 1,X
+cmp TEMP_BYTE
+bne @dotimingproblem_skip_if_not_equal
 lda #0
-sta EXTRAVARS + 1,X
-@_1:
-sta TEMP
-inc TEMP
-@_2:
+sta EXTRA_VARS + 1,X
+@dotimingproblem_skip_if_not_equal:
+sta TEMP_BYTE
+inc TEMP_BYTE
+@dotimingproblem_loop:
 iny
-dec TEMP
-bne @_2
-lda (ADDRESS9),Y
-sta EXTRAVARS,X
+dec TEMP_BYTE
+bne @dotimingproblem_loop
+lda (TEMP_POINTER_9),Y
+sta EXTRA_VARS,X
 rts

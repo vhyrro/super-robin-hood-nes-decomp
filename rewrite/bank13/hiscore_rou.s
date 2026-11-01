@@ -1,569 +1,569 @@
-SIZEOFMESSAGE = 17
-NUMBERENTRIES = 10
-SIZEOFSCORE = 7
-SIZEOFNAME = 9
-NAMETRAILNO = 0
-NAMENUMAFTER = 1
-HIGHSCORES = HISCORESINRAM
-TRYHISCORE:
-lda #<(HIGHSCORES + NUMBERENTRIES * SIZEOFMESSAGE - SIZEOFSCORE - NAMENUMAFTER)
-sta ADDRESS
-lda #>(HIGHSCORES + NUMBERENTRIES * SIZEOFMESSAGE - SIZEOFSCORE - NAMENUMAFTER)
-sta ADDRESS + 1
+MESSAGE_SIZE = 17
+NUMBER_OF_ENTRIES = 10
+SCORE_SIZE = 7
+NAME_SIZE = 9
+NAME_TRAILING_ZERO_COUNT = 0
+NAME_NUMBER_AFTER = 1
+HIGH_SCORE_TABLE = HIGH_SCORES_IN_RAM
+try_high_score:
+lda #<(HIGH_SCORE_TABLE + NUMBER_OF_ENTRIES * MESSAGE_SIZE - SCORE_SIZE - NAME_NUMBER_AFTER)
+sta TEMP_POINTER
+lda #>(HIGH_SCORE_TABLE + NUMBER_OF_ENTRIES * MESSAGE_SIZE - SCORE_SIZE - NAME_NUMBER_AFTER)
+sta TEMP_POINTER + 1
 lda #0
-sta HIPOS
-ldx #NUMBERENTRIES
-AAS:
+sta HIGH_SCORE_POSITION
+ldx #NUMBER_OF_ENTRIES
+compare_entries_loop:
 ldy #0
-IAS2:
-lda (ADDRESS),Y
+compare_digits_loop:
+lda (TEMP_POINTER),Y
 cmp #32
-bne SDF
+bne normalize_space_digit
 lda #33 + 0
-SDF:
-cmp SCORE,Y
-beq INGE2
-bcc HIRE2
-jmp ENBL2
-INGE2:
+normalize_space_digit:
+cmp PLAYER_SCORE,Y
+beq digits_equal
+bcc current_score_wins
+jmp high_score_wins
+digits_equal:
 iny
-cpy #SIZEOFSCORE
-bne IAS2
-jmp HIRE2
-ENBL2:
-jmp OVHI2
-HIRE2:
-lda ADDRESS
-sta ADDRESS2
-lda ADDRESS + 1
-sta ADDRESS2 + 1
-inc HIPOS
-LIDY:
-lda ADDRESS
+cpy #SCORE_SIZE
+bne compare_digits_loop
+jmp current_score_wins
+high_score_wins:
+jmp entries_checked
+current_score_wins:
+lda TEMP_POINTER
+sta TEMP_POINTER_2
+lda TEMP_POINTER + 1
+sta TEMP_POINTER_2 + 1
+inc HIGH_SCORE_POSITION
+previous_entry_loop:
+lda TEMP_POINTER
 clc
-adc #<((-SIZEOFMESSAGE))
-sta ADDRESS
-lda ADDRESS + 1
-adc #>((-SIZEOFMESSAGE))
-sta ADDRESS + 1
+adc #<((-MESSAGE_SIZE))
+sta TEMP_POINTER
+lda TEMP_POINTER + 1
+adc #>((-MESSAGE_SIZE))
+sta TEMP_POINTER + 1
 dex
-bne AAS
-OVHI2:
-lda HIPOS
-bne OCH1
-jmp NOTAHIGH
-OCH1:
+bne compare_entries_loop
+entries_checked:
+lda HIGH_SCORE_POSITION
+bne found_position
+jmp not_a_high_score
+found_position:
 cmp #1
-beq NUFR
-lda #<(HIGHSCORES + (NUMBERENTRIES - 1) * SIZEOFMESSAGE + NAMETRAILNO)
-sta ADDRESS
-lda #>(HIGHSCORES + (NUMBERENTRIES - 1) * SIZEOFMESSAGE + NAMETRAILNO)
-sta ADDRESS + 1
-ldx HIPOS
+beq insert_new_entry
+lda #<(HIGH_SCORE_TABLE + (NUMBER_OF_ENTRIES - 1) * MESSAGE_SIZE + NAME_TRAILING_ZERO_COUNT)
+sta TEMP_POINTER
+lda #>(HIGH_SCORE_TABLE + (NUMBER_OF_ENTRIES - 1) * MESSAGE_SIZE + NAME_TRAILING_ZERO_COUNT)
+sta TEMP_POINTER + 1
+ldx HIGH_SCORE_POSITION
 dex
-stx TEMP
-MOVV:
-lda ADDRESS
+stx TEMP_BYTE
+shift_entries_loop:
+lda TEMP_POINTER
 clc
-adc #<((-SIZEOFMESSAGE))
-sta ADDRESS3
-lda ADDRESS + 1
-adc #>((-SIZEOFMESSAGE))
-sta ADDRESS3 + 1
-ldy #SIZEOFMESSAGE - NAMETRAILNO - NAMENUMAFTER - 1
-@M274__1:
-lda (ADDRESS3),Y
-sta (ADDRESS),Y
+adc #<((-MESSAGE_SIZE))
+sta TEMP_POINTER_3
+lda TEMP_POINTER + 1
+adc #>((-MESSAGE_SIZE))
+sta TEMP_POINTER_3 + 1
+ldy #MESSAGE_SIZE - NAME_TRAILING_ZERO_COUNT - NAME_NUMBER_AFTER - 1
+@shift_entries_copy_loop:
+lda (TEMP_POINTER_3),Y
+sta (TEMP_POINTER),Y
 dey
-bpl @M274__1
-lda ADDRESS3
-sta ADDRESS
-lda ADDRESS3 + 1
-sta ADDRESS + 1
-dec TEMP
-bne MOVV
-NUFR:
-COPYSCOREACROSS:
+bpl @shift_entries_copy_loop
+lda TEMP_POINTER_3
+sta TEMP_POINTER
+lda TEMP_POINTER_3 + 1
+sta TEMP_POINTER + 1
+dec TEMP_BYTE
+bne shift_entries_loop
+insert_new_entry:
+copy_score_across:
 ldy #0
-@_1:
-lda SCORE,Y
-sta (ADDRESS2),Y
+@copy_score_across_loop:
+lda PLAYER_SCORE,Y
+sta (TEMP_POINTER_2),Y
 iny
-cpy #SIZEOFSCORE
-bne @_1
-COPYNAMEACROSS:
-lda ADDRESS2
+cpy #SCORE_SIZE
+bne @copy_score_across_loop
+copy_name_across:
+lda TEMP_POINTER_2
 clc
-adc #<((-SIZEOFNAME))
-sta MAPPOINTER
-lda ADDRESS2 + 1
-adc #>((-SIZEOFNAME))
-sta MAPPOINTER + 1
-ldy #SIZEOFNAME - 1
-@_1:
-lda NAME,Y
-sta (MAPPOINTER),Y
+adc #<((-NAME_SIZE))
+sta MAP_POINTER
+lda TEMP_POINTER_2 + 1
+adc #>((-NAME_SIZE))
+sta MAP_POINTER + 1
+ldy #NAME_SIZE - 1
+@copy_name_across_loop:
+lda player_name,Y
+sta (MAP_POINTER),Y
 dey
-bpl @_1
-lda #NUMBERENTRIES
+bpl @copy_name_across_loop
+lda #NUMBER_OF_ENTRIES
 sec
-sbc HIPOS
-sta HIPOS
+sbc HIGH_SCORE_POSITION
+sta HIGH_SCORE_POSITION
 rts
-NOTAHIGH:
+not_a_high_score:
 lda #255
-sta HIPOS
+sta HIGH_SCORE_POSITION
 rts
-NAMELEN = TEMP9
-LETTER = TEMP8
-TRYTOENTERNAME:
-ldx #<(CLEARSCR)
-ldy #>(CLEARSCR)
-jsr PRTMESSAGE
-MISSLEADINGNOUGHTS:
+NAME_LENGTH = TEMP_BYTE_9
+CURRENT_LETTER = TEMP_BYTE_8
+try_to_enter_name:
+ldx #<(clearscr)
+ldy #>(clearscr)
+jsr prtmessage
+strip_leading_zeros:
 ldy #0
-sty TEMP
-@_1:
-lda SCORE,Y
-bit TEMP
-bmi @_2
+sty TEMP_BYTE
+@strip_leading_zeros_loop:
+lda PLAYER_SCORE,Y
+bit TEMP_BYTE
+bmi @strip_leading_zeros_skip_if_negative
 cmp #0
-beq @_3
-dec TEMP
-bne @_2
-@_3:
+beq @strip_leading_zeros_skip_if_equal
+dec TEMP_BYTE
+bne @strip_leading_zeros_skip_if_negative
+@strip_leading_zeros_skip_if_equal:
 lda #($FD)
-@_2:
-sta SCORE,Y
+@strip_leading_zeros_skip_if_negative:
+sta PLAYER_SCORE,Y
 iny
 cpy #6
-bne @_1
-PUTINCOMMER:
+bne @strip_leading_zeros_loop
+put_in_comma:
 ldx #5
 ldy #6
-@_2:
-lda SCORE,X
+@put_in_comma_loop:
+lda PLAYER_SCORE,X
 clc
 adc #33
-sta SCORE,Y
+sta PLAYER_SCORE,Y
 cpx #3
-bne @_3
+bne @put_in_comma_skip_if_not_equal
 dey
 lda #29
-sta SCORE,Y
-@_3:
+sta PLAYER_SCORE,Y
+@put_in_comma_skip_if_not_equal:
 dey
 dex
-bpl @_2
-jsr TRYHISCORE
-DISPLAYHISCORES:
-jsr SETUPHISCORES
-lda TUNE
+bpl @put_in_comma_loop
+jsr try_high_score
+display_high_scores:
+jsr setup_high_scores
+lda MUSIC_TUNE
 cmp #1
-beq @_1
+beq @display_high_scores_skip_if_equal
 lda #3
-jsr STARTTUNE
-@_1:
-jsr TURNINTERON
+jsr starttune
+@display_high_scores_skip_if_equal:
+jsr turninteron
 lda #0
-sta NAMELEN
+sta NAME_LENGTH
 lda #1
-sta LETTER
-LOOKINGATHISCORES:
-asl FLYFLAG
-@M280__1:
-bit FLYFLAG
-bpl @M280__1
-bit HIPOS
-bmi @_1
-jsr ENTERNAME
-jmp @_2
-@_1:
+sta CURRENT_LETTER
+looking_at_high_scores:
+asl VBLANK_FLAG
+@looking_at_high_scores_wait_vblank:
+bit VBLANK_FLAG
+bpl @looking_at_high_scores_wait_vblank
+bit HIGH_SCORE_POSITION
+bmi @looking_at_high_scores_skip_if_negative
+jsr enter_name
+jmp @looking_at_high_scores_skip
+@looking_at_high_scores_skip_if_negative:
 ldx #13
-jsr PULSECOLOUR
-@_2:
-lda PAD
-and #STMASK
-beq LOOKINGATHISCORES
-lda DEBOUNCE
-and #STMASK
-bne LOOKINGATHISCORES
-jmp TURNINTEROFFFADE
-SETUPHISCORES:
-lda #HISCORECHRS0_43
-jsr COPYBLOCKOFCOMPACTEDCHRS
-lda #HISCORECHRS0_43S
-jsr COPYBLOCKOFCOMPACTEDCHRS
-lda #OKCHR0_1
-jsr COPYBLOCKOFCOMPACTEDCHRS
-ldx #<(HISCORESCREEN)
-ldy #>(HISCORESCREEN)
-jsr PRTMESSAGE
+jsr pulsecolour
+@looking_at_high_scores_skip:
+lda JOYPAD_STATE
+and #BUTTON_START_MASK
+beq looking_at_high_scores
+lda JOYPAD_DEBOUNCE
+and #BUTTON_START_MASK
+bne looking_at_high_scores
+jmp turninterofffade
+setup_high_scores:
+lda #CHARSET_HIGH_SCORE
+jsr copyblockofcompactedchrs
+lda #CHARSET_HIGH_SCORE_2
+jsr copyblockofcompactedchrs
+lda #CHARSET_OK
+jsr copyblockofcompactedchrs
+ldx #<(high_score_screen)
+ldy #>(high_score_screen)
+jsr prtmessage
 lda #100
-sta ROBINY
-lda HIPOS
+sta PLAYER_Y
+lda HIGH_SCORE_POSITION
 cmp #254
-beq SHOWCREDITS
-ldx #<(HISCOREMESS)
-ldy #>(HISCOREMESS)
-jsr PRTMESSAGE
-lda HIPOS
-bmi @_1
-ldx #<(ENTERNAMEMESS)
-ldy #>(ENTERNAMEMESS)
-jmp PRINTEDENTERNAME
-@_1:
-ldx #<(HISCOREPRESSSTART)
-ldy #>(HISCOREPRESSSTART)
-jmp PRINTEDENTERNAME
-SHOWCREDITS:
-ldx #<(CREDITS)
-ldy #>(CREDITS)
-PRINTEDENTERNAME:
-jsr PRTMESSAGE
-jsr CLEARSPRITEBLOCK
-ldx #<(HISCORESCREENCOLOURS)
-ldy #>(HISCORESCREENCOLOURS)
-jmp SETFADE
-ENTERNAME:
-lda COUNTER
+beq show_credits
+ldx #<(high_score_message)
+ldy #>(high_score_message)
+jsr prtmessage
+lda HIGH_SCORE_POSITION
+bmi @setup_high_scores_skip_if_negative
+ldx #<(enter_name_message)
+ldy #>(enter_name_message)
+jmp printed_enter_name
+@setup_high_scores_skip_if_negative:
+ldx #<(high_score_press_start)
+ldy #>(high_score_press_start)
+jmp printed_enter_name
+show_credits:
+ldx #<(credits)
+ldy #>(credits)
+printed_enter_name:
+jsr prtmessage
+jsr clearspriteblock
+ldx #<(high_score_screen_colours)
+ldy #>(high_score_screen_colours)
+jmp setfade
+enter_name:
+lda FRAME_COUNTER
 and #7
-bne CHOOSELETTER
-lda PAD
-and #UMASK + RMASK
-beq @_1
-inc LETTER
-lda #LEFTRIGHTLETTERFX
-jsr SOUNDFX
-@_1:
-lda PAD
-and #DMASK + LMASK
-beq @_2
-dec LETTER
-lda #LEFTRIGHTLETTERFX
-jsr SOUNDFX
-@_2:
-lda LETTER
+bne choose_letter
+lda JOYPAD_STATE
+and #BUTTON_UP_MASK + BUTTON_RIGHT_MASK
+beq @enter_name_skip_if_equal
+inc CURRENT_LETTER
+lda #SFX_LEFT_RIGHT_LETTER
+jsr soundfx
+@enter_name_skip_if_equal:
+lda JOYPAD_STATE
+and #BUTTON_DOWN_MASK + BUTTON_LEFT_MASK
+beq @enter_name_skip_if_equal_2
+dec CURRENT_LETTER
+lda #SFX_LEFT_RIGHT_LETTER
+jsr soundfx
+@enter_name_skip_if_equal_2:
+lda CURRENT_LETTER
 and #31
-sta LETTER
-CHOOSELETTER:
-lda PAD
-and #AMASK
-beq @_1
-lda DEBOUNCE
-and #AMASK
-bne @_1
-lda LETTER
-bne @_2
-lda #STMASK
-sta PAD
-jmp @_1
-@_2:
-lda NAMELEN
+sta CURRENT_LETTER
+choose_letter:
+lda JOYPAD_STATE
+and #BUTTON_A_MASK
+beq @choose_letter_skip_if_equal
+lda JOYPAD_DEBOUNCE
+and #BUTTON_A_MASK
+bne @choose_letter_skip_if_equal
+lda CURRENT_LETTER
+bne @choose_letter_skip_if_not_equal
+lda #BUTTON_START_MASK
+sta JOYPAD_STATE
+jmp @choose_letter_skip_if_equal
+@choose_letter_skip_if_not_equal:
+lda NAME_LENGTH
 cmp #8
-beq @_1
-lda LETTER
-jsr PRINTACHR
-lda LETTER
-ldy NAMELEN
-sta (MAPPOINTER),Y
-inc NAMELEN
-lda #CHOOSELETTERFX
-jsr SOUNDFX
-lda LETTER
-jmp FLASHLETTER
-@_1:
-DELETELETTER:
-lda PAD
-and #BMASK
-beq @_1
-lda DEBOUNCE
-and #BMASK
-bne @_1
-ldy NAMELEN
-beq @_1
-dec NAMELEN
+beq @choose_letter_skip_if_equal
+lda CURRENT_LETTER
+jsr print_a_chr
+lda CURRENT_LETTER
+ldy NAME_LENGTH
+sta (MAP_POINTER),Y
+inc NAME_LENGTH
+lda #SFX_CHOOSE_LETTER
+jsr soundfx
+lda CURRENT_LETTER
+jmp flash_letter
+@choose_letter_skip_if_equal:
+delete_letter:
+lda JOYPAD_STATE
+and #BUTTON_B_MASK
+beq @delete_letter_skip_if_equal
+lda JOYPAD_DEBOUNCE
+and #BUTTON_B_MASK
+bne @delete_letter_skip_if_equal
+ldy NAME_LENGTH
+beq @delete_letter_skip_if_equal
+dec NAME_LENGTH
 lda #30
 dey
-sta (MAPPOINTER),Y
-jsr PRINTACHR
-lda #DELETELETTERFX
-jsr SOUNDFX
-@_1:
-FLASHLETTER:
+sta (MAP_POINTER),Y
+jsr print_a_chr
+lda #SFX_DELETE_LETTER
+jsr soundfx
+@delete_letter_skip_if_equal:
+flash_letter:
 lda #0
-sta TEMP
-lda NAMELEN
+sta TEMP_BYTE
+lda NAME_LENGTH
 asl
 asl
 asl
 clc
 adc #64
 tax
-lda HIPOS
+lda HIGH_SCORE_POSITION
 asl
 asl
 asl
 clc
 adc #63 + 32
 tay
-lda LETTER
-jsr POKESPRITE
+lda CURRENT_LETTER
+jsr pokesprite
 ldx #14
-jsr PULSECOLOUR
+jsr pulsecolour
 ldx #17
-jmp PULSECOLOUR
-PRINTACHR:
+jmp pulsecolour
+print_a_chr:
 tax
 lda #<(8584 - 32)
-sta ADDRESS
+sta TEMP_POINTER
 lda #>(8584 - 32)
-sta ADDRESS + 1
-ldy HIPOS
-@_1:
-lda ADDRESS
+sta TEMP_POINTER + 1
+ldy HIGH_SCORE_POSITION
+@print_a_chr_loop:
+lda TEMP_POINTER
 clc
 adc #<(32)
-sta ADDRESS
-bcc @M290__1
-inc ADDRESS + 1
-@M290__1:
+sta TEMP_POINTER
+bcc @print_a_chr_skip_if_no_carry
+inc TEMP_POINTER + 1
+@print_a_chr_skip_if_no_carry:
 dey
-bpl @_1
-ldy VRAMPOINTER
-lda ADDRESS + 1
-sta VRAMBUFFER,Y
-lda ADDRESS
+bpl @print_a_chr_loop
+ldy VRAM_WRITE_POINTER
+lda TEMP_POINTER + 1
+sta VRAM_BUFFER_ADDRESS,Y
+lda TEMP_POINTER
 clc
-adc NAMELEN
-sta VRAMBUFFER + 1,Y
+adc NAME_LENGTH
+sta VRAM_BUFFER_ADDRESS + 1,Y
 lda #1
-sta VRAMBUFFER + 2,Y
+sta VRAM_BUFFER_ADDRESS + 2,Y
 txa
-sta VRAMBUFFER + 3,Y
+sta VRAM_BUFFER_ADDRESS + 3,Y
 tya
 clc
 adc #4
-sta VRAMPOINTER
+sta VRAM_WRITE_POINTER
 rts
-HISCORESCREEN:
-.byte <(MGOSUB)
-.word CLEARSCR
-.byte <(MADDR + 32)
+high_score_screen:
+.byte <(MESSAGE_GOSUB)
+.word clearscr
+.byte <(MESSAGE_ADDRESS + 32)
 .byte $20
 .byte $2B,$2C,$00,$00,$00,$32
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $2D,$2E,$2F,$30,$33,$34,$35,$36
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $12
 .byte $3A
-.byte <(MENDLOOP)
+.byte <(MESSAGE_END_LOOP)
 .byte $3B,$3C,$3A,$3A,$3A,$3A
 .byte $20,$20,$20,$31,$37,$38
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $14
 .byte $39
-.byte <(MENDLOOP)
+.byte <(MESSAGE_END_LOOP)
 .byte $3D,$3E,$39,$39,$39,$39
 .byte $3F,$40,$41,$42,$4E,$4F
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $14
 .byte $50
-.byte <(MENDLOOP)
+.byte <(MESSAGE_END_LOOP)
 .byte $5C,$5D,$50,$50,$50,$50
 .byte $43,$44,$45,$46,$51,$52,$53,$54
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $12
 .byte $5B
-.byte <(MENDLOOP)
+.byte <(MESSAGE_END_LOOP)
 .byte $5E,$5F,$5B,$5B,$5B,$5B
 .byte $47,$48,$49,$4A,$55,$56
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $14
 .byte $57
-.byte <(MENDLOOP)
+.byte <(MESSAGE_END_LOOP)
 .byte $60,$55,$63,$64,$65,$00
 .byte $00,$4B,$4C,$4D,$58,$59
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $14
 .byte $5A
-.byte <(MENDLOOP)
+.byte <(MESSAGE_END_LOOP)
 .byte $61,$62,$66,$67,$68,$00
-.byte <(MADDR + 33)
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $03
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $12
 .byte $00
 .byte $69
 .byte $6A
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $14
 .byte $20
-.byte <(MENDLOOP)
-.byte <(MLEN)
+.byte <(MESSAGE_END_LOOP)
+.byte <(MESSAGE_LENGTH)
 .byte $02
 .byte $89
 .byte $8A
-.byte <(MDOWNLINE)
-.byte <(MENDLOOP)
-.byte <(MJUMP)
-.word HISCORESCR4
-HISCORESCR4:
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_END_LOOP)
+.byte <(MESSAGE_JUMP)
+.word high_score_screen_4
+high_score_screen_4:
+.byte <(MESSAGE_LENGTH)
 .byte $03
 .byte $00,$96,$97
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $14
-.byte <(MLEN)
+.byte <(MESSAGE_LENGTH)
 .byte $01
 .byte $20
-.byte <(MENDLOOP)
-.byte <(MLEN)
+.byte <(MESSAGE_END_LOOP)
+.byte <(MESSAGE_LENGTH)
 .byte $02
 .byte $B4
 .byte $B5
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $03
 .byte $93,$98,$99
-.byte <(MLOOP)
+.byte <(MESSAGE_LOOP)
 .byte $0A
-.byte <(MLEN)
+.byte <(MESSAGE_LENGTH)
 .byte $02
 .byte $9A
 .byte $9B
-.byte <(MENDLOOP)
-.byte <(MLEN)
+.byte <(MESSAGE_END_LOOP)
+.byte <(MESSAGE_LENGTH)
 .byte $03
 .byte $B6,$B7,$B8
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $1A
 .byte $B9,$BB,$BC,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$BD,$BE,$C2,$C3,$BA
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $17
 .byte $00,$BF,$00,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1,$C0,$C1
-.byte <(MADDR + 35)
+.byte <(MESSAGE_ADDRESS + 35)
 .byte $C0
-.byte <(MLEN)
+.byte <(MESSAGE_LENGTH)
 .byte $40
 .byte $50,$50,$50,$50,$50,$50,$50,$50,$55,$25,$05,$05,$05,$05,$85,$55,$00,$22,$00,$00,$00,$00,$88,$00,$00,$22,$00,$00,$00,$00,$88,$00
 .byte $00,$22,$00,$00,$00,$00,$88,$00,$00,$22,$00,$00,$00,$00,$88,$00,$00,$22,$00,$00,$00,$00,$88,$20,$00,$02,$00,$00,$00,$00,$08,$02
-.byte <(MEND)
-HISCOREFANCYBITS:
-.byte <(MGOSUB)
-.word HISCOREBIT
-DOFLEUR:
-.byte <(MADDR + 34)
+.byte <(MESSAGE_END)
+high_score_fancy_bits:
+.byte <(MESSAGE_GOSUB)
+.word high_score_bit
+do_fleur:
+.byte <(MESSAGE_ADDRESS + 34)
 .byte $E7
-.byte <(MGOSUB)
-.word FLEURDLYS
-.byte <(MADDR + 34)
+.byte <(MESSAGE_GOSUB)
+.word fleur_delays
+.byte <(MESSAGE_ADDRESS + 34)
 .byte $F7
-FLEURDLYS:
-.byte <(MLEN)
+fleur_delays:
+.byte <(MESSAGE_LENGTH)
 .byte $02
 .byte $8B
 .byte $8C
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $03
 .byte $9C
 .byte $9D
 .byte $9E
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $03
 .byte $9F
 .byte $A0
 .byte $A1
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $02
 .byte $A2
 .byte $A3
-.byte <(MEND)
-HISCOREBIT:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+high_score_bit:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $08
 .byte $6B,$20,$6C
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $10
 .byte $6D,$6E,$6F,$70,$75,$76,$77,$78,$7D,$7E,$7F,$80,$85,$86,$75,$76
-.byte <(MDOWNLINE)
-.byte <(MLEN)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_LENGTH)
 .byte $10
 .byte $71,$72,$73,$74,$79,$7A,$7B,$7C,$81,$82,$83,$84,$87,$88,$79,$7A
-.byte <(MEND)
-HISCOREPRESSSTART:
-.byte <(MADDR + 35)
+.byte <(MESSAGE_END)
+high_score_press_start:
+.byte <(MESSAGE_ADDRESS + 35)
 .byte $0E
 .byte $10,$12,$05,$13,$13
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $13,$14,$01,$12,$14
-.byte <(MJUMP)
-.word FLASHINGBIT
-ENTERNAMEMESS:
-.byte <(MADDR + 35)
+.byte <(MESSAGE_JUMP)
+.word flashing_bit
+enter_name_message:
+.byte <(MESSAGE_ADDRESS + 35)
 .byte $0A
 .byte $10,$0C,$05,$01,$13,$05,$20,$05,$0E,$14,$05,$12
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$19,$0F,$15,$12,$20,$0E,$01,$0D,$05
-FLASHINGBIT:
-.byte <(MGOSUB)
-.word HISCOREFANCYBITS
-.byte <(MADDR + 35)
+flashing_bit:
+.byte <(MESSAGE_GOSUB)
+.word high_score_fancy_bits
+.byte <(MESSAGE_ADDRESS + 35)
 .byte $F2
-.byte <(MLEN)
+.byte <(MESSAGE_LENGTH)
 .byte $04
 .byte $0C
 .byte $0F
 .byte $0F
 .byte $03
-.byte <(MEND)
-CREDITS:
-.byte <(MADDR + 33)
+.byte <(MESSAGE_END)
+credits:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $07
 .byte $20,$20,$20,$20,$20,$03,$12,$05,$04,$09,$14,$13
-.byte <(MDOWNLINE)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $04,$05,$13,$09,$07,$0E,$05,$04,$20,$02,$19,$1E,$1E
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$14,$08,$05,$20,$0F,$0C,$09,$16,$05,$12,$20,$14,$17,$09,$0E,$13
-.byte <(MDOWNLINE)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $07,$12,$01,$10,$08,$09,$03,$13,$20,$02,$19,$1E,$1E
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$20,$20,$20,$20,$20,$10,$01,$15,$0C,$20,$01,$04,$01,$0D,$13
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $0D,$15,$13,$09,$03,$20,$06,$18,$20,$02,$19,$1E,$1E
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$20,$20,$07,$01,$16,$09,$0E,$20,$12,$01,$05,$02,$15,$12,$0E
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $0C,$09,$03,$05,$0E,$13,$05,$04,$20,$02,$19,$1E,$1E
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$03,$0F,$04,$05,$0D,$01,$13,$14,$05,$12,$13,$20,$0C,$14,$04
-.byte <(MDOWNLINE)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $0F,$14,$08,$05,$12,$20,$07,$01,$0D,$05,$13,$20,$02,$19
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $14,$08,$05,$20,$0F,$0C,$09,$16,$05,$12,$20,$14,$17,$09,$0E,$13,$1E,$1E
-.byte <(MDOWNLINE)
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $14,$08,$05,$20,$06,$1E,$20,$01,$1E,$20,$0F,$06,$20,$04,$09,$1A,$1A,$19
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$02,$0D,$18,$20,$13,$09,$0D,$15,$0C,$01,$14,$0F,$12
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$20,$20,$20,$06,$09,$12,$05,$08,$01,$17,$0B
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $20,$20,$07,$0F
 .byte $1B
 .byte $20,$04,$09,$1A,$1A,$19,$20,$07,$0F
 .byte $1B
-.byte <(MEND)
-HISCORESCREENCOLOURS:
+.byte <(MESSAGE_END)
+high_score_screen_colours:
 .byte $21,$27,$16,$09
 .byte $21,$20,$27,$0E
 .byte $21,$27,$16,$0E
@@ -572,62 +572,62 @@ HISCORESCREENCOLOURS:
 .byte $21,$20,$15,$0E
 .byte $21,$00,$00,$00
 .byte $21,$0E,$0E,$0E
-HISCOREMESS:
-.byte <(MADDR + 33)
+high_score_message:
+.byte <(MESSAGE_ADDRESS + 33)
 .byte $88
-.byte <(MGOSUB)
-.word HISCORESINRAM
-.byte <(MEND)
-COPYHISCORESTORAM:
+.byte <(MESSAGE_GOSUB)
+.word HIGH_SCORES_IN_RAM
+.byte <(MESSAGE_END)
+copy_high_scores_to_ram:
 cpx #151
-beq DONTCOPYINSCORES
-COPYHIS:
+beq dont_copy_in_scores
+copy_hiscore_entry:
 ldx #17 * 10 + 1
-COPYHISCORES:
-lda INITNAMES - 1,X
-sta HISCORESINRAM - 1,X
+copy_hiscore_loop:
+lda init_names - 1,X
+sta HIGH_SCORES_IN_RAM - 1,X
 dex
-bne COPYHISCORES
+bne copy_hiscore_loop
 rts
-DONTCOPYINSCORES:
+dont_copy_in_scores:
 ldx #0
-@_1:
+@dont_copy_in_scores_loop:
 ldy #0
-@_3:
-lda CHECKHISCORES,Y
-bpl @_2
+@dont_copy_in_scores_loop_2:
+lda check_high_scores,Y
+bpl @dont_copy_in_scores_skip_if_positive
 cmp #131
-bcs @_2
+bcs @dont_copy_in_scores_skip_if_positive
 cmp #128
-bne @_5
-lda HISCORESINRAM,X
+bne @dont_copy_in_scores_skip_if_not_equal
+lda HIGH_SCORES_IN_RAM,X
 cmp #33
-bcs COPYHIS
-jmp @_4
-@_5:
-lda HISCORESINRAM,X
+bcs copy_hiscore_entry
+jmp @dont_copy_in_scores_skip
+@dont_copy_in_scores_skip_if_not_equal:
+lda HIGH_SCORES_IN_RAM,X
 cmp #30
-beq @_4
+beq @dont_copy_in_scores_skip
 cmp #32
-bcc COPYHIS
+bcc copy_hiscore_entry
 cmp #43
-bcs COPYHIS
-jmp @_4
-@_2:
-cmp HISCORESINRAM,X
-bne COPYHIS
-@_4:
+bcs copy_hiscore_entry
+jmp @dont_copy_in_scores_skip
+@dont_copy_in_scores_skip_if_positive:
+cmp HIGH_SCORES_IN_RAM,X
+bne copy_hiscore_entry
+@dont_copy_in_scores_skip:
 inx
 iny
 cpy #17
-bne @_3
+bne @dont_copy_in_scores_loop_2
 cpx #10 * 17
-bne @_1
-lda HISCORESINRAM + 17 * 10
+bne @dont_copy_in_scores_loop
+lda HIGH_SCORES_IN_RAM + 17 * 10
 cmp #255
-bne COPYHIS
+bne copy_hiscore_entry
 rts
-INITNAMES:
+init_names:
 .byte $06,$09,$12,$13,$14,$1E,$1E,$1E,$1E
 .byte $1E
 .byte $23
@@ -636,7 +636,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $13,$05,$03,$0F,$0E,$04,$1E,$1E,$1E
 .byte $1E
 .byte $22
@@ -645,7 +645,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $14,$08,$09,$12,$04,$1E,$1E,$1E,$1E
 .byte $1E
 .byte $22
@@ -654,7 +654,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $06,$0F,$15,$12,$14,$08,$1E,$1E,$1E
 .byte $1E
 .byte $22
@@ -663,7 +663,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $06,$09,$06,$14,$08,$1E,$1E,$1E,$1E
 .byte $1E
 .byte $22
@@ -672,7 +672,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $13,$09,$18,$14,$08,$1E,$1E,$1E,$1E
 .byte $1E
 .byte $22
@@ -681,7 +681,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $13,$05,$16,$05,$0E,$14,$08,$1E,$1E
 .byte $1E
 .byte $1E
@@ -690,7 +690,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $05,$09,$07,$08,$14,$08,$1E,$1E,$1E
 .byte $1E
 .byte $1E
@@ -699,7 +699,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $0E,$09,$0E,$14,$08,$1E,$1E,$1E,$1E
 .byte $1E
 .byte $1E
@@ -708,7 +708,7 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
 .byte $14,$05,$0E,$14,$08,$1E,$1E,$1E,$1E
 .byte $1E
 .byte $1E
@@ -717,11 +717,11 @@ INITNAMES:
 .byte $21
 .byte $21
 .byte $21
-.byte <(MDOWNLINE)
-.byte <(MEND)
-NAME:
+.byte <(MESSAGE_DOWN_LINE)
+.byte <(MESSAGE_END)
+player_name:
 .byte $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E
-CHECKHISCORES:
+check_high_scores:
 .res 9, 128
 .byte $81
 .byte $81
@@ -730,4 +730,4 @@ CHECKHISCORES:
 .byte $81
 .byte $81
 .byte $81
-.byte <(MDOWNLINE)
+.byte <(MESSAGE_DOWN_LINE)
