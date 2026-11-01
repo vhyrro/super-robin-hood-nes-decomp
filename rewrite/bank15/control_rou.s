@@ -43,12 +43,12 @@ jsr prtmessage
 ldx PLAYER_LIVES
 lda PLAYER_HEARTS
 bne display_lives
-infinite_lives:
+lose_life:
 dec PLAYER_LIVES
 dex
-bpl @infinite_lives_skip_if_positive
+bpl @lose_life_skip_if_positive
 jmp display_lives
-@infinite_lives_skip_if_positive:
+@lose_life_skip_if_positive:
 lda #3
 sta PLAYER_HEARTS
 inx
