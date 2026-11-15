@@ -36,7 +36,7 @@ lda #190
 sta PLAYER_INVINCIBILITY_TIMER
 lda #CHARSET_HIGH_SCORE
 jsr copyblockofcompactedchrs
-jsr change_bank13_routine
+jsr change_bank1_routine
 ldx #<(print_lives_info_message)
 ldy #>(print_lives_info_message)
 jsr prtmessage
@@ -103,7 +103,7 @@ lda #255
 sta MIN_MAP
 sta HIGH_SCORE_POSITION
 @copyintreasures_skip_if_equal:
-jsr change_bank12_routine
+jsr change_bank0_routine
 ldx #<(SHOW_LIVES_COLOURS)
 ldy #>(SHOW_LIVES_COLOURS)
 jsr setfade
@@ -125,16 +125,16 @@ beq @copyintreasures_skip_if_equal_2
 jsr putextrason
 lda #0
 sta EXTRA_VARS + 2
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr updatehearts
-jsr change_bank12_routine
+jsr change_bank0_routine
 jmp @copyintreasures_skip
 @copyintreasures_skip_if_equal_2:
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr print_6_treasures
 ldx #13 - 4
 jsr pulsecolour
-jsr change_bank12_routine
+jsr change_bank0_routine
 @copyintreasures_skip:
 lda JOYPAD_STATE
 and #BUTTON_START_MASK

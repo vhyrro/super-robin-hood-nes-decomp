@@ -579,7 +579,7 @@ high_score_message:
 .word HIGH_SCORES_IN_RAM
 .byte <(MESSAGE_END)
 copy_high_scores_to_ram:
-cpx #151
+cpx #HIGH_SCORES_MAGIC
 beq dont_copy_in_scores
 copy_hiscore_entry:
 ldx #17 * 10 + 1

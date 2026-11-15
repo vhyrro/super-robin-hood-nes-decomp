@@ -1,7 +1,7 @@
 anewgame:
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr titlescreen
-jsr change_bank12_routine
+jsr change_bank0_routine
 jsr clearfullspriteblock
 asl VBLANK_FLAG
 @anewgame_wait_vblank:
@@ -73,24 +73,24 @@ jsr moveman
 jsr animatelegs
 jsr setxscroll
 jsr updatearrows
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr printrobin
 jsr float_up_number
-jsr change_bank12_routine
+jsr change_bank0_routine
 jsr updatespitters
 lda FRAME_COUNTER
 and #1
 bne @ingameloop_skip_if_not_equal_2
 jsr updateonscreens
 jsr putextrason
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr updatehearts
-jsr change_bank12_routine
+jsr change_bank0_routine
 jmp @ingameloop_skip
 @ingameloop_skip_if_not_equal_2:
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr updatehearts
-jsr change_bank12_routine
+jsr change_bank0_routine
 jsr putextrason
 jsr updateonscreens
 @ingameloop_skip:
@@ -133,9 +133,9 @@ jsr resetrobinvars1
 jsr turninteroff
 lda #0
 sta IN_GAME
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr try_to_enter_name
-jsr change_bank12_routine
+jsr change_bank0_routine
 jmp anewgame
 zoominstars:
 dec JUST_STARTED_LIFE

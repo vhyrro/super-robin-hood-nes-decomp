@@ -664,7 +664,7 @@ rts
 turnonsecret:
 asl
 tax
-jsr change_bank13_routine
+jsr change_bank1_routine
 lda secret_table,X
 sta TEMP_POINTER
 lda secret_table + 1,X
@@ -673,11 +673,11 @@ lda #0
 dosecret:
 pha
 tay
-jsr change_bank13_routine
+jsr change_bank1_routine
 lda (TEMP_POINTER),Y
 bpl @dosecret_skip_if_positive
 pla
-jsr change_bank12_routine
+jsr change_bank0_routine
 rts
 @dosecret_skip_if_positive:
 cmp MAP_NUMBER
@@ -691,7 +691,7 @@ sta SCRATCH_BYTE_2
 iny
 lda (TEMP_POINTER),Y
 sta SCRATCH_BYTE_3
-jsr change_bank12_routine
+jsr change_bank0_routine
 jsr addachangedblock1
 @dosecret_skip_if_not_equal:
 pla
@@ -811,9 +811,9 @@ sta PLAYER_CROUCHING
 lda #255
 sta PLAYER_ANIMATION
 @printrobinend_skip:
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr printrobin1
-jsr change_bank12_routine
+jsr change_bank0_routine
 lda PLAYER_X_LOW
 sta PREVIOUS_PLAYER_X_LOW
 printmarion:
@@ -872,7 +872,7 @@ lda #64
 sta COIN_NUMBER_COUNT
 rts
 redefinewaterbank:
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr redefine_water
-jsr change_bank12_routine
+jsr change_bank0_routine
 jmp backfromrounovars

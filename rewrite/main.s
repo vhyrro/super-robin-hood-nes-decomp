@@ -1,18 +1,16 @@
 .segment "HEADER"
-.byte "NES",$1a,4,0,$81,$e0,0,0,0,0,0,0,0,0
+.byte "NES",$1a,4,0,$21,0,0,0,0,0,0,0,0,0
 .include "vars.s"
 .include "nes.s"
-.segment "PRGBASE"
-.byte $FE,$FF,$FF,$FF
 
-.segment "PRG12"
-.include "bank12/mod.s"
+.segment "PRG0"
+.include "bank0/mod.s"
 
-.segment "PRG13"
-.include "bank13/mod.s"
+.segment "PRG1"
+.include "bank1/mod.s"
 
-.segment "PRG14"
-.include "bank14/mod.s"
+.segment "PRG2"
+.include "bank2/mod.s"
 
-.segment "PRG15"
-.include "bank15/mod.s"
+.segment "PRG3"
+.include "bank3/mod.s"

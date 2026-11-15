@@ -3,72 +3,72 @@ CHARSET_CODEMASTERS = (* - compactedchrstable) / 4
 .byte <(cm_chrset)
 .byte >(cm_chrset)
 .byte $00
-.byte $0E
+.byte $02
 CHARSET_TITLE_TOP = (* - compactedchrstable) / 4
 .byte <(titletopchrs)
 .byte >(titletopchrs)
 .byte $00
-.byte $8E
+.byte $82
 CHARSET_TITLE_BOTTOM = (* - compactedchrstable) / 4
 .byte <(titlebotchrs)
 .byte >(titlebotchrs)
 .byte $00
-.byte $0E
+.byte $02
 CHARSET_HIGH_SCORE = (* - compactedchrstable) / 4
 .byte <(hiscorechrs)
 .byte >(hiscorechrs)
 .byte $00
-.byte $8E
+.byte $82
 CHARSET_HIGH_SCORE_2 = (* - compactedchrstable) / 4
 .byte <(hiscorechrs)
 .byte >(hiscorechrs)
 .byte $00
-.byte $0E
+.byte $02
 CHARSET_BASE = (* - compactedchrstable) / 4
 .byte <(basechr)
 .byte >(basechr)
 .byte $00
-.byte $8E
+.byte $82
 CHARSET_BEAD = (* - compactedchrstable) / 4
 .byte <(beadchr)
 .byte >(beadchr)
 .byte $9D
-.byte $8E
+.byte $82
 CHARSET_BOX = (* - compactedchrstable) / 4
 .byte <(boxchr)
 .byte >(boxchr)
 .byte $F7
-.byte $8E
+.byte $82
 CHARSET_ARCH = (* - compactedchrstable) / 4
 .byte <(archchr)
 .byte >(archchr)
 .byte $9D
-.byte $8E
+.byte $82
 CHARSET_ROCK = (* - compactedchrstable) / 4
 .byte <(rockchr)
 .byte >(rockchr)
 .byte $9D
-.byte $8E
+.byte $82
 CHARSET_BED = (* - compactedchrstable) / 4
 .byte <(bedchr)
 .byte >(bedchr)
 .byte $B4
-.byte $8E
+.byte $82
 CHARSET_DOOR = (* - compactedchrstable) / 4
 .byte <(doorchr)
 .byte >(doorchr)
 .byte $B4
-.byte $8E
+.byte $82
 CHARSET_ROBIN = (* - compactedchrstable) / 4
 .byte <(robinchrs)
 .byte >(robinchrs)
 .byte $00
-.byte $0E
+.byte $02
 CHARSET_OK = (* - compactedchrstable) / 4
 .byte <(okchr)
 .byte >(okchr)
 .byte $00
-.byte $0E
+.byte $02
 copyblockofcompactedchrs:
 asl
 asl
@@ -110,22 +110,6 @@ PP1_FOLLOW_3 = PP1_TYPE_TABLE + 12
 PP1_ADDRESS = TEMP_POINTER_1
 PP1_ADDRESS_LOW = TEMP_POINTER_1
 PP1_ADDRESS_HIGH = TEMP_POINTER_1 + 1
-pp1_download3:
-stx PP1_ADDRESS_LOW
-sty PP1_ADDRESS_HIGH
-txa
-lda CURRENT_BANK
-pha
-txa
-jsr change_bank_routine
-jsr pp1_unpack
-pla
-jmp change_bank_routine
-pp1_download2:
-stx PP1_ADDRESS_LOW
-sty PP1_ADDRESS_HIGH
-pp1_download:
-ldx #13
 pp1_unpack:
 ldy #0
 lda (PP1_ADDRESS),Y
@@ -348,4 +332,3 @@ pp1_f2h:
 .byte $03,$03,$FF,$01
 PP1_FRAME_3_LOW = pp1_fc1
 PP1_FRAME_3_HIGH = pp1_fc2
-PP1_SIZE = * - pp1_download3

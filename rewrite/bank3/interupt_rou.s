@@ -32,16 +32,16 @@ jsr sendspriteblock
 @interrupt_skip_if_not_equal_2:
 jsr do_inter_pause
 jsr readkeypads
-lda #13
-sta bank_table + 13
+lda #1
+sta bank_table + 1
 jsr fx_play
 lda CURRENT_BANK
 jsr change_bank_routine_1
 dont_do_interrupt:
 lda GAME_PAUSED
 bne @dont_do_interrupt_skip_if_not_equal
-lda #13
-sta bank_table + 13
+lda #1
+sta bank_table + 1
 jsr play_music
 lda CURRENT_BANK
 jsr change_bank_routine_1

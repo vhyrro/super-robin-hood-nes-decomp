@@ -561,15 +561,15 @@ rts
 putinblock:
 jmp onscrxandy0
 putinheart:
-jsr change_bank13_routine
+jsr change_bank1_routine
 ldy #8 * 6 * 2
 bne putinheartbit
 putincoin:
-jsr change_bank13_routine
+jsr change_bank1_routine
 ldy #0
 putinheartbit:
 jsr putinheartbank
-jsr change_bank12_routine
+jsr change_bank0_routine
 rts
 calconscreenx:
 lda ONSCREEN_X_LOW,Y
@@ -1609,7 +1609,7 @@ jmp backfromscreenrou
 updateheart:
 updatecoin:
 jsr calconscreenx
-jsr change_bank13_routine
+jsr change_bank1_routine
 jsr restupdatecoin
-jsr change_bank12_routine
+jsr change_bank0_routine
 jmp backfromscreenrou

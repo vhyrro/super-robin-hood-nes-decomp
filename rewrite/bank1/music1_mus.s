@@ -1110,12 +1110,10 @@ frequency_table_hi:
 .byte >(1016 / 128)
 .byte >(959 / 128)
 .byte >(905 / 128)
-end_of_music_code:
 song_pointer_table:
-.word 34774
-.segment "PRG13B"
+.word instruments + $FC
+.segment "PRG1"
+.res 9, $FF
 instruments:
 instruments_alias:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/DATA3"
-MUSIC_DATA_SIZE = * - 32769
-MUSIC_PDS_BREAKPOINT_ADDRESS .set 65517

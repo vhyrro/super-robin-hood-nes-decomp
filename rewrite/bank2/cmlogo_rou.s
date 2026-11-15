@@ -1,6 +1,4 @@
-CODEMASTERS_USE_NMI = 1
 CODEMASTERS_SPRITE_PAGE = $0300
-CODEMASTERS_YEAR = 1993
 CODEMASTERS_SPRITE_Y_POSITION = CODEMASTERS_SPRITE_PAGE
 CODEMASTERS_SPRITE_DATA = CODEMASTERS_SPRITE_PAGE + 1
 CODEMASTERS_SPRITE_CONTROL = CODEMASTERS_SPRITE_PAGE + 2
@@ -24,18 +22,16 @@ cm_logo:
 ldx #0
 stx PPU_CONTROL_REGISTER
 stx PPU_MASK_REGISTER
-ldy #151
-lda CODEMASTERS_FLAGS
-and #63
-cmp #4
-ora #64
-bcs @powerup
-cpy CODEMASTERS_POWERUP
-beq @reset
-@powerup:
-sty CODEMASTERS_POWERUP
+stx CODEMASTERS_FRAME_COUNTER
+lda #HIGH_SCORES_MAGIC
+cmp HIGH_SCORES_VALID
+beq @soft_reset
+sta HIGH_SCORES_VALID
 lda #0
-@reset:
+beq @set_flags
+@soft_reset:
+lda #64
+@set_flags:
 sta CODEMASTERS_FLAGS
 jsr cm_characters
 ldx #0
@@ -214,8 +210,7 @@ lda #0
 sta PPU_CONTROL_REGISTER
 sta PPU_MASK_REGISTER
 sta APU_STATUS_REGISTER
-lda CODEMASTERS_FLAGS
-ora #128
+lda #128
 sta CODEMASTERS_FLAGS
 rts
 cm_vblank:
@@ -547,8 +542,7 @@ cm_codemap:
 .byte $06
 .byte $02
 .byte $00
-smiley_chr_data:
-smiley_chr_data_alias:
+cm_face_chr_data:
 .byte $00
 .byte $8C
 .byte $52
@@ -575,9 +569,8 @@ cm_abmap:
 cm_palette:
 .byte $34,$24,$14,$04
 .byte $11,$28,$1D,$04
-CODEMASTERS_SHORT_SIZE = * - cm_logo
 cm_characters:
-lda #14
+lda #2
 sta CURRENT_BANK
 lda #CHARSET_CODEMASTERS
 jsr copyblockofcompactedchrs
@@ -587,7 +580,7 @@ lda #<(144 * 16)
 sta PPU_ADDRESS_REGISTER
 ldx #0
 @cm_chr_copy_loop:
-lda smiley_chr_data,X
+lda cm_face_chr_data,X
 sta PPU_DATA_REGISTER
 inx
 cpx #16
@@ -595,329 +588,3 @@ bne @cm_chr_copy_loop
 rts
 cm_chrset:
 .incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/CMLOGO.PP1"
-CODEMASTERS_TOTAL_SIZE = * - cm_logo
-smiley:
-@tst_byte = 19
-@bank = 20
-@page = 21
-@pad1 = 22
-@bank_on = 23
-@face_mask = 24
-ldx #32
-@smiley_copy_code_loop:
-lda @rom_check - 32,X
-sta 0,X
-inx
-bne @smiley_copy_code_loop
-stx PPU_CONTROL_REGISTER
-stx PPU_MASK_REGISTER
-jsr @keypad
-sty @tst_byte
-lda @pad1
-and #191
-cmp #191
-bne @next_tst
-lda #SMILEY_HIGH_BANK
-sta @bank
-lda @smiley_bank
-sta @bank_on
-jsr 32
-@next_tst:
-lda @pad1
-and #127
-cmp #127
-bne @no_eq
-jsr @tst_2
-@no_eq:
-lda @tst_byte
-beq @exit
-and #4 + 8
-bne @failed
-jmp @good_face
-@failed:
-jmp @bad_face
-@exit:
-rts
-@tst_2:
-jsr @tst2_set
-@tst1a:
-ldy #64
-@tst1b:
-stx PPU_DATA_REGISTER
-inx
-stx PPU_DATA_REGISTER
-inx
-stx PPU_DATA_REGISTER
-inx
-stx PPU_DATA_REGISTER
-inx
-dey
-bne @tst1b
-inx
-sec
-sbc #1
-bne @tst1a
-jsr @tst2_set
-ldy PPU_DATA_REGISTER
-@tst2a:
-ldy #64
-@tst2b:
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-inx
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-inx
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-inx
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-inx
-dey
-bne @tst2b
-inx
-sec
-sbc #1
-bne @tst2a
-jsr @tst2_set
-ldx #255 - 37
-@tst3a:
-ldy #64
-@tst3b:
-stx PPU_DATA_REGISTER
-dex
-stx PPU_DATA_REGISTER
-dex
-stx PPU_DATA_REGISTER
-dex
-stx PPU_DATA_REGISTER
-dex
-dey
-bne @tst3b
-dex
-sec
-sbc #1
-bne @tst3a
-jsr @tst2_set
-ldx #255 - 37
-ldy PPU_DATA_REGISTER
-@tst4a:
-ldy #64
-@tst4b:
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-dex
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-dex
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-dex
-cpx PPU_DATA_REGISTER
-bne @cram_fail
-dex
-dey
-bne @tst4b
-dex
-sec
-sbc #1
-bne @tst4a
-lda #2
-bne @store_it
-@cram_fail:
-lda #8
-@store_it:
-ora @tst_byte
-sta @tst_byte
-rts
-@tst2_set:
-lda #32
-ldx #37
-ldy #0
-sty PPU_ADDRESS_REGISTER
-sty PPU_ADDRESS_REGISTER
-rts
-@keypad:
-ldx #1
-stx JOYPAD_1_REGISTER
-dex
-stx JOYPAD_1_REGISTER
-ldy #8
-@pad:
-lda JOYPAD_1_REGISTER
-lsr
-rol @pad1
-dey
-bne @pad
-rts
-@rom_check:
-ldy #0
-@here2:
-lda @bank
-jsr @set_bank
-lda #64 / 4
-sta @page
-lda #128
-.byte $85
-.byte <(@here + 2)
-lda #144
-.byte $85
-.byte <(@herea + 2)
-lda #160
-.byte $85
-.byte <(@hereb + 2)
-lda #176
-.byte $85
-.byte <(@herec + 2)
-ldx #0
-txa
-clc
-@here:
-adc 32768,X
-bcc @herea
-iny
-clc
-@herea:
-adc 36864,X
-bcc @hereb
-iny
-clc
-@hereb:
-adc 40960,X
-bcc @herec
-iny
-clc
-@herec:
-adc 45056,X
-bcc @hered
-iny
-clc
-@hered:
-inx
-bne @here
-inc @here + 2
-inc @herea + 2
-inc @hereb + 2
-inc @herec + 2
-dec @page
-bne @here
-ldx @bank
-cmp @smiley_test_string_alias,X
-bne @fail_it
-lda @bank
-dec @bank
-cmp #SMILEY_LOW_BANK
-bne @here2
-lda #1
-cpy @smiley_test_string_alias + 16
-beq @tst2_balls
-@fail_it:
-lda #4
-@tst2_balls:
-sta @tst_byte
-lda @bank_on
-@set_bank:
-tax
-sta bank_table_alias2,X
-rts
-.res 13, 234
-.res 15, 234
-@smiley_test_string_alias:
-@smiley_test_string:
-.byte $2A,$20,$53,$4D,$49,$4C,$45,$59,$20,$54,$45,$53,$54,$20,$56,$31,$2E,$33,$20
-@smiley_bank = * - 1
-@good_face:
-ldx #85
-lda #26
-bne @show_face
-@bad_face:
-ldx #170
-lda #22
-@show_face:
-stx @face_mask
-ldx @tst_byte
-stx 17408
-ldy #0
-sty PPU_MASK_REGISTER
-ldx #63
-stx PPU_ADDRESS_REGISTER
-sty PPU_ADDRESS_REGISTER
-jsr @store
-ora #48
-jsr @store
-jsr @store
-sty PPU_ADDRESS_REGISTER
-sty PPU_ADDRESS_REGISTER
-ldx #16
-dey
-@delay_loop:
-sty PPU_DATA_REGISTER
-dex
-bne @delay_loop
-lda #32
-sta PPU_ADDRESS_REGISTER
-stx PPU_ADDRESS_REGISTER
-txa
-ldy #4
-@l1:
-sta PPU_DATA_REGISTER
-inx
-bne @l1
-dey
-bne @l1
-lda #35
-sta PPU_ADDRESS_REGISTER
-lda #200
-sta PPU_ADDRESS_REGISTER
-ldy #0
-@l2:
-lda @face_data,Y
-and @face_mask
-sta PPU_DATA_REGISTER
-iny
-cpy #48
-bcc @l2
-ldx #0
-stx PPU_CONTROL_REGISTER
-stx PPU_ADDRESS_REGISTER
-stx PPU_ADDRESS_REGISTER
-stx PPU_SCROLL_REGISTER
-stx PPU_SCROLL_REGISTER
-lda #14
-sta PPU_MASK_REGISTER
-ldy #10
-@wait:
-dec TEMP_BYTE_1
-bne @wait
-dex
-bne @wait
-dey
-bne @wait
-sty PPU_MASK_REGISTER
-rts
-@store:
-sta PPU_DATA_REGISTER
-sta PPU_DATA_REGISTER
-sta PPU_DATA_REGISTER
-sta PPU_DATA_REGISTER
-rts
-@face_data:
-.byte $00,$C0,$FC,$FF,$FF,$F0,$00,$00
-.byte $40,$FF,$87,$FF,$B7,$CF,$73,$00
-.byte $44,$FF,$FE,$B7,$FF,$FE,$77,$00
-.byte $44,$FF,$07,$F5,$35,$CF,$77,$00
-.byte $00,$CF,$F9,$FA,$FA,$FD,$03,$00
-.byte $00,$00,$0F,$0F,$0F,$03,$00,$00
-SMILEY_SIZE = * - smiley
-ZP_VAR CODEMASTERS_PP1_ADDRESS, 2
-CODEMASTERS_PP1_ADDRESS_LOW = CODEMASTERS_PP1_ADDRESS
-CODEMASTERS_PP1_ADDRESS_HIGH = CODEMASTERS_PP1_ADDRESS + 1
-ZP_VAR PP1_TEMP_1
-ZP_VAR PP1_TEMP_2
-ZP_VAR PP1_TEMP_3
-ZP_VAR PP1_TEMP_4
-ZP_VAR PP1_TEMP_5
-ZP_VAR PP1_TEMP_6
-ZP_VAR PP1_TEMP_7
-ZP_VAR PP1_TEMP_8

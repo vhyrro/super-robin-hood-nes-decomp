@@ -95,7 +95,7 @@ starttune:
 tay
 lda CURRENT_BANK
 pha
-jsr change_bank13_routine
+jsr change_bank1_routine
 lda #0
 sta APU_STATUS_REGISTER
 tya
@@ -110,7 +110,7 @@ tya
 pha
 lda CURRENT_BANK
 pha
-jsr change_bank13_routine
+jsr change_bank1_routine
 lda SFX_FREQUENCY_ADDRESS_1_LOW
 jsr fx_setup
 pla

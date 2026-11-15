@@ -996,13 +996,13 @@ cpx #11 * NUMBER_OF_BLOCKS
 bne @empty_block_buffer_loop
 @empty_block_buffer_skip_if_equal:
 rts
-change_bank12_routine:
-lda #12
+change_bank0_routine:
+lda #0
 sta CURRENT_BANK
-sta bank_table + 12
+sta bank_table + 0
 rts
-change_bank13_routine:
-lda #13
+change_bank1_routine:
+lda #1
 sta CURRENT_BANK
-sta bank_table + 13
+sta bank_table + 1
 rts
