@@ -1609,7 +1609,159 @@ jmp backfromscreenrou
 updateheart:
 updatecoin:
 jsr calconscreenx
-jsr change_bank1_routine
 jsr restupdatecoin
-jsr change_bank0_routine
 jmp backfromscreenrou
+restupdatecoin:
+stx TEMP_POINTER_8
+lda ONSCREEN_COUNTER_2,Y
+and #15
+sta TEMP_BYTE_1
+cmp #6
+bcs nosparkle
+lda ONSCREEN_COUNTER_2,Y
+and #240
+bne @restupdatecoin_skip_if_not_equal
+lda RANDOM_SEED + 1
+bne nosparkle
+@restupdatecoin_skip_if_not_equal:
+lda ONSCREEN_COUNTER_2,Y
+clc
+adc #16
+sta ONSCREEN_COUNTER_2,Y
+lsr
+lsr
+lsr
+lsr
+lsr
+sta TEMP_BYTE_2
+txa
+ldx SPRITE_X_COORD_HIGH
+sec
+sbc #7
+bcs @restupdatecoin_skip_if_carry
+dex
+@restupdatecoin_skip_if_carry:
+cpx #0
+bne @restupdatecoin_skip_if_not_equal_2
+sta TEMP_BYTE_3
+lda ONSCREEN_Y,Y
+clc
+adc #4
+tay
+lda #2
+sta TEMP_BYTE
+ldx TEMP_BYTE_2
+lda sparkle,X
+ldx TEMP_BYTE_3
+jsr pokesprite
+@restupdatecoin_skip_if_not_equal_2:
+nosparkle:
+ldy TEMP_POINTER_9
+lda ONSCREEN_Y,Y
+sta TEMP_POINTER_8 + 1
+jsr pickupcollision
+bcs endcoin
+jsr storeoutoldrobin
+ldy TEMP_POINTER_9
+lda ONSCREEN_X_LOW,Y
+sta TEMP_POINTER_7
+lda ONSCREEN_X_HIGH,Y
+sta TEMP_POINTER_7 + 1
+lda #0
+sta ONSCREEN_ROUTINE,Y
+lda ONSCREEN_COUNTER_1,Y
+tay
+and #7
+tax
+tya
+lsr
+lsr
+lsr
+tay
+lda SECRET_TABLE + 3,Y
+and bitpattern,X
+bne @nosparkle_skip_if_not_equal
+lda SECRET_TABLE + 3,Y
+eor bitpattern,X
+sta SECRET_TABLE + 3,Y
+ldy TEMP_POINTER_9
+lda ONSCREEN_COUNTER_2,Y
+and #15
+cmp #6
+bcc @nosparkle_skip_if_no_carry
+jsr addtohearts
+lda #7
+jsr startstars
+lda #SFX_PICKUP_HEART
+jsr soundfx
+lda #72
+jsr addtoscore
+jmp @nosparkle_skip
+@nosparkle_skip_if_no_carry:
+jsr change_bank1_routine
+jsr start_float_up_number
+jsr change_bank0_routine
+lda #6
+jsr startstars
+lda #SFX_PICKUP_TREASURE
+jsr soundfx
+lda #50
+jsr addtoscore
+@nosparkle_skip:
+@nosparkle_skip_if_not_equal:
+rts
+endcoin:
+ldy TEMP_POINTER_9
+lda SPRITE_X_COORD_HIGH
+bne @endcoin_skip_if_not_equal
+lda ONSCREEN_Y,Y
+tay
+lda TEMP_BYTE_1
+cmp #6
+bcs pulsing_heart
+tax
+lda treaspal,X
+sta TEMP_BYTE
+lda FRAME_COUNTER
+lsr
+lsr
+and #3
+sta TEMP_BYTE
+lda TEMP_BYTE_1
+asl
+asl
+clc
+adc #204
+ldx TEMP_POINTER_8
+jmp pokesprite2by2
+@endcoin_skip_if_not_equal:
+rts
+pulsing_heart:
+lda #3
+sta TEMP_BYTE
+tya
+clc
+adc #12
+tay
+lda FRAME_COUNTER
+lsr
+lsr
+lsr
+and #3
+tax
+lda heartsdefs,X
+ldx TEMP_POINTER_8
+dex
+dex
+dex
+dex
+jmp pokesprite
+sparkle:
+.byte $8D
+.byte $8D
+.byte $8E
+.byte $8E
+.byte $8F
+.byte $8E
+.byte $8D
+.byte $8D
