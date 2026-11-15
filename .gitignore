@@ -11,3 +11,4 @@ docs/manuals/*.pdf
 docs/manuals/PDS_executables.zip
 pds_src/src/PP1PACK.EXE
 pds_src/src/HEX2BIN.COM
+rewrite/gfx/

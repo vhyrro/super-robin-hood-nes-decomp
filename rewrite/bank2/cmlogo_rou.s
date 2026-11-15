@@ -587,4 +587,4 @@ cpx #16
 bne @cm_chr_copy_loop
 rts
 cm_chrset:
-.incbin "/home/vhyrro/dev/side-projects/SuperRobinHoodNESSource/pds_src/src/CMLOGO.PP1"
+.incbin "build/gfx/cm_logo.pp1"
