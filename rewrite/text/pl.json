@@ -1,0 +1,35 @@
+{
+  "charset": {},
+  "limits": {
+    "press_start": 18,
+    "please_enter_name": 18,
+    "credits_1": 25,
+    "credits_2": 25,
+    "score": 5,
+    "lives": 5,
+    "treasure_to_collect": 19,
+    "life": 6,
+    "game_over": 9,
+    "the_end": 7,
+    "congratulations": 16,
+    "completion_1": 31,
+    "completion_2": 31,
+    "completion_3": 31
+  },
+  "messages": {
+    "press_start": "WCISNIJ\nSTART",
+    "please_enter_name": "WPISZ IMIE\n TWOJE IMIE",
+    "credits_1": "     AUTORZY\n\nPROJEKT..\n  THE OLIVER TWINS\n\nGRAFIKA..\n        PAUL ADAMS\nMUZYKA..\n     GAVIN RAEBURN\nLICENCJA..\n   CODEMASTERS LTD",
+    "credits_2": "\n\nINNE GRY\nTHE OLIVER TWINS..\n\nTHE F. A. OF DIZZY\n  BMX SIMULATOR\n     FIREHAWK\n  GO!\n DIZZY GO!",
+    "score": "WYNIK",
+    "lives": "ZYCIA",
+    "treasure_to_collect": " SKARBY DO ZDOBYCIA",
+    "life": " ZYCIE",
+    "game_over": "PRZEGRANA",
+    "the_end": "KONIEC",
+    "congratulations": "GRATULACJE!",
+    "completion_1": " PO BOHATERSKIEJ WEDROWCE\n PRZEZ GROZNY ZAMEK NOTTINGHAM\n WRESZCIE UDALO CI SIE\n URATOWAC SWOJA UKOCHANA\n",
+    "completion_2": " MAID MARION!",
+    "completion_3": "   ODZYSKALES TAKZE\n   WSZYSTKIE SKRADZIONE SKARBY\n\nKROL RYSZARD WROCI WKROTCE.\n\n     NIECH ZYJE KROL!"
+  }
+}

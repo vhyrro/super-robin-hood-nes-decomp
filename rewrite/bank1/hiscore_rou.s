@@ -500,17 +500,15 @@ high_score_bit:
 high_score_press_start:
 .byte <(MESSAGE_ADDRESS + 35)
 .byte $0E
-.byte $10,$12,$05,$13,$13
-.byte <(MESSAGE_DOWN_LINE)
-.byte $13,$14,$01,$12,$14
+.byte MESSAGE_TEXT
+.word text_press_start
 .byte <(MESSAGE_JUMP)
 .word flashing_bit
 enter_name_message:
 .byte <(MESSAGE_ADDRESS + 35)
 .byte $0A
-.byte $10,$0C,$05,$01,$13,$05,$20,$05,$0E,$14,$05,$12
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$19,$0F,$15,$12,$20,$0E,$01,$0D,$05
+.byte MESSAGE_TEXT
+.word text_please_enter_name
 flashing_bit:
 .byte <(MESSAGE_GOSUB)
 .word high_score_fancy_bits
@@ -526,42 +524,10 @@ flashing_bit:
 credits:
 .byte <(MESSAGE_ADDRESS + 33)
 .byte $07
-.byte $20,$20,$20,$20,$20,$03,$12,$05,$04,$09,$14,$13
-.byte <(MESSAGE_DOWN_LINE)
-.byte <(MESSAGE_DOWN_LINE)
-.byte $04,$05,$13,$09,$07,$0E,$05,$04,$20,$02,$19,$1E,$1E
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$14,$08,$05,$20,$0F,$0C,$09,$16,$05,$12,$20,$14,$17,$09,$0E,$13
-.byte <(MESSAGE_DOWN_LINE)
-.byte <(MESSAGE_DOWN_LINE)
-.byte $07,$12,$01,$10,$08,$09,$03,$13,$20,$02,$19,$1E,$1E
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$20,$20,$20,$20,$20,$10,$01,$15,$0C,$20,$01,$04,$01,$0D,$13
-.byte <(MESSAGE_DOWN_LINE)
-.byte $0D,$15,$13,$09,$03,$20,$06,$18,$20,$02,$19,$1E,$1E
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$20,$20,$07,$01,$16,$09,$0E,$20,$12,$01,$05,$02,$15,$12,$0E
-.byte <(MESSAGE_DOWN_LINE)
-.byte $0C,$09,$03,$05,$0E,$13,$05,$04,$20,$02,$19,$1E,$1E
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$03,$0F,$04,$05,$0D,$01,$13,$14,$05,$12,$13,$20,$0C,$14,$04
-.byte <(MESSAGE_DOWN_LINE)
-.byte <(MESSAGE_DOWN_LINE)
-.byte $0F,$14,$08,$05,$12,$20,$07,$01,$0D,$05,$13,$20,$02,$19
-.byte <(MESSAGE_DOWN_LINE)
-.byte $14,$08,$05,$20,$0F,$0C,$09,$16,$05,$12,$20,$14,$17,$09,$0E,$13,$1E,$1E
-.byte <(MESSAGE_DOWN_LINE)
-.byte <(MESSAGE_DOWN_LINE)
-.byte $14,$08,$05,$20,$06,$1E,$20,$01,$1E,$20,$0F,$06,$20,$04,$09,$1A,$1A,$19
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$02,$0D,$18,$20,$13,$09,$0D,$15,$0C,$01,$14,$0F,$12
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$20,$20,$06,$09,$12,$05,$08,$01,$17,$0B
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$07,$0F
-.byte $1B
-.byte $20,$04,$09,$1A,$1A,$19,$20,$07,$0F
-.byte $1B
+.byte MESSAGE_TEXT
+.word text_credits_1
+.byte MESSAGE_TEXT
+.word text_credits_2
 .byte <(MESSAGE_END)
 high_score_screen_colours:
 .byte $21,$27,$16,$09

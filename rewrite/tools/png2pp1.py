@@ -55,6 +55,8 @@ ASSETS = [
     ("solid", "SOLIDCHR.PP1"),
 ]
 
+EXTRA_TILES = {"hiscore": 256}
+
 MAP_PALETTE = ["#000000", "#FCA044", "#E45C10", "#A81000"]
 HISCORE_PALETTE = ["#3CBCFC", "#F8F8F8", "#FCA044", "#000000"]
 TITLE_PALETTE = ["#000000", "#3CBCFC", "#E45C10", "#F8D878"]
@@ -533,6 +535,10 @@ def extract() -> None:
         data = (PDS / source).read_bytes()
         raw, _ = decode_pp1(data)
         count = len(raw) // 16
+        target = EXTRA_TILES.get(name, count)
+        if target > count:
+            raw += bytes((target - count) * 16)
+            count = target
         cols = min(COLS, count)
         png = GFX / f"{name}.png"
         current = asset_palettes.get(name)

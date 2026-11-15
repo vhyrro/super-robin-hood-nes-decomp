@@ -7,11 +7,13 @@ MESSAGE_END_LOOP = 250
 MESSAGE_DOWN_LINE = 249
 MESSAGE_JUMP = 248
 MESSAGE_DOWN_ATTRIBUTE = 247
+MESSAGE_TEXT = 246
 MESSAGE_ADDRESS = 128
 MESSAGE_BUFFER_HORIZONTAL_VERTICAL = 1
 MESSAGE_POINTER = SCRATCH_BYTE_1
 LAST_ADDRESS = SCRATCH_BYTE_3
 TEMP_STORE = SCRATCH_BYTE_5
+TEXT_POINTER = TEMP_POINTER_4
 prtmessagefly:
 asl VBLANK_FLAG
 @prtmessagefly_wait_vblank:
@@ -49,6 +51,8 @@ cmp #MESSAGE_DOWN_LINE
 beq downlinerou
 cmp #MESSAGE_DOWN_ATTRIBUTE
 beq attrdownrou
+cmp #MESSAGE_TEXT
+beq printtext
 jmp jumpnewmessagejump
 printwhatataddress2:
 iny
@@ -129,6 +133,42 @@ jmp printwhatataddress1
 attrdownrou:
 lda #8
 bne joindownline
+printtext:
+lda (MESSAGE_POINTER),Y
+sta TEXT_POINTER
+iny
+lda (MESSAGE_POINTER),Y
+sta TEXT_POINTER + 1
+iny
+tya
+pha
+ldy #0
+@printtext_loop:
+lda (TEXT_POINTER),Y
+beq @printtext_done
+cmp #MESSAGE_DOWN_LINE
+beq @printtext_newline
+sta PPU_DATA_REGISTER
+iny
+bne @printtext_loop
+@printtext_newline:
+lda #32
+clc
+adc LAST_ADDRESS
+sta LAST_ADDRESS
+tax
+bcc @printtext_skip_carry
+inc LAST_ADDRESS + 1
+@printtext_skip_carry:
+lda LAST_ADDRESS + 1
+sta PPU_ADDRESS_REGISTER
+stx PPU_ADDRESS_REGISTER
+iny
+jmp @printtext_loop
+@printtext_done:
+pla
+tay
+jmp printwhatataddress1
 jumpnewmessagejump:
 lda (MESSAGE_POINTER),Y
 tax

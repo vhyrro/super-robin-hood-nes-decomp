@@ -411,13 +411,16 @@ print_lives_info_message:
 .byte <(MESSAGE_END_LOOP)
 .byte <(MESSAGE_ADDRESS + 32)
 .byte $8D
-.byte $13,$03,$0F,$12,$05
+.byte MESSAGE_TEXT
+.word text_score
 .byte <(MESSAGE_ADDRESS + 33)
 .byte $4E
-.byte $0C,$09,$16,$05,$13
+.byte MESSAGE_TEXT
+.word text_lives
 .byte <(MESSAGE_ADDRESS + 34)
 .byte $46
-.byte $14,$12,$05,$01,$13,$15,$12,$05,$20,$14,$0F,$20,$03,$0F,$0C,$0C,$05,$03,$14
+.byte MESSAGE_TEXT
+.word text_treasure_to_collect
 .byte <(MESSAGE_ADDRESS + 35)
 .byte $D2
 .byte <(MESSAGE_LENGTH)
@@ -438,7 +441,8 @@ life1mess:
 .byte <(MESSAGE_ADDRESS + 33)
 .byte $4C
 .byte $22
-.byte $20,$0C,$09,$06,$05,$20
+.byte MESSAGE_TEXT
+.word text_life
 .byte <(MESSAGE_END)
 lives2mess:
 .byte <(MESSAGE_ADDRESS + 33)
@@ -468,7 +472,8 @@ lives6mess:
 game_over_bit:
 .byte <(MESSAGE_ADDRESS + 33)
 .byte $4B
-.byte $07,$01,$0D,$05,$20,$0F,$16,$05,$12
+.byte MESSAGE_TEXT
+.word text_game_over
 .byte <(MESSAGE_END)
 completed_game_message:
 .byte <(MESSAGE_ADDRESS + 33)
@@ -476,42 +481,29 @@ completed_game_message:
 .byte $20,$20,$20,$20,$20,$20,$20,$20,$20
 .byte <(MESSAGE_ADDRESS + 32)
 .byte $EC
-.byte $14,$08,$05,$20,$05,$0E,$04
+.byte MESSAGE_TEXT
+.word text_the_end
 .byte <(MESSAGE_ADDRESS + 33)
 .byte $C8
-.byte $03,$0F,$0E,$07,$12,$01,$14,$15,$0C,$01,$14,$09,$0F,$0E,$13
-.byte $1B
+.byte MESSAGE_TEXT
+.word text_congratulations
 .byte <(MESSAGE_ADDRESS + 34)
 .byte $01
-.byte $20,$01,$06,$14,$05,$12,$20,$05,$18,$10,$0C,$0F,$12,$09,$0E,$07,$20,$01,$0E,$04,$20,$06,$09,$07,$08,$14,$09,$0E,$07
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$19,$0F,$15,$12,$20,$17,$01,$19,$20,$08,$05,$12,$0F,$09,$03,$01,$0C,$0C,$19,$20,$14,$08,$12,$0F,$15,$07,$08
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$14,$08,$05,$20,$04,$05,$01,$04,$0C,$19,$20,$0E,$0F,$14,$14,$09,$0E,$07,$08,$01,$0D,$20,$03,$01,$13,$14,$0C,$05
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$19,$0F,$15,$20,$08,$01,$16,$05,$20,$05,$16,$05,$0E,$14,$15,$01,$0C,$0C,$19,$20,$12,$05,$13,$03,$15,$05,$04
-.byte <(MESSAGE_DOWN_LINE)
+.byte MESSAGE_TEXT
+.word text_completion_1
 .byte <(MESSAGE_JUMP)
 .word completed_game_message_2
 completed_game_message_2:
-.byte $20,$19,$0F,$15,$12,$20,$14,$12,$15,$05,$20,$0C,$0F,$16,$05,$20,$0D,$01,$09,$04,$20,$0D,$01,$12,$09,$0F,$0E
-.byte $1B
+.byte MESSAGE_TEXT
+.word text_completion_2
 .byte <(MESSAGE_DOWN_LINE)
 .byte <(MESSAGE_LOOP)
 .byte $1C
 .byte $20
 .byte <(MESSAGE_END_LOOP)
 .byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$19,$0F,$15,$20,$08,$01,$16,$05,$20,$01,$0C,$13,$0F,$20,$12,$05,$03,$0F,$16,$05,$12,$05,$04
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$01,$0C,$0C,$20,$14,$08,$05,$20,$13,$14,$0F,$0C,$05,$0E,$20,$14,$12,$05,$01,$13,$15,$12,$05
-.byte <(MESSAGE_DOWN_LINE)
-.byte <(MESSAGE_DOWN_LINE)
-.byte $0B,$09,$0E,$07,$20,$12,$09,$03,$08,$01,$12,$04,$20,$17,$09,$0C,$0C,$20,$12,$05,$14,$15,$12,$0E,$20,$13,$0F,$0F,$0E,$1E
-.byte <(MESSAGE_DOWN_LINE)
-.byte <(MESSAGE_DOWN_LINE)
-.byte $20,$20,$20,$20,$20,$0C,$0F,$0E,$07,$20,$0C,$09,$16,$05,$20,$14,$08,$05,$20,$0B,$09,$0E,$07
-.byte $1B
+.byte MESSAGE_TEXT
+.word text_completion_3
 .byte <(MESSAGE_END)
 treasure_left_message:
 .byte $22

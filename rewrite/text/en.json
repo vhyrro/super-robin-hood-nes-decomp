@@ -1,0 +1,35 @@
+{
+  "charset": {},
+  "limits": {
+    "press_start": 18,
+    "please_enter_name": 18,
+    "credits_1": 25,
+    "credits_2": 25,
+    "score": 5,
+    "lives": 5,
+    "treasure_to_collect": 19,
+    "life": 6,
+    "game_over": 9,
+    "the_end": 7,
+    "congratulations": 16,
+    "completion_1": 31,
+    "completion_2": 31,
+    "completion_3": 31
+  },
+  "messages": {
+    "press_start": "PRESS\nSTART",
+    "please_enter_name": "PLEASE ENTER\n YOUR NAME",
+    "credits_1": "     CREDITS\n\nDESIGNED BY..\n  THE OLIVER TWINS\n\nGRAPHICS BY..\n        PAUL ADAMS\nMUSIC FX BY..\n     GAVIN RAEBURN\nLICENSED BY..\n   CODEMASTERS LTD",
+    "credits_2": "\n\nOTHER GAMES BY\nTHE OLIVER TWINS..\n\nTHE F. A. OF DIZZY\n  BMX SIMULATOR\n     FIREHAWK\n  GO!\n DIZZY GO!",
+    "score": "SCORE",
+    "lives": "LIVES",
+    "treasure_to_collect": "TREASURE TO COLLECT",
+    "life": " LIFE ",
+    "game_over": "GAME OVER",
+    "the_end": "THE END",
+    "congratulations": "CONGRATULATIONS!",
+    "completion_1": " AFTER EXPLORING AND FIGHTING\n YOUR WAY HEROICALLY THROUGH\n THE DEADLY NOTTINGHAM CASTLE\n YOU HAVE EVENTUALLY RESCUED\n",
+    "completion_2": " YOUR TRUE LOVE MAID MARION!",
+    "completion_3": "   YOU HAVE ALSO RECOVERED\n   ALL THE STOLEN TREASURE\n\nKING RICHARD WILL RETURN SOON.\n\n     LONG LIVE THE KING!"
+  }
+}

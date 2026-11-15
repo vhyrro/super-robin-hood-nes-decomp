@@ -8,6 +8,7 @@
 
 .segment "PRG1"
 .include "bank1/mod.s"
+.include "build/text.s"
 
 .segment "PRG2"
 .include "bank2/mod.s"
