@@ -8,6 +8,7 @@ TEXT := text/$(LANG).json
 FONT := text/fonts/$(LANG).png
 FONT_FLAG := $(if $(wildcard $(FONT)),--font $(FONT),)
 GFX  := $(wildcard gfx/*.png)
+MAPS := maps/world.json
 
 all: $(OUT)
 
@@ -26,7 +27,10 @@ build/gfx/.stamp: build/lang build/font tools/png2pp1.py gfx/manifest.json $(GFX
 build/text.s: build/lang tools/textc.py $(TEXT)
 	$(PYTHON) tools/textc.py $(TEXT) -o $@
 
-build/main.o: $(wildcard *.s) $(wildcard bank*/*.s) build/text.s build/gfx/.stamp
+build/mapdata.s: tools/mapc.py $(MAPS) maps/mapdata_template.s
+	$(PYTHON) tools/mapc.py build $(MAPS) -o $@
+
+build/main.o: $(wildcard *.s) $(wildcard bank*/*.s) build/text.s build/gfx/.stamp build/mapdata.s
 	@mkdir -p build
 	$(CA65) -g -t none -o $@ main.s
 
@@ -47,9 +51,12 @@ test: $(OUT)
 extract-gfx:
 	$(PYTHON) tools/png2pp1.py extract
 
+extract-maps:
+	$(PYTHON) tools/mapc.py extract
+
 clean:
 	rm -rf build $(OUT)
 
 FORCE:
 
-.PHONY: all clean extract-gfx font-template preview test FORCE
+.PHONY: all clean extract-gfx extract-maps font-template preview test FORCE
