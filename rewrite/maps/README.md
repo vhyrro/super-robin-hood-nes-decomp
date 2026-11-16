@@ -20,6 +20,11 @@
       "rows": [
         "@#&%#~@#&%#&@#&%#&...",
         "%#*@#~..*@#*%#*..."
+      ],
+      "objects": [
+        {"type": "key", "id": 21, "x": 37, "y": 56, "door": 249},
+        {"type": "water"},
+        {"type": "end"}
       ]
     }
   ]
@@ -48,8 +53,14 @@
     "my_wall": 73
   }
   ```
-- `make` compiles `world.json` into `build/mapdata.s`; `bank0/mod.s` links that generated file.
+- `objects` stores extra entities with named fields. `type` is a name: `flash`, `guard`, `platform_h`, `platform_v`, `key`, `cannon`, `secret`, `marionette`, or `water`.
+- Field layouts are `flash: x y block timer timer2`, `guard: id x y facing flags speed timer`, `platform_h: id x1_low x1_high x2_low x2_high y`, `platform_v: id x_low x_high y1 y2 y3`, `key: id x y door`, `cannon: x y direction speed timer`, `secret: id x y secret`, and `marionette: id x y`.
+- `id` values must be unique within a map and at most 236; IDs 237..255 are reserved for doors. The map editor assigns the lowest free ID when placing an entity.
+- Trailing fields may be omitted where the original record is shorter, such as a 4-byte cannon. Any bytes beyond the known layout stay in `data`.
+- Fields are written in layout order; position-independent types such as `water` have no fields.
+- `{"type": "end"}` terminates the list and must be last.
+- `make` compiles `world.json` into `build/mapdata.s` and `build/objects.s`; `bank0/mod.s` and `bank3/xtracont_rou.s` link the generated files.
 
-`mapdata_template.s` contains the block tables and original terrain. It is the compiler template and the source for `make extract-maps`. That command overwrites `world.json`, so do not run it after editing the JSON unless you intend to reset the maps. Existing names, alphabets, and global aliases are preserved when re-extracting.
+`mapdata_template.s` contains the block tables and original terrain. It is the compiler template and the source for `make extract-maps`. That command overwrites `world.json`, so do not run it after editing the JSON unless you intend to reset the maps. Existing names, alphabets, and global aliases are preserved when re-extracting; object records are regenerated from `objects_template.s`.
 
 `world.json` currently reproduces the original terrain exactly. Bank 0 is full, so adding strips will not link until map data is compressed or moved.

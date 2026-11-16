@@ -33,8 +33,49 @@ PALETTE_NAMES = {
     "PALETTE_CHURCH": "Church",
     "PALETTE_SKY": "Sky",
 }
+OBJECT_LABELS = [
+    "map1rous",
+    "map2rous",
+    "map3rous",
+    "map4rous",
+    "map5rous",
+    "map6rous",
+    "map7rous",
+    "map8rous",
+    "map9rous",
+    "map11rous",
+    "map12rous",
+    "map13rous",
+    "map14rous",
+]
+OBJECT_TYPE_NAMES = {
+    0: "end",
+    1: "flash",
+    2: "guard",
+    3: "platform_h",
+    4: "platform_v",
+    5: "key",
+    6: "cannon",
+    7: "secret",
+    8: "marionette",
+    9: "water",
+}
+OBJECT_TYPE_IDS = {name: type_id for type_id, name in OBJECT_TYPE_NAMES.items()}
+OBJECT_LAYOUTS = {
+    "flash": ["x", "y", "block", "timer", "timer2"],
+    "guard": ["id", "x", "y", "facing", "flags", "speed", "timer"],
+    "platform_h": ["id", "x1_low", "x1_high", "x2_low", "x2_high", "y"],
+    "platform_v": ["id", "x_low", "x_high", "y1", "y2", "y3"],
+    "key": ["id", "x", "y", "door"],
+    "cannon": ["x", "y", "direction", "speed", "timer"],
+    "secret": ["id", "x", "y", "secret"],
+    "marionette": ["id", "x", "y"],
+    "water": [],
+    "end": [],
+}
 STRIP_ROWS = 14
 BANK0_SIZE = 0x3FFE
+MAX_OBJECT_ID = 255 - 18
 DEFAULT_BLOCKS = {"empty": 0}
 BLOCK_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 COLOR_TOKEN = re.compile(r"\$[0-9A-Fa-f]{1,2}")
@@ -87,6 +128,106 @@ def parse_map_bytes(lines, start, end):
 def parse_maps(lines):
     ranges = map_ranges(lines)
     return {label: parse_map_bytes(lines, start, end) for label, (start, end) in ranges.items()}
+
+
+def parse_object_maps(lines):
+    starts = {}
+    for index, line in enumerate(lines):
+        match = re.match(r"^(map\d+rous):\s*$", line)
+        if match:
+            starts[match.group(1)] = index
+    if list(starts) != OBJECT_LABELS:
+        raise ValueError(f"unexpected object label order: {list(starts)}")
+    result = {}
+    for position, label in enumerate(OBJECT_LABELS):
+        start = starts[label]
+        end = starts[OBJECT_LABELS[position + 1]] if position + 1 < len(OBJECT_LABELS) else None
+        if end is None:
+            end = next(
+                (index for index in range(start + 1, len(lines)) if lines[index].strip() == "doordata:"),
+                len(lines),
+            )
+        values = []
+        for line in lines[start + 1:end]:
+            code = line.split(";", 1)[0].strip()
+            if not code.startswith(".byte"):
+                continue
+            for token in code[5:].split(","):
+                token = token.strip()
+                if token:
+                    values.append(parse_int(token))
+        result[label] = values
+    return result
+
+
+def decode_object(type_id, payload):
+    name = OBJECT_TYPE_NAMES.get(type_id)
+    if name is None:
+        raise ValueError(f"unknown object type {type_id}")
+    layout = OBJECT_LAYOUTS[name]
+    entry = {"type": name}
+    for index, field in enumerate(layout):
+        if index < len(payload):
+            entry[field] = payload[index]
+    data = list(payload[len(layout):])
+    if data:
+        entry["data"] = data
+    return entry
+
+
+def encode_object(entry, label):
+    if not isinstance(entry, dict):
+        raise ValueError(f"{label}: each object must be an object")
+    name = entry.get("type")
+    type_id = OBJECT_TYPE_IDS.get(name)
+    if type_id is None:
+        raise ValueError(f"{label}: unknown object type {name!r}")
+    layout = OBJECT_LAYOUTS[name]
+    allowed = {"type", "data", *layout}
+    unknown = sorted(set(entry) - allowed)
+    if unknown:
+        raise ValueError(f"{label}: {name} object has unknown fields {unknown}")
+    payload = []
+    for field in layout:
+        if field in entry:
+            value = entry[field]
+            if not isinstance(value, int) or not 0 <= value <= 255:
+                raise ValueError(f"{label}: {name}.{field} must be a byte")
+            payload.append(value)
+        elif any(later in entry for later in layout[layout.index(field) + 1:]):
+            raise ValueError(f"{label}: {name}.{field} is missing but later fields are present")
+    data = entry.get("data", [])
+    if not isinstance(data, list) or any(not isinstance(value, int) or not 0 <= value <= 255 for value in data):
+        raise ValueError(f"{label}: object data must be bytes")
+    payload.extend(data)
+    if type_id == 0 and payload:
+        raise ValueError(f"{label}: end object cannot have data")
+    if type_id == 9 and payload:
+        raise ValueError(f"{label}: water object cannot have data")
+    if len(payload) + 2 > 255:
+        raise ValueError(f"{label}: {name} object is too long")
+    return type_id, payload
+
+
+def parse_object_stream(label, values):
+    objects = []
+    index = 0
+    while index < len(values):
+        type_id = values[index]
+        if type_id == 0:
+            objects.append({"type": "end"})
+            index += 1
+            if index != len(values):
+                raise ValueError(f"{label}: data after object terminator")
+            break
+        if index + 1 >= len(values):
+            raise ValueError(f"{label}: truncated object record")
+        length = values[index + 1]
+        if length < 2 or index + length > len(values):
+            raise ValueError(f"{label}: invalid object record length {length}")
+        objects.append(decode_object(type_id, values[index + 2:index + length]))
+        index += length
+    return objects
 
 
 def parse_mapinfo(path):
@@ -233,6 +374,30 @@ def validate_alphabet(value, path, label):
     return alphabet
 
 
+def validate_objects(value, label):
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValueError(f"{label}: objects must be a list")
+    objects = []
+    seen_ids = set()
+    for index, entry in enumerate(value):
+        type_id, payload = encode_object(entry, label)
+        if type_id == 0 and index != len(value) - 1:
+            raise ValueError(f"{label}: end object must be last")
+        decoded = decode_object(type_id, payload)
+        if "id" in decoded:
+            object_id = decoded["id"]
+            if object_id >= MAX_OBJECT_ID:
+                raise ValueError(
+                    f"{label}: object id {object_id} is reserved for doors"
+                )
+            if object_id in seen_ids:
+                raise ValueError(f"{label}: duplicate object id {object_id}")
+            seen_ids.add(object_id)
+        objects.append(decoded)
+    return objects
+
 def load_world(path):
     try:
         document = json.loads(path.read_text())
@@ -271,7 +436,17 @@ def load_world(path):
             if len(values) != width:
                 raise ValueError(f"{label}: row {row_index} has {len(values)} blocks, expected {width}")
             clean_rows.append(values)
-        maps.append({"label": label, "name": name, "width": width, "alphabet": alphabet, "rows": clean_rows})
+        objects = validate_objects(entry.get("objects"), label)
+        maps.append(
+            {
+                "label": label,
+                "name": name,
+                "width": width,
+                "alphabet": alphabet,
+                "rows": clean_rows,
+                "objects": objects,
+            }
+        )
 
     labels = [entry["label"] for entry in maps]
     if labels != MAP_LABELS:
@@ -310,6 +485,12 @@ def format_world(maps, blocks):
             suffix = "," if row_index + 1 < len(entry["rows"]) else ""
             rendered = "".join(reverse.get(value, f"${value:02X}") for value in row)
             lines.append(f"        {json.dumps(rendered)}{suffix}")
+        lines.append("      ],")
+        objects = entry.get("objects", [])
+        lines.append('      "objects": [')
+        for object_index, object_entry in enumerate(objects):
+            suffix = "," if object_index + 1 < len(objects) else ""
+            lines.append(f"        {json.dumps(object_entry)}{suffix}")
         lines.append("      ]")
         lines.append("    }" + ("," if map_index + 1 < len(maps) else ""))
     lines.extend(["  ]", "}"])
@@ -440,6 +621,20 @@ def replace_maps(template, maps):
     return built
 
 
+def emit_objects(maps):
+    lines = []
+    for label, entry in zip(OBJECT_LABELS, maps):
+        lines.append(f"{label}:")
+        for object_entry in entry.get("objects", []):
+            type_id, payload = encode_object(object_entry, label)
+            if type_id == 0:
+                values = [0]
+            else:
+                values = [type_id, len(payload) + 2, *payload]
+            lines.append(".byte " + ",".join(f"${value:02X}" for value in values))
+    return "\n".join(lines) + "\n"
+
+
 def count_bytes(lines):
     total = 0
     for line in lines:
@@ -460,6 +655,7 @@ def extract(args):
     widths = {label: entry["width"] for label, entry in info.items()}
     names = make_map_names(info)
     raw_maps = parse_maps(template.splitlines())
+    raw_objects = parse_object_maps(args.objects_template.read_text().splitlines())
     blocks = read_existing_blocks(args.output)
     alphabets = read_existing_alphabets(args.output)
     existing_names = read_existing_names(args.output)
@@ -480,6 +676,7 @@ def extract(args):
                     alphabets.get(label),
                 ),
                 "rows": rows,
+                "objects": parse_object_stream(OBJECT_LABELS[len(maps)], raw_objects[OBJECT_LABELS[len(maps)]]),
             }
         )
 
@@ -506,13 +703,20 @@ def build(args):
         )
 
     built = replace_maps(args.template.read_text(), built_maps)
+    objects = emit_objects(maps)
     total = count_bytes(built.splitlines())
     if total > BANK0_SIZE:
         raise ValueError(f"generated bank 0 uses {total} bytes, maximum is {BANK0_SIZE}")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(built)
-    print(f"built {len(built_maps)} maps into {args.output} ({total} bytes in bank 0)")
+    args.objects_output.parent.mkdir(parents=True, exist_ok=True)
+    args.objects_output.write_text(objects)
+    object_count = sum(max(0, len(entry["objects"]) - 1) for entry in maps)
+    print(
+        f"built {len(built_maps)} maps into {args.output} ({total} bytes in bank 0), "
+        f"{object_count} objects into {args.objects_output}"
+    )
 
 
 def main(argv=None):
@@ -522,6 +726,7 @@ def main(argv=None):
     extract_parser = subparsers.add_parser("extract")
     extract_parser.add_argument("--template", type=Path, default=ROOT / "maps/mapdata_template.s")
     extract_parser.add_argument("--mapinfo", type=Path, default=ROOT / "bank3/mapscrol_rou.s")
+    extract_parser.add_argument("--objects-template", type=Path, default=ROOT / "maps/objects_template.s")
     extract_parser.add_argument("-o", "--output", type=Path, default=ROOT / "maps/world.json")
     extract_parser.set_defaults(handler=extract)
 
@@ -530,6 +735,7 @@ def main(argv=None):
     build_parser.add_argument("--template", type=Path, default=ROOT / "maps/mapdata_template.s")
     build_parser.add_argument("--mapinfo", type=Path, default=ROOT / "bank3/mapscrol_rou.s")
     build_parser.add_argument("-o", "--output", type=Path, default=ROOT / "build/mapdata.s")
+    build_parser.add_argument("--objects-output", type=Path, default=ROOT / "build/objects.s")
     build_parser.set_defaults(handler=build)
 
     args = parser.parse_args(argv)

@@ -66,6 +66,23 @@
         "*%#}+-+-+-+-+^........,..?+-+-+-+-+-*%#*@#%#;;;;;;;;*>..@#h...~.....h*%#",
         "@#&?o&@#&%#&@#&%#&@#&%#&@#&%#&@#&%#&@#&%#&@#//&//&//&>..&%#&;;&.<.@#&%#&",
         "%#*@#*%#*@#*%#*@#*%#*@#*%#*@#*%#*@#*%#*@#*%#@#*%#*@#*_%#*@#*%#*@#_%#*@#*"
+      ],
+      "objects": [
+        {"type": "key", "id": 21, "x": 37, "y": 56, "door": 249},
+        {"type": "cannon", "x": 4, "y": 48, "direction": 3, "speed": 25},
+        {"type": "platform_h", "id": 23, "x1_low": 204, "x1_high": 2, "x2_low": 52, "x2_high": 3, "y": 159},
+        {"type": "key", "id": 24, "x": 55, "y": 184, "door": 248},
+        {"type": "key", "id": 31, "x": 62, "y": 120, "door": 32},
+        {"type": "flash", "x": 68, "y": 136, "block": 27, "timer": 10, "timer2": 10},
+        {"type": "flash", "x": 67, "y": 6, "block": 27, "timer": 10, "timer2": 10},
+        {"type": "flash", "x": 59, "y": 136, "block": 27, "timer": 8, "timer2": 8},
+        {"type": "guard", "id": 136, "x": 2, "y": 160, "facing": 3, "flags": 99, "speed": 5, "timer": 10},
+        {"type": "flash", "x": 11, "y": 137, "block": 27, "timer": 12, "timer2": 6},
+        {"type": "guard", "id": 137, "x": 55, "y": 160, "facing": 254, "flags": 132, "speed": 6, "timer": 6, "data": [16]},
+        {"type": "guard", "id": 140, "x": 70, "y": 160, "facing": 254, "flags": 2, "speed": 8, "timer": 8},
+        {"type": "secret", "id": 67, "x": 1, "y": 136, "secret": 10},
+        {"type": "water"},
+        {"type": "end"}
       ]
     },
     {
@@ -138,6 +155,17 @@
         "%&@@@~~~~~~~~~@@@@^^^^^@@@^^@@%&",
         "*###+=========*#################",
         "%&@%&@%&@%&@%&@%&@%&@%&@%&@%&@%&"
+      ],
+      "objects": [
+        {"type": "platform_h", "id": 12, "x1_low": 92, "x1_high": 0, "x2_low": 212, "x2_high": 0, "y": 159},
+        {"type": "flash", "x": 8, "y": 134, "block": 252, "timer": 10, "timer2": 10},
+        {"type": "flash", "x": 9, "y": 134, "block": 253, "timer": 10, "timer2": 10},
+        {"type": "guard", "id": 134, "x": 14, "y": 64, "facing": 2, "flags": 163, "speed": 5, "timer": 5, "data": [5, 15]},
+        {"type": "guard", "id": 135, "x": 29, "y": 160, "facing": 254, "flags": 99, "speed": 5, "timer": 10},
+        {"type": "key", "id": 13, "x": 13, "y": 24, "door": 251},
+        {"type": "secret", "id": 64, "x": 29, "y": 104, "secret": 8},
+        {"type": "water"},
+        {"type": "end"}
       ]
     },
     {
@@ -182,6 +210,13 @@
         "#.....^#...^^_##",
         "%~~~~~*&.@@%&:%*",
         "#########+###:##"
+      ],
+      "objects": [
+        {"type": "key", "id": 15, "x": 2, "y": 168, "door": 16},
+        {"type": "guard", "id": 138, "x": 2, "y": 144, "facing": 2, "flags": 98, "speed": 3, "timer": 10},
+        {"type": "key", "id": 66, "x": 10, "y": 184, "door": 23},
+        {"type": "water"},
+        {"type": "end"}
       ]
     },
     {
@@ -245,6 +280,20 @@
         "&%__......_..._&%........&%_............&@@%_........^...b..._&%",
         "#####+++++###^#####^##+++###^#-+++++-########################--#",
         "&@@@@@@@@@@@%^&@@@%^&@@@@@@%^@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%"
+      ],
+      "objects": [
+        {"type": "key", "id": 19, "x": 3, "y": 72, "door": 20},
+        {"type": "key", "id": 25, "x": 3, "y": 168, "door": 247},
+        {"type": "key", "id": 26, "x": 23, "y": 72, "door": 246},
+        {"type": "key", "id": 27, "x": 49, "y": 72, "door": 28},
+        {"type": "platform_h", "id": 28, "x1_low": 124, "x1_high": 3, "x2_low": 196, "x2_high": 3, "y": 127},
+        {"type": "platform_v", "id": 32, "x_low": 52, "x_high": 2, "y1": 0, "y2": 184, "y3": 95},
+        {"type": "guard", "id": 145, "x": 18, "y": 192, "facing": 2, "flags": 5, "speed": 3, "timer": 10},
+        {"type": "guard", "id": 146, "x": 27, "y": 96, "facing": 254, "flags": 3, "speed": 3, "timer": 17},
+        {"type": "cannon", "x": 30, "y": 64, "direction": 3, "speed": 11},
+        {"type": "guard", "id": 147, "x": 39, "y": 192, "facing": 254, "flags": 4, "speed": 4, "timer": 4, "data": [8, 14]},
+        {"type": "water"},
+        {"type": "end"}
       ]
     },
     {
@@ -350,6 +399,38 @@
         "*..b?&.j%?E.........))-%%%_..(..G..&+@@*r+@*aaaaaa+@@@@*;+@@@@^@*..,........&.g.....+@^*.&../|.+@*...........+*.ef.uef..?)))..))..-%)))r+*.z.&-_....u...u.......{}.....&.....&...u..&+h@h@*&..(...NOP.z&...,?+@*",
         "##=##=aa=<>:::::::::##.-%%g%%%%%%%%&b###r##bwwwwww<>=###;###=#~#=##=#aaa####~#=#=#..##~#.&..ef.#=#:::::::::::############=##::##::::#=#r##...&.-_..#=#####?.........#########~######&#klm##&.....LQRSL.&?..??###",
         "+@!@@!@@!@@@@@@@@@@@@@@@@@@@@@@@@@@^@@@*r+@@@@@@@@@@!@@*;+@@!@^@!@@!@@@@@@@@^@!@!@*;+@^@@^*;+@@@!@@@@@@@@@@@@@@@@@@@@@@@@!@@@@@@@@@@@!*r+@@@@^@@@@@@!@@@@@@@@@@@@@@@@@@@@@@@@^@@@@@*&+nop@*&+@@@@@@@@@@^@@@@@@@*"
+      ],
+      "objects": [
+        {"type": "key", "id": 7, "x": 61, "y": 72, "door": 252},
+        {"type": "secret", "id": 8, "x": 31, "y": 152, "secret": 0},
+        {"type": "key", "id": 9, "x": 31, "y": 152, "door": 0},
+        {"type": "guard", "id": 133, "x": 4, "y": 64, "facing": 2, "flags": 197, "speed": 20},
+        {"type": "secret", "id": 10, "x": 2, "y": 184, "secret": 1},
+        {"type": "key", "id": 11, "x": 2, "y": 184, "door": 12},
+        {"type": "key", "id": 14, "x": 77, "y": 40, "door": 250},
+        {"type": "platform_v", "id": 16, "x_low": 44, "x_high": 5, "y1": 0, "y2": 132, "y3": 63},
+        {"type": "key", "id": 17, "x": 120, "y": 104, "door": 239},
+        {"type": "platform_h", "id": 20, "x1_low": 44, "x1_high": 6, "x2_low": 196, "x2_high": 6, "y": 175},
+        {"type": "key", "id": 29, "x": 190, "y": 120, "door": 30},
+        {"type": "platform_v", "id": 30, "x_low": 156, "x_high": 12, "y1": 0, "y2": 200, "y3": 63},
+        {"type": "key", "id": 33, "x": 176, "y": 56, "door": 245},
+        {"type": "key", "id": 34, "x": 154, "y": 112, "door": 35},
+        {"type": "platform_h", "id": 35, "x1_low": 252, "x1_high": 8, "x2_low": 84, "x2_high": 9, "y": 79},
+        {"type": "guard", "id": 139, "x": 81, "y": 64, "facing": 2, "flags": 67, "speed": 13},
+        {"type": "guard", "id": 141, "x": 67, "y": 112, "facing": 2, "flags": 67, "speed": 4, "timer": 10},
+        {"type": "guard", "id": 142, "x": 89, "y": 208, "facing": 2, "flags": 2, "speed": 4, "timer": 4, "data": [12]},
+        {"type": "cannon", "x": 132, "y": 96, "direction": 253, "speed": 7, "timer": 13},
+        {"type": "guard", "id": 143, "x": 139, "y": 144, "facing": 2, "flags": 3, "speed": 10},
+        {"type": "flash", "x": 131, "y": 139, "block": 205, "timer": 8, "timer2": 8},
+        {"type": "flash", "x": 132, "y": 139, "block": 205, "timer": 8, "timer2": 8},
+        {"type": "secret", "id": 144, "x": 189, "y": 56, "secret": 7},
+        {"type": "guard", "id": 150, "x": 192, "y": 144, "facing": 254, "flags": 130, "speed": 5, "timer": 12},
+        {"type": "secret", "id": 74, "x": 45, "y": 168, "secret": 15},
+        {"type": "secret", "id": 75, "x": 11, "y": 184, "secret": 16},
+        {"type": "guard", "id": 172, "x": 202, "y": 208, "facing": 254, "flags": 131, "speed": 4, "timer": 12},
+        {"type": "secret", "id": 81, "x": 4, "y": 88, "secret": 22},
+        {"type": "water"},
+        {"type": "end"}
       ]
     },
     {
@@ -462,6 +543,32 @@
         "&*...#sfft~#+.###FGH&@*_.~#####+..&@*V...sfft....~#####:.MFGH+lmsft_~#####:q....AB.+.AB...&@*_..lm.cd.lmFGH.sfft..$AF.&@@*.......L..+(/--.####_######:..FGH....q~##;;;;;.#####&@@*",
         "%%.##gukkvg~+.###CDE[[[___~####+..[%[V..gukwvg.._.~#$B0###:OCDE+01ukv__~#####:.......+....x.%]{__.01....01CDEgukkvg.%..x...#w#######+(/!!.###___##w###:.CDE...w.._~!!!!!.###]{%%]{",
         "&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*+&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*+&@@@@@@@@@@@@@@@@@@@@@@@*+&@@@@@@@@*+&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*"
+      ],
+      "objects": [
+        {"type": "key", "id": 0, "x": 8, "y": 168, "door": 1},
+        {"type": "platform_h", "id": 1, "x1_low": 76, "x1_high": 0, "x2_low": 164, "x2_high": 0, "y": 95},
+        {"type": "key", "id": 2, "x": 3, "y": 88, "door": 255},
+        {"type": "key", "id": 3, "x": 38, "y": 152, "door": 4},
+        {"type": "platform_h", "id": 4, "x1_low": 28, "x1_high": 3, "x2_low": 146, "x2_high": 3, "y": 111},
+        {"type": "guard", "id": 128, "x": 3, "y": 160, "facing": 2, "flags": 1, "speed": 14, "timer": 5},
+        {"type": "key", "id": 5, "x": 86, "y": 40, "door": 254},
+        {"type": "key", "id": 6, "x": 76, "y": 120, "door": 253},
+        {"type": "guard", "id": 129, "x": 33, "y": 208, "facing": 254, "flags": 226, "speed": 30},
+        {"type": "guard", "id": 130, "x": 68, "y": 96, "facing": 254, "flags": 130, "speed": 13},
+        {"type": "guard", "id": 131, "x": 84, "y": 96, "facing": 254, "flags": 2, "speed": 20},
+        {"type": "guard", "id": 132, "x": 78, "y": 144, "facing": 1, "flags": 67, "speed": 15, "timer": 20},
+        {"type": "guard", "id": 18, "x": 115, "y": 128, "facing": 254, "flags": 65, "speed": 5, "timer": 20},
+        {"type": "key", "id": 22, "x": 99, "y": 56, "door": 0},
+        {"type": "secret", "id": 65, "x": 99, "y": 56, "secret": 9},
+        {"type": "key", "id": 36, "x": 166, "y": 88, "door": 37},
+        {"type": "platform_v", "id": 37, "x_low": 208, "x_high": 10, "y1": 0, "y2": 166, "y3": 79},
+        {"type": "cannon", "x": 168, "y": 64, "direction": 252, "speed": 9},
+        {"type": "guard", "id": 148, "x": 140, "y": 144, "facing": 2, "flags": 131, "speed": 5, "timer": 5, "data": [20]},
+        {"type": "guard", "id": 158, "x": 95, "y": 160, "facing": 2, "flags": 2, "speed": 5, "timer": 20},
+        {"type": "secret", "id": 68, "x": 93, "y": 120, "secret": 11},
+        {"type": "secret", "id": 73, "x": 23, "y": 24, "secret": 14},
+        {"type": "secret", "id": 82, "x": 173, "y": 40, "secret": 23},
+        {"type": "end"}
       ]
     },
     {
@@ -574,6 +681,27 @@
         "^_~.*y*$2CZZ$2E*y**@.....])......^%_+=-.P******##2#D#2####j}hi.v....j..fg+=-?[......DIJ..j.IJ..;..IJ.bc.L<>..bc..+=-l****^_&#|##|#~^%_&########|#|#|#^~_&|##|##|##|######}&&&&####^_",
         "@@~.**Y$2F00$31Y***@....v....v...@@@+=-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.hi+=-]).w.@@@@@@@@@@@@@@@@@@@.....IJ......+=-l***v@@&###j#D~@@@&####v########w#~@&##j##j######vM#####w#####@@",
         "^%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%_+=-^%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%_+=-^%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%_+=-l^%%%%%%_~^%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%_~^%%%"
+      ],
+      "objects": [
+        {"type": "key", "id": 38, "x": 149, "y": 200, "door": 39},
+        {"type": "platform_h", "id": 39, "x1_low": 76, "x1_high": 9, "x2_low": 180, "x2_high": 9, "y": 111},
+        {"type": "flash", "x": 171, "y": 137, "block": 248, "timer": 20, "timer2": 20},
+        {"type": "key", "id": 48, "x": 108, "y": 200, "door": 49},
+        {"type": "key", "id": 52, "x": 10, "y": 168, "door": 53},
+        {"type": "platform_h", "id": 53, "x1_low": 172, "x1_high": 2, "x2_low": 68, "x2_high": 3, "y": 63},
+        {"type": "key", "id": 54, "x": 73, "y": 40, "door": 241},
+        {"type": "cannon", "x": 113, "y": 96, "direction": 3, "speed": 10},
+        {"type": "guard", "id": 149, "x": 166, "y": 64, "facing": 254, "flags": 130, "speed": 13},
+        {"type": "cannon", "x": 71, "y": 96, "direction": 3, "speed": 24},
+        {"type": "guard", "id": 152, "x": 17, "y": 160, "facing": 2, "flags": 4, "speed": 10, "timer": 4},
+        {"type": "guard", "id": 153, "x": 33, "y": 160, "facing": 2, "flags": 2, "speed": 4, "timer": 4, "data": [8]},
+        {"type": "guard", "id": 154, "x": 14, "y": 208, "facing": 254, "flags": 4, "speed": 4, "timer": 4, "data": [8, 8]},
+        {"type": "guard", "id": 166, "x": 54, "y": 64, "facing": 254, "flags": 130, "speed": 12},
+        {"type": "secret", "id": 76, "x": 29, "y": 160, "secret": 17},
+        {"type": "secret", "id": 77, "x": 68, "y": 64, "secret": 18},
+        {"type": "guard", "id": 167, "x": 104, "y": 208, "facing": 254, "flags": 1, "speed": 7, "timer": 14},
+        {"type": "secret", "id": 78, "x": 140, "y": 24, "secret": 19},
+        {"type": "end"}
       ]
     },
     {
@@ -664,6 +792,40 @@
         "~:!!k!&![}}]!**r#=====@=====@f(((g#|||##[}}]@~:@#f(((((g#GHI/~:@#CnnnD####>#q************;~:!**+++++!*[}}]!**+++!***~-:!*********[}}]!*~-:!****~-:!***;!~:!***~-",
         "&&@###&@d??e@|/g#_____@_____@f(a(g#|||##d??e@&&@#f(((((g#JKL@&&@tEoooFt#|###f#####m######;&&@##__a_m|/d??e@|/___@###&&&@####||/##d??e@|&@@@####&@@@###;@&&@#a#&&",
         "~:%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%;%%%%%%%%;%%%%%%%%%%%%~:%%%%%%%%%%%%%%%%%%%%%%%%;%%%%;%%%%%%%%%%%%%%%%%;%%%%%%%%%%%;%%%%%%%%%%%%%%%%;%%%%%%%;%%%%%%%;%%%%"
+      ],
+      "objects": [
+        {"type": "secret", "id": 40, "x": 144, "y": 208, "secret": 2},
+        {"type": "key", "id": 41, "x": 147, "y": 136, "door": 0},
+        {"type": "secret", "id": 43, "x": 147, "y": 136, "secret": 3},
+        {"type": "key", "id": 42, "x": 152, "y": 72, "door": 244},
+        {"type": "flash", "x": 156, "y": 133, "block": 253, "timer": 10, "timer2": 35},
+        {"type": "flash", "x": 158, "y": 135, "block": 253, "timer": 15, "timer2": 30},
+        {"type": "flash", "x": 156, "y": 137, "block": 253, "timer": 20, "timer2": 25},
+        {"type": "flash", "x": 158, "y": 139, "block": 253, "timer": 25, "timer2": 20},
+        {"type": "key", "id": 46, "x": 104, "y": 184, "door": 0},
+        {"type": "secret", "id": 47, "x": 104, "y": 184, "secret": 5},
+        {"type": "platform_h", "id": 49, "x1_low": 44, "x1_high": 5, "x2_low": 116, "x2_high": 5, "y": 127},
+        {"type": "flash", "x": 85, "y": 4, "block": 27, "timer": 10, "timer2": 10},
+        {"type": "flash", "x": 88, "y": 4, "block": 27, "timer": 10, "timer2": 10},
+        {"type": "key", "id": 55, "x": 48, "y": 104, "door": 56},
+        {"type": "platform_h", "id": 56, "x1_low": 252, "x1_high": 0, "x2_low": 84, "x2_high": 1, "y": 63},
+        {"type": "platform_h", "id": 58, "x1_low": 124, "x1_high": 1, "x2_low": 196, "x2_high": 1, "y": 63},
+        {"type": "platform_h", "id": 60, "x1_low": 76, "x1_high": 2, "x2_low": 196, "x2_high": 2, "y": 63},
+        {"type": "guard", "id": 151, "x": 150, "y": 80, "facing": 2, "flags": 131, "speed": 20, "timer": 25},
+        {"type": "cannon", "x": 137, "y": 192, "direction": 3, "speed": 18},
+        {"type": "guard", "id": 155, "x": 127, "y": 208, "facing": 254, "flags": 131, "speed": 3, "timer": 3, "data": [10]},
+        {"type": "cannon", "x": 118, "y": 80, "direction": 3, "speed": 16, "timer": 22},
+        {"type": "key", "id": 69, "x": 120, "y": 136, "door": 70},
+        {"type": "platform_h", "id": 70, "x1_low": 156, "x1_high": 7, "x2_low": 52, "x2_high": 8, "y": 95},
+        {"type": "guard", "id": 162, "x": 60, "y": 208, "facing": 254, "flags": 5, "speed": 5, "timer": 5, "data": [10]},
+        {"type": "guard", "id": 163, "x": 68, "y": 112, "facing": 254, "flags": 131, "speed": 4, "timer": 4, "data": [8, 8]},
+        {"type": "guard", "id": 164, "x": 25, "y": 208, "facing": 2, "flags": 131, "speed": 5, "timer": 5, "data": [10]},
+        {"type": "guard", "id": 165, "x": 18, "y": 208, "facing": 2, "flags": 5, "speed": 10, "timer": 10},
+        {"type": "secret", "id": 72, "x": 22, "y": 88, "secret": 13},
+        {"type": "guard", "id": 169, "x": 3, "y": 112, "facing": 2, "flags": 5, "speed": 4, "timer": 3, "data": [8]},
+        {"type": "guard", "id": 173, "x": 91, "y": 64, "facing": 2, "flags": 3, "speed": 4, "timer": 3, "data": [8]},
+        {"type": "secret", "id": 80, "x": 149, "y": 24, "secret": 21},
+        {"type": "end"}
       ]
     },
     {
@@ -755,6 +917,14 @@
         "*+&@!@_@!@_@!@_@!@:@!*%+&@@@@@@@@@@@@@*+",
         "##&@;@w@;@@@;@w@;@:@;###,@@@@###########",
         "*+~*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%+"
+      ],
+      "objects": [
+        {"type": "key", "id": 57, "x": 30, "y": 184, "door": 58},
+        {"type": "key", "id": 63, "x": 4, "y": 56, "door": 240},
+        {"type": "guard", "id": 161, "x": 26, "y": 96, "facing": 254, "flags": 4, "speed": 12},
+        {"type": "secret", "id": 71, "x": 24, "y": 136, "secret": 12},
+        {"type": "guard", "id": 170, "x": 10, "y": 208, "facing": 254, "flags": 130, "speed": 3, "timer": 3, "data": [3, 3, 9]},
+        {"type": "end"}
       ]
     },
     {
@@ -810,6 +980,14 @@
         "^_....c..^_.....|.}<.((.}<.|..^_",
         "&&.e....d&&.....|....(((...|..&&",
         "^%%_[^%%%%%_[^%%%%%%%%%%%%%%%%%_"
+      ],
+      "objects": [
+        {"type": "key", "id": 44, "x": 4, "y": 40, "door": 0},
+        {"type": "secret", "id": 45, "x": 4, "y": 40, "secret": 4},
+        {"type": "guard", "id": 159, "x": 29, "y": 208, "facing": 254, "flags": 132, "speed": 3, "timer": 3, "data": [7, 7]},
+        {"type": "guard", "id": 160, "x": 12, "y": 144, "facing": 2, "flags": 2, "speed": 7},
+        {"type": "secret", "id": 79, "x": 28, "y": 32, "secret": 20},
+        {"type": "end"}
       ]
     },
     {
@@ -856,6 +1034,13 @@
         "-@@@@@@@@@@@@@@@@[@@@@]{",
         "-@@@@@@@@@@[@@@@--------",
         "{+)++++++++++++)+++++++}"
+      ],
+      "objects": [
+        {"type": "key", "id": 59, "x": 1, "y": 136, "door": 60},
+        {"type": "key", "id": 61, "x": 19, "y": 24, "door": 0},
+        {"type": "secret", "id": 62, "x": 19, "y": 24, "secret": 6},
+        {"type": "guard", "id": 171, "x": 10, "y": 208, "facing": 254, "flags": 4, "speed": 5},
+        {"type": "end"}
       ]
     },
     {
@@ -927,6 +1112,12 @@
         "*&..-=.e||f.-=.^..>p%.*&.e|f..*&",
         "##..}<_g((h_}<!^.._.:.##_g(h_.##",
         "*@&~*@@@@@@@@@@@@@@@@@@@@@@@@~*&"
+      ],
+      "objects": [
+        {"type": "key", "id": 50, "x": 29, "y": 88, "door": 243},
+        {"type": "key", "id": 51, "x": 3, "y": 104, "door": 242},
+        {"type": "guard", "id": 156, "x": 21, "y": 208, "facing": 254, "flags": 4, "speed": 4, "timer": 4, "data": [12]},
+        {"type": "end"}
       ]
     },
     {
@@ -972,6 +1163,11 @@
         "%!&:&:&:&:&:&:&%",
         "%.!)!&&&[&&&]&&%",
         "%%%%%(%%%%%%%%%%"
+      ],
+      "objects": [
+        {"type": "marionette", "id": 0, "x": 14, "y": 48},
+        {"type": "guard", "id": 157, "x": 2, "y": 208, "facing": 2, "flags": 5, "speed": 9},
+        {"type": "end"}
       ]
     }
   ]

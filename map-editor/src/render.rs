@@ -52,6 +52,47 @@ pub fn atlas_image(map: &Map, blocks: &BlockTables) -> ColorImage {
     ColorImage::from_rgba_unmultiplied([256, 256], &rgba)
 }
 
+pub fn entity_image(chr: &[u8], palette: &[u8; 4], tiles: &[u8], cols: usize) -> ColorImage {
+    let cols = cols.max(1);
+    let rows = (tiles.len() + cols - 1) / cols;
+    let width = cols * 8;
+    let height = rows * 8;
+    let mut rgba = vec![0u8; width * height * 4];
+    for (index, tile) in tiles.iter().enumerate() {
+        let x = (index % cols) * 8;
+        let y = (index / cols) * 8;
+        draw_tile_colours(&mut rgba, width, x, y, *tile, chr, palette);
+    }
+    ColorImage::from_rgba_unmultiplied([width, height], &rgba)
+}
+
+fn draw_tile_colours(
+    pixels: &mut [u8],
+    stride: usize,
+    x: usize,
+    y: usize,
+    tile: u8,
+    chr: &[u8],
+    palette: &[u8; 4],
+) {
+    let offset = tile as usize * 16;
+    for row in 0..8 {
+        let plane0 = chr[offset + row];
+        let plane1 = chr[offset + 8 + row];
+        for column in 0..8 {
+            let bit = 7 - column;
+            let color = (((plane1 >> bit) & 1) << 1) | ((plane0 >> bit) & 1);
+            let nes_index = palette[color as usize] & 0x3F;
+            let rgb = NES_PALETTE[nes_index as usize];
+            let pixel = ((y + row) * stride + x + column) * 4;
+            pixels[pixel] = (rgb >> 16) as u8;
+            pixels[pixel + 1] = (rgb >> 8) as u8;
+            pixels[pixel + 2] = rgb as u8;
+            pixels[pixel + 3] = 255;
+        }
+    }
+}
+
 pub fn atlas_uv(block: u8) -> Rect {
     let x = (block % 16) as f32 * 16.0 / 256.0;
     let y = (block / 16) as f32 * 16.0 / 256.0;

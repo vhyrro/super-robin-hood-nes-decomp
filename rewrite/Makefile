@@ -27,10 +27,16 @@ build/gfx/.stamp: build/lang build/font tools/png2pp1.py gfx/manifest.json $(GFX
 build/text.s: build/lang tools/textc.py $(TEXT)
 	$(PYTHON) tools/textc.py $(TEXT) -o $@
 
-build/mapdata.s: tools/mapc.py $(MAPS) maps/mapdata_template.s
-	$(PYTHON) tools/mapc.py build $(MAPS) -o $@
+build/maps: FORCE
+	@mkdir -p build
+	@if [ "$$(cat $@ 2>/dev/null)" != "$(MAPS)" ]; then printf '%s\n' "$(MAPS)" > $@; fi
 
-build/main.o: $(wildcard *.s) $(wildcard bank*/*.s) build/text.s build/gfx/.stamp build/mapdata.s
+build/mapdata.s: build/maps tools/mapc.py $(MAPS) maps/mapdata_template.s maps/objects_template.s
+	$(PYTHON) tools/mapc.py build $(MAPS) -o $@ --objects-output build/objects.s
+
+build/objects.s: build/mapdata.s
+
+build/main.o: $(wildcard *.s) $(wildcard bank*/*.s) build/text.s build/gfx/.stamp build/mapdata.s build/objects.s
 	@mkdir -p build
 	$(CA65) -g -t none -o $@ main.s
 

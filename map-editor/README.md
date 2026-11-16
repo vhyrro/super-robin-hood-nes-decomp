@@ -16,12 +16,14 @@ cd ../rewrite && make
 
 - Left click: paint the selected block
 - Right click: erase
-- Alt + left click: pick a block
+- Alt + left click or the **Pick block from map** button: select the block under the cursor
 - Middle click or Space + left click: pan
 - Mouse wheel: zoom
 - Ctrl/Cmd+S: save
 - Ctrl/Cmd+Z: undo
 - Revert: restore the original map from `rewrite/maps/mapdata_template.s`
 - Ctrl/Cmd+Y or Ctrl/Cmd+Shift+Z: redo
+- Right panel **Entities** tab: choose an entity type, then left-click the map once to place it
+- Right panel **Objects** tab: select an object to highlight it on the map and edit all of its named fields
 
-Use the JSON path field and **Import** / **Export** for alternate map files.
+The right panel has **Blocks**, **Objects**, and **Entities** tabs. Use the JSON path field and **Import** / **Export** for alternate map files.

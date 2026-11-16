@@ -6,6 +6,7 @@ use anyhow::{anyhow, bail, Context, Result};
 use serde_json::Value;
 
 pub const HEIGHT: usize = 14;
+pub const MAX_OBJECT_ID: u8 = 236;
 
 #[derive(Clone, Debug)]
 pub struct BlockTables {
@@ -15,6 +16,161 @@ pub struct BlockTables {
     pub bottom_right: Vec<u8>,
     pub attributes: Vec<u8>,
     pub solid: Vec<u8>,
+}
+
+pub const MAP_LABELS: [&str; 13] = [
+    "map_b", "map_c", "map_d", "map_e", "map_f", "map_g", "map_h", "map_i", "map_j", "map_l",
+    "map_m", "map_n", "map_o",
+];
+
+pub const OBJECT_LABELS: [&str; 13] = [
+    "map1rous",
+    "map2rous",
+    "map3rous",
+    "map4rous",
+    "map5rous",
+    "map6rous",
+    "map7rous",
+    "map8rous",
+    "map9rous",
+    "map11rous",
+    "map12rous",
+    "map13rous",
+    "map14rous",
+];
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Object {
+    pub type_id: u8,
+    pub fields: Vec<(String, u8)>,
+    pub data: Vec<u8>,
+}
+
+impl Object {
+    pub fn field(&self, name: &str) -> Option<u8> {
+        self.fields
+            .iter()
+            .find(|(field, _)| field == name)
+            .map(|(_, value)| *value)
+    }
+}
+
+pub fn object_type_name(type_id: u8) -> &'static str {
+    match type_id {
+        0 => "end",
+        1 => "flash",
+        2 => "guard",
+        3 => "platform_h",
+        4 => "platform_v",
+        5 => "key",
+        6 => "cannon",
+        7 => "secret",
+        8 => "marionette",
+        9 => "water",
+        _ => "?",
+    }
+}
+
+fn object_type_id(name: &str) -> Option<u8> {
+    (0..=9).find(|type_id| object_type_name(*type_id) == name)
+}
+
+fn object_layout(type_id: u8) -> &'static [&'static str] {
+    match type_id {
+        1 => &["x", "y", "block", "timer", "timer2"],
+        2 => &["id", "x", "y", "facing", "flags", "speed", "timer"],
+        3 => &["id", "x1_low", "x1_high", "x2_low", "x2_high", "y"],
+        4 => &["id", "x_low", "x_high", "y1", "y2", "y3"],
+        5 => &["id", "x", "y", "door"],
+        6 => &["x", "y", "direction", "speed", "timer"],
+        7 => &["id", "x", "y", "secret"],
+        8 => &["id", "x", "y"],
+        _ => &[],
+    }
+}
+
+pub fn object_has_id(type_id: u8) -> bool {
+    object_layout(type_id).contains(&"id")
+}
+
+fn validate_object_ids(label: &str, objects: &[Object]) -> Result<()> {
+    let mut seen = HashMap::new();
+    for object in objects {
+        let Some(object_id) = object.field("id") else {
+            continue;
+        };
+        if object_id > MAX_OBJECT_ID {
+            bail!("{label}: object id {object_id} is reserved for doors");
+        }
+        if seen.insert(object_id, ()).is_some() {
+            bail!("{label}: duplicate object id {object_id}");
+        }
+    }
+    Ok(())
+}
+
+fn decode_object(type_id: u8, payload: &[u8]) -> Result<Object> {
+    if type_id > 9 {
+        bail!("unknown object type {type_id}");
+    }
+    let layout = object_layout(type_id);
+    let fields = layout
+        .iter()
+        .enumerate()
+        .filter_map(|(index, name)| payload.get(index).map(|value| ((*name).to_owned(), *value)))
+        .collect();
+    let data = payload[layout.len().min(payload.len())..].to_vec();
+    Ok(Object {
+        type_id,
+        fields,
+        data,
+    })
+}
+
+fn encode_object(object: &Object) -> Result<Vec<u8>> {
+    if object.type_id > 9 {
+        bail!("unknown object type {}", object.type_id);
+    }
+    let layout = object_layout(object.type_id);
+    for (name, _) in &object.fields {
+        if !layout.contains(&name.as_str()) {
+            bail!(
+                "{} object has unknown field {name}",
+                object_type_name(object.type_id)
+            );
+        }
+    }
+    let mut payload = Vec::new();
+    for (index, name) in layout.iter().enumerate() {
+        if let Some(value) = object.field(name) {
+            if index != payload.len() {
+                bail!(
+                    "{} object field {name} is out of order",
+                    object_type_name(object.type_id)
+                );
+            }
+            payload.push(value);
+        } else if layout[index + 1..]
+            .iter()
+            .any(|later| object.field(later).is_some())
+        {
+            bail!(
+                "{} object field {name} is missing",
+                object_type_name(object.type_id)
+            );
+        }
+    }
+    payload.extend(&object.data);
+    if object.type_id == 0 && !payload.is_empty() {
+        bail!("end object cannot have data");
+    }
+    if object.type_id == 9 && !payload.is_empty() {
+        bail!("water object cannot have data");
+    }
+    if payload.len() + 2 > 255 {
+        bail!("object is too long");
+    }
+    Ok(payload)
 }
 
 #[derive(Clone, Debug)]
@@ -28,6 +184,8 @@ pub struct Map {
     pub palette: [u8; 16],
     pub chr: Vec<u8>,
     pub alphabet: Vec<(char, u8)>,
+    pub objects: Vec<Object>,
+    pub original_objects: Vec<Object>,
 }
 
 impl Map {
@@ -50,6 +208,8 @@ impl Map {
 
 pub struct Project {
     pub blocks: BlockTables,
+    pub sprite_chr: Vec<u8>,
+    pub sprite_palette: [u8; 4],
     pub maps: Vec<Map>,
     pub root: PathBuf,
     pub world_path: PathBuf,
@@ -109,6 +269,24 @@ impl Project {
             }
         }
 
+        let sprite_chr = {
+            let path = root.join("rewrite/build/gfx/robin.pp1");
+            let packed = fs::read(&path).with_context(|| format!("reading {}", path.display()))?;
+            decode_pp1(&packed)?
+        };
+        if sprite_chr.len() < 4096 {
+            bail!(
+                "robin.pp1 has {} bytes, expected at least 4096",
+                sprite_chr.len()
+            );
+        }
+        let sprite_colours = section_bytes(&template, "spritecolours")?;
+        if sprite_colours.len() < 4 {
+            bail!("spritecolours has fewer than 4 bytes");
+        }
+        let mut sprite_palette = [0u8; 4];
+        sprite_palette.copy_from_slice(&sprite_colours[..4]);
+
         let (palette_offsets, palettes) = parse_palettes(&template)?;
         let character_sets = parse_character_sets(&template)?;
         let compacted = parse_compacted_chars(root)?;
@@ -119,6 +297,7 @@ impl Project {
             .map(|info| (info.label.clone(), info))
             .collect();
         let global_blocks = parse_blocks(world.get("blocks"))?;
+        let original_objects = parse_object_template(root)?;
 
         let mut cache: HashMap<String, Vec<u8>> = HashMap::new();
         let mut maps = Vec::with_capacity(world_maps.len());
@@ -162,6 +341,15 @@ impl Project {
                     width * HEIGHT
                 );
             }
+            let objects = parse_objects(entry.get("objects"), label)?;
+            let object_label = OBJECT_LABELS[MAP_LABELS
+                .iter()
+                .position(|candidate| *candidate == label)
+                .ok_or_else(|| anyhow!("unknown map label {label}"))?];
+            let original_map_objects = original_objects
+                .get(object_label)
+                .cloned()
+                .ok_or_else(|| anyhow!("missing original objects for {object_label}"))?;
 
             let palette_offset = *palette_offsets
                 .get(&info.palette)
@@ -212,6 +400,8 @@ impl Project {
                 palette,
                 chr,
                 alphabet,
+                objects,
+                original_objects: original_map_objects,
             });
         }
 
@@ -221,6 +411,8 @@ impl Project {
 
         Ok(Self {
             blocks,
+            sprite_chr,
+            sprite_palette,
             maps,
             root: root.to_owned(),
             world_path: world_path.to_owned(),
@@ -255,7 +447,27 @@ impl Project {
             bail!("map count changed");
         }
         for (entry, map) in entries.iter_mut().zip(&self.maps) {
+            validate_object_ids(&map.label, &map.objects)?;
             entry["rows"] = Value::Array(encode_rows(map).into_iter().map(Value::String).collect());
+            entry["objects"] = Value::Array(
+                map.objects
+                    .iter()
+                    .map(|object| {
+                        let mut value = serde_json::Map::new();
+                        value.insert(
+                            "type".to_owned(),
+                            serde_json::json!(object_type_name(object.type_id)),
+                        );
+                        for (name, field) in &object.fields {
+                            value.insert(name.clone(), serde_json::json!(field));
+                        }
+                        if !object.data.is_empty() {
+                            value.insert("data".to_owned(), serde_json::json!(object.data));
+                        }
+                        Value::Object(value)
+                    })
+                    .collect(),
+            );
         }
         Ok(())
     }
@@ -578,6 +790,133 @@ fn parse_blocks(value: Option<&Value>) -> Result<HashMap<String, u8>> {
     Ok(blocks)
 }
 
+fn parse_object_template(root: &Path) -> Result<HashMap<String, Vec<Object>>> {
+    let lines = read_lines(&root.join("rewrite/maps/objects_template.s"))?;
+    let mut starts = HashMap::new();
+    for (index, line) in lines.iter().enumerate() {
+        if let Some(name) = line.trim().strip_suffix(':') {
+            if OBJECT_LABELS.contains(&name) {
+                starts.insert(name.to_owned(), index);
+            }
+        }
+    }
+    let mut result = HashMap::new();
+    for (position, label) in OBJECT_LABELS.iter().enumerate() {
+        let start = *starts
+            .get(*label)
+            .ok_or_else(|| anyhow!("missing object label {label}"))?;
+        let end = if position + 1 < OBJECT_LABELS.len() {
+            starts[OBJECT_LABELS[position + 1]]
+        } else {
+            lines.len()
+        };
+        let mut values = Vec::new();
+        for line in &lines[start + 1..end] {
+            let Some(parsed) = byte_values(line) else {
+                continue;
+            };
+            values.extend(parsed);
+        }
+        result.insert((*label).to_owned(), parse_object_stream(label, &values)?);
+    }
+    Ok(result)
+}
+
+fn parse_object_stream(label: &str, values: &[u8]) -> Result<Vec<Object>> {
+    let mut objects = Vec::new();
+    let mut index = 0;
+    while index < values.len() {
+        let type_id = values[index];
+        if type_id == 0 {
+            objects.push(Object {
+                type_id: 0,
+                fields: Vec::new(),
+                data: Vec::new(),
+            });
+            index += 1;
+            if index != values.len() {
+                bail!("{label}: data after object terminator");
+            }
+            break;
+        }
+        if index + 1 >= values.len() {
+            bail!("{label}: truncated object record");
+        }
+        let length = values[index + 1] as usize;
+        if length < 2 || index + length > values.len() {
+            bail!("{label}: invalid object record length {length}");
+        }
+        objects.push(decode_object(type_id, &values[index + 2..index + length])?);
+        index += length;
+    }
+    Ok(objects)
+}
+
+fn parse_objects(value: Option<&Value>, label: &str) -> Result<Vec<Object>> {
+    let Some(entries) = value.and_then(Value::as_array) else {
+        return Ok(Vec::new());
+    };
+    let mut objects = Vec::new();
+    for (index, entry) in entries.iter().enumerate() {
+        let name = entry
+            .get("type")
+            .and_then(Value::as_str)
+            .ok_or_else(|| anyhow!("{label}: object {index} has no type name"))?;
+        let type_id =
+            object_type_id(name).ok_or_else(|| anyhow!("{label}: unknown object type {name:?}"))?;
+        let layout = object_layout(type_id);
+        let object_map = entry
+            .as_object()
+            .ok_or_else(|| anyhow!("{label}: object {index} must be an object"))?;
+        for key in object_map.keys() {
+            if key != "type" && key != "data" && !layout.contains(&key.as_str()) {
+                bail!("{label}: object {index} has unknown field {key}");
+            }
+        }
+        let mut fields = Vec::new();
+        for field in layout {
+            if let Some(value) = entry.get(*field) {
+                let value = value
+                    .as_u64()
+                    .filter(|value| *value <= 255)
+                    .map(|value| value as u8)
+                    .ok_or_else(|| anyhow!("{label}: object {index} has an invalid {field}"))?;
+                fields.push(((*field).to_owned(), value));
+            }
+        }
+        let data = entry
+            .get("data")
+            .and_then(Value::as_array)
+            .map(|values| {
+                values
+                    .iter()
+                    .map(|value| {
+                        value
+                            .as_u64()
+                            .filter(|value| *value <= 255)
+                            .map(|value| value as u8)
+                            .ok_or_else(|| {
+                                anyhow!("{label}: object {index} has an invalid data byte")
+                            })
+                    })
+                    .collect::<Result<Vec<_>>>()
+            })
+            .transpose()?
+            .unwrap_or_default();
+        let object = Object {
+            type_id,
+            fields,
+            data,
+        };
+        encode_object(&object)?;
+        if type_id == 0 && index + 1 != entries.len() {
+            bail!("{label}: object terminator must be last");
+        }
+        objects.push(object);
+    }
+    Ok(objects)
+}
+
 fn parse_alphabet(value: Option<&Value>) -> Result<Vec<(char, u8)>> {
     let mut alphabet = Vec::new();
     if let Some(object) = value.and_then(Value::as_object) {
@@ -888,6 +1227,18 @@ mod tests {
     }
 
     #[test]
+    fn rejects_duplicate_and_reserved_object_ids() {
+        let object = |id| Object {
+            type_id: 2,
+            fields: vec![("id".to_owned(), id)],
+            data: Vec::new(),
+        };
+        assert!(validate_object_ids("test", &[object(3), object(3)]).is_err());
+        assert!(validate_object_ids("test", &[object(MAX_OBJECT_ID + 1)]).is_err());
+        assert!(validate_object_ids("test", &[object(3), object(4)]).is_ok());
+    }
+
+    #[test]
     fn decodes_compact_and_token_rows() {
         let alphabet = vec![('.', 0), ('#', 4)];
         assert_eq!(
@@ -905,12 +1256,22 @@ mod tests {
         let root = find_root().unwrap();
         let mut project = Project::load(&root).unwrap();
         project.maps[0].terrain[0] = 0xA5;
+        let insert = project.maps[0].objects.len() - 1;
+        project.maps[0].objects.insert(
+            insert,
+            Object {
+                type_id: 9,
+                fields: Vec::new(),
+                data: Vec::new(),
+            },
+        );
         let path =
             std::env::temp_dir().join(format!("srh-map-editor-{}-world.json", std::process::id()));
         project.export(&path).unwrap();
 
         let reloaded = Project::load_from(&root, &path).unwrap();
         assert_eq!(reloaded.maps[0].terrain, project.maps[0].terrain);
+        assert_eq!(reloaded.maps[0].objects, project.maps[0].objects);
         fs::remove_file(path).unwrap();
     }
 }
