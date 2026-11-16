@@ -1,5 +1,15 @@
 {
-  "charset": {},
+  "charset": {
+    "Ą": 200,
+    "Ć": 201,
+    "Ę": 202,
+    "Ł": 203,
+    "Ń": 204,
+    "Ó": 205,
+    "Ś": 206,
+    "Ź": 207,
+    "Ż": 208
+  },
   "limits": {
     "press_start": 18,
     "please_enter_name": 18,
@@ -16,20 +26,32 @@
     "completion_2": 31,
     "completion_3": 31
   },
+  "high_scores": [
+    "PIERWSZY",
+    "DRUGI",
+    "TRZECI",
+    "CZWARTY",
+    "PIĄTY",
+    "SZÓSTY",
+    "SIÓDMY",
+    "ÓSMY",
+    "DZIEWIĄTY",
+    "DZIESIĄTY"
+  ],
   "messages": {
-    "press_start": "WCISNIJ\nSTART",
-    "please_enter_name": "WPISZ IMIE\n TWOJE IMIE",
+    "press_start": "WCIŚNIJ\nSTART",
+    "please_enter_name": "WPISZ SWOJE\n IMIĘ",
     "credits_1": "     AUTORZY\n\nPROJEKT..\n  THE OLIVER TWINS\n\nGRAFIKA..\n        PAUL ADAMS\nMUZYKA..\n     GAVIN RAEBURN\nLICENCJA..\n   CODEMASTERS LTD",
     "credits_2": "\n\nINNE GRY\nTHE OLIVER TWINS..\n\nTHE F. A. OF DIZZY\n  BMX SIMULATOR\n     FIREHAWK\n  GO!\n DIZZY GO!",
     "score": "WYNIK",
-    "lives": "ZYCIA",
+    "lives": "ŻYCIA",
     "treasure_to_collect": " SKARBY DO ZDOBYCIA",
-    "life": " ZYCIE",
+    "life": " ŻYCIE",
     "game_over": "PRZEGRANA",
     "the_end": "KONIEC",
     "congratulations": "GRATULACJE!",
-    "completion_1": " PO BOHATERSKIEJ WEDROWCE\n PRZEZ GROZNY ZAMEK NOTTINGHAM\n WRESZCIE UDALO CI SIE\n URATOWAC SWOJA UKOCHANA\n",
+    "completion_1": " PO BOHATERSKIEJ WEDRÓWCE\n PRZEZ GROŹNY ZAMEK NOTTINGHAM\n WRESZCIE UDAŁO CI SIĘ\n URATOWAĆ SWOJĄ UKOCHANĄ\n",
     "completion_2": " MAID MARION!",
-    "completion_3": "   ODZYSKALES TAKZE\n   WSZYSTKIE SKRADZIONE SKARBY\n\nKROL RYSZARD WROCI WKROTCE.\n\n     NIECH ZYJE KROL!"
+    "completion_3": "   ODZYSKAŁEŚ TAKŻE\n   WSZYSTKIE SKRADZIONE SKARBY\n\nKRÓL RYSZARD WRÓCI WKRÓTCE.\n\n     NIECH ŻYJE KRÓL!"
   }
 }

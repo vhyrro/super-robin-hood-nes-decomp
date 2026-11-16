@@ -1,14 +1,15 @@
-# The Super Robin Hood Info Powerhouse
+# The Super Robin Hood Informational Powerhouse
 
 ## What is the purpose of this repo?
 
-This repo is the place where you will find things like the official source code, the ported 6502 version, RAM Maps, actual maps, documentation and PDS assemblers for Super Robin Hood for the NES all in one place.
-When opening the RAM Map be sure to view it in raw mode as it doesn't render the best when viewing it regularly.
+This repository contains tools and buildable versions of the original Super
+Robin Hood game for the NES, originally packed as part of the Quattro Adventure
+4-in-1. 
 
-## A quickstart to get to wherever you want to go:
+The Oliver Twins graciously published the original source code as part of an article in the Wireframe magazine.
 
-* [The official Super Robin Hood Source Code (written in PDS)](https://github.com/Vhyrro/SuperRobinHoodNESSource/tree/master/pds_src)
-* [A working transpiler from the old PDS code to 6502](https://github.com/Vhyrro/SuperRobinHoodNESSource/tree/master/transpiler)
-* [The Super Robin Hood map consisting of all the levels](https://github.com/Vhyrro/SuperRobinHoodNESSource/tree/master/docs/content/map.png)
-* [A RAM Map detailing what every variable name is, where it resides in memory and - once the rewrite is finished - hopefully descriptions regarding what the variables do as well](https://github.com/Vhyrro/SuperRobinHoodNESSource/blob/master/docs/ram_map.wiki)
-* [All the manuals and executables for PDS!](https://github.com/Vhyrro/SuperRobinHoodNESSource/tree/master/docs/manuals)
+In this repo you will find TAS tooling, a map editor, a transpiler from the old source code to modern ca65-compatible assembly,
+a rewrite which includes small optimizations and touchups to the original code (including the ability to modify assets as PNGs,
+create translations and write custom maps).
+
+Each subdirectory contains its own README explaining what it does.

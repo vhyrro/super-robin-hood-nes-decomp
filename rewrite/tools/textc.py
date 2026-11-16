@@ -10,6 +10,13 @@ BASE.update({str(i): 33 + i for i in range(10)})
 
 KEY_RE = re.compile(r"^[A-Za-z0-9_]+$")
 
+DEFAULT_HIGH_SCORES = [
+    "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH",
+    "SIXTH", "SEVENTH", "EIGHTH", "NINTH", "TENTH",
+]
+HIGH_SCORE_NAME_SIZE = 9
+HIGH_SCORE_NAME_PAD = 30
+
 
 def load(path: Path):
     try:
@@ -75,7 +82,23 @@ def encode(text, charset, key, limit):
     return values
 
 
-def write_asm(messages, out_path):
+def encode_name(name, charset, index):
+    if not isinstance(name, str) or not name:
+        raise ValueError(f"high_scores[{index}] must be a non-empty string")
+    if len(name) > HIGH_SCORE_NAME_SIZE:
+        raise ValueError(f"high_scores[{index}] is {len(name)} chars, max is {HIGH_SCORE_NAME_SIZE}")
+    values = []
+    for char in name:
+        if char in BASE:
+            values.append(BASE[char])
+        elif char in charset:
+            values.append(charset[char])
+        else:
+            raise ValueError(f"high_scores[{index}] has unsupported character {char!r}")
+    return values + [HIGH_SCORE_NAME_PAD] * (HIGH_SCORE_NAME_SIZE - len(values))
+
+
+def write_asm(messages, high_scores, out_path):
     lines = []
     for key, values in messages:
         lines.append(f"text_{key}:")
@@ -85,6 +108,10 @@ def write_asm(messages, out_path):
         for start in range(0, len(values), 16):
             chunk = ", ".join(str(value) for value in values[start:start + 16])
             lines.append(f"    .byte {chunk}, 0" if start + 16 >= len(values) else f"    .byte {chunk}")
+    lines.append("text_high_score_names:")
+    for start in range(0, len(high_scores), 16):
+        chunk = ", ".join(str(value) for value in high_scores[start:start + 16])
+        lines.append(f"    .byte {chunk}")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -101,6 +128,9 @@ def main():
         raise ValueError("messages must be a non-empty object")
     charset = charset_map(data.get("charset"))
     limits = limits_map(data.get("limits"))
+    raw_high_scores = data.get("high_scores", DEFAULT_HIGH_SCORES)
+    if not isinstance(raw_high_scores, list) or len(raw_high_scores) != 10:
+        raise ValueError("high_scores must contain exactly 10 names")
 
     encoded = []
     for key, text in raw_messages.items():
@@ -110,8 +140,13 @@ def main():
             raise ValueError(f"{key}: message must be a string")
         limit = limits.get(key, 32)
         encoded.append((key, encode(text, charset, key, limit)))
+    high_scores = [
+        value
+        for index, name in enumerate(raw_high_scores)
+        for value in encode_name(name, charset, index)
+    ]
 
-    write_asm(encoded, args.output)
+    write_asm(encoded, high_scores, args.output)
 
 
 if __name__ == "__main__":

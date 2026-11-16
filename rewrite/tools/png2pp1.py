@@ -56,6 +56,9 @@ ASSETS = [
 ]
 
 EXTRA_TILES = {"hiscore": 256}
+FONT_TILES = 56
+FONT_SLOTS = 64
+FONT_COLS = 16
 
 MAP_PALETTE = ["#000000", "#FCA044", "#E45C10", "#A81000"]
 HISCORE_PALETTE = ["#3CBCFC", "#F8F8F8", "#FCA044", "#000000"]
@@ -563,7 +566,15 @@ def extract() -> None:
     print(f"wrote {MANIFEST.relative_to(ROOT)}")
 
 
-def build() -> None:
+def apply_font(raw: bytes, path: Path,
+               palette: list[tuple[int, int, int]]) -> bytes:
+    if len(raw) != 256 * 16:
+        raise ValueError("font overlay requires a 256-tile HISCORE sheet")
+    font = png_to_raw(path, FONT_SLOTS, FONT_COLS, palette)
+    return raw[:200 * 16] + font[:FONT_TILES * 16]
+
+
+def build(font: Path | None = None) -> None:
     document = load_manifest()
     if not document:
         raise ValueError(f"{MANIFEST}: missing")
@@ -575,6 +586,8 @@ def build() -> None:
         palette = parse_palette(asset.get("palette", default_palette))
         path = GFX / asset["png"]
         raw = png_to_raw(path, asset["tiles"], asset["cols"], palette)
+        if font is not None and asset["name"] == "hiscore":
+            raw = apply_font(raw, font, palette)
         packed = encode_pp1(raw)
         (OUT / f"{asset['name']}.pp1").write_bytes(packed)
         total += len(packed)
@@ -584,11 +597,12 @@ def build() -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("extract", "build"))
+    parser.add_argument("--font", type=Path)
     args = parser.parse_args()
     if args.command == "extract":
         extract()
     else:
-        build()
+        build(args.font)
 
 
 if __name__ == "__main__":

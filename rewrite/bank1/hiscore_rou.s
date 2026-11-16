@@ -554,6 +554,24 @@ lda init_names - 1,X
 sta HIGH_SCORES_IN_RAM - 1,X
 dex
 bne copy_hiscore_loop
+ldx #0
+ldy #0
+@copy_high_score_names_record:
+lda #9
+sta TEMP_BYTE
+@copy_high_score_names_loop:
+lda text_high_score_names,Y
+sta HIGH_SCORES_IN_RAM,X
+iny
+inx
+dec TEMP_BYTE
+bne @copy_high_score_names_loop
+txa
+clc
+adc #8
+tax
+cpy #90
+bne @copy_high_score_names_record
 rts
 dont_copy_in_scores:
 ldx #0
@@ -688,7 +706,7 @@ init_names:
 player_name:
 .byte $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E
 check_high_scores:
-.res 9, 128
+.res 9, 131
 .byte $81
 .byte $81
 .byte $81
