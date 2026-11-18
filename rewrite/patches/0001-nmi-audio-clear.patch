@@ -1,0 +1,109 @@
+--- a/bank0/vars_pds.s
++++ b/bank0/vars_pds.s
+@@ -247,3 +247,5 @@
+ ZP_VAR DOOR_X
+ ZP_VAR DOOR_Y
+ ZP_VAR JUST_STARTED_LIFE
++; --- optional patch: NMI audio/clear rebalance
++ZP_VAR AUDIO_MAIN
+--- a/bank3/general_rou.s
++++ b/bank3/general_rou.s
+@@ -183,6 +183,8 @@
+ bpl @turninteron1_wait_vblank
+ jsr sendspriteblock
+ turninteron:
++lda #0
++sta AUDIO_MAIN
+ lda #255
+ sta JOYPAD_DEBOUNCE
+ ldx SCROLL_X
+@@ -199,6 +201,7 @@
+ turninterofffade:
+ lda #0
+ sta FRAME_FINISHED
++sta AUDIO_MAIN
+ lda #252
+ sta FADE_COUNTER
+ fadeoffscreen:
+@@ -218,6 +221,7 @@
+ turninteroff1:
+ lda #0
+ sta FRAME_FINISHED
++sta AUDIO_MAIN
+ sta INTERRUPT_ENABLED
+ sta PPU_MASK_REGISTER
+ sta SCROLL_X
+--- a/bank3/interupt_rou.s
++++ b/bank3/interupt_rou.s
+@@ -32,15 +32,21 @@
+ @interrupt_skip_if_not_equal_2:
+ jsr do_inter_pause
+ jsr readkeypads
++lda IN_GAME
++beq @interrupt_do_audio
++lda AUDIO_MAIN
++bne @interrupt_skip_audio
++@interrupt_do_audio:
+ lda #1
+ sta bank_table + 1
+ jsr fx_play
+ lda GAME_PAUSED
+-bne @dont_do_interrupt_skip_if_not_equal
++bne @interrupt_skip_music
+ jsr play_music
+-@dont_do_interrupt_skip_if_not_equal:
++@interrupt_skip_music:
+ lda CURRENT_BANK
+ jsr change_bank_routine_1
++@interrupt_skip_audio:
+ jmp interrupt_done
+ dont_do_interrupt:
+ lda GAME_PAUSED
+@@ -68,10 +74,24 @@
+ inc FRAME_COUNTER
+ @pausenoton_body:
+ jsr random
++lda AUDIO_MAIN
++bne @pausenoton_skip_clear
+ jsr clearspriteblock
++@pausenoton_skip_clear:
+ @pausenoton_skip_if_not_equal:
+ inpausemode:
+ rts
++gameplay_audio:
++lda CURRENT_BANK
++pha
++jsr change_bank1_routine
++jsr fx_play
++lda GAME_PAUSED
++bne @gameplay_audio_skip_music
++jsr play_music
++@gameplay_audio_skip_music:
++pla
++jmp change_bank_routine
+ setfade:
+ stx TEMP_POINTER
+ sty TEMP_POINTER + 1
+--- a/bank3/mainloop_rou.s
++++ b/bank3/mainloop_rou.s
+@@ -32,6 +32,8 @@
+ sta MAP_NUMBER
+ jsr gointonewmap
+ ingameloop:
++lda #1
++sta AUDIO_MAIN
+ lda #0
+ sta FRAME_FINISHED
+ sta FILLED_BLOCK_BUFFER
+@@ -42,6 +44,11 @@
+ lda #1
+ sta FRAME_FINISHED
+ sta FILLED_BLOCK_BUFFER
++lda GAME_PAUSED
++bne @ingameloop_skip_clear
++jsr clearspriteblock
++@ingameloop_skip_clear:
++jsr gameplay_audio
+ lda JUST_STARTED_LIFE
+ beq @ingameloop_skip_if_equal
+ jsr zoominstars

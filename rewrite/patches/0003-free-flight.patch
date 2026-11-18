@@ -1,0 +1,96 @@
+--- a/bank3/control_rou.s
++++ b/bank3/control_rou.s
+@@ -151,6 +151,7 @@
+ @moveman_skip_if_equal:
+ lda JUST_STARTED_LIFE
+ bne @moveman_loop
++jmp freefly
+ lda PLAYER_X_LOW
+ sta PREVIOUS_PLAYER_X_LOW
+ lda PLAYER_X_LOW + 1
+@@ -314,6 +315,85 @@
+ beq floorfound
+ @ontopofladder_skip_if_not_equal:
+ rts
++freefly:
++lda PLAYER_X_LOW
++sta PREVIOUS_PLAYER_X_LOW
++lda PLAYER_X_LOW + 1
++sta PREVIOUS_PLAYER_X_LOW + 1
++lda PLAYER_Y
++sta PREVIOUS_PLAYER_Y
++
++lda #128
++sta PLAYER_GRAVITY
++lda #0
++sta PLAYER_JUMPING
++sta PLAYER_ON_LADDER
++sta PLAYER_CROUCHING
++sta PLAYER_JUST_JUMPED
++sta PLAYER_LADDER_COUNTER
++sta PLAYER_BEHIND_BACKGROUND
++sta RUN_ANIMATION_COUNTER
++lda #255
++sta PLAYER_ANIMATION
++
++lda JOYPAD_STATE
++and #BUTTON_RIGHT_MASK
++beq @freefly_no_right
++lda #1
++sta PLAYER_FACING
++sta OLD_PLAYER_FACING
++lda PLAYER_X_LOW
++clc
++adc #3
++sta PLAYER_X_LOW
++bcc @freefly_no_right
++inc PLAYER_X_LOW + 1
++@freefly_no_right:
++lda JOYPAD_STATE
++and #BUTTON_LEFT_MASK
++beq @freefly_no_left
++lda PLAYER_X_LOW
++cmp #3
++lda PLAYER_X_LOW + 1
++sbc #0
++bcc @freefly_no_left
++lda #$FF
++sta PLAYER_FACING
++sta OLD_PLAYER_FACING
++lda PLAYER_X_LOW
++sec
++sbc #3
++sta PLAYER_X_LOW
++bcs @freefly_no_left
++dec PLAYER_X_LOW + 1
++@freefly_no_left:
++lda JOYPAD_STATE
++and #BUTTON_UP_MASK
++beq @freefly_no_up
++lda PLAYER_Y
++sec
++sbc #3
++bcs @freefly_up_store
++lda #0
++@freefly_up_store:
++sta PLAYER_Y
++@freefly_no_up:
++lda JOYPAD_STATE
++and #BUTTON_DOWN_MASK
++beq @freefly_no_down
++lda PLAYER_Y
++clc
++adc #3
++bcs @freefly_down_clamp
++cmp #240
++bcc @freefly_down_store
++@freefly_down_clamp:
++lda #240
++@freefly_down_store:
++sta PLAYER_Y
++@freefly_no_down:
++jsr dofiring
++rts
+ checkleftrightkeys:
+ lda #0
+ sta PLAYER_FACING

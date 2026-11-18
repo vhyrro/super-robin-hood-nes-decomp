@@ -1,0 +1,84 @@
+--- a/bank3/mainloop_rou.s
++++ b/bank3/mainloop_rou.s
+@@ -10,15 +10,10 @@
+ lda #0
+ sta GAME_COMPLETED
+ startlives:
+-ldx #3
+-lda JOYPAD_STATE
+-and #BUTTON_LEFT_MASK + BUTTON_A_MASK
+-cmp #BUTTON_LEFT_MASK + BUTTON_A_MASK
+-bne normal3lives
+-ldx #4
++ldx #1
+ normal3lives:
+ stx PLAYER_LIVES
+-lda #0
++lda #1
+ sta PLAYER_HEARTS
+ jsr resetscore
+ jsr resetextras
+@@ -123,7 +118,8 @@
+ bne @nearendofmainloop_skip_if_equal
+ @nearendofmainloop_body:
+ lda PLAYER_LIVES
+-beq theend
++cmp #2
++bcc theend
+ jsr resetrobinvars1
+ jsr restoreoldrobin
+ lda #190
+@@ -140,6 +136,8 @@
+ bne completedthegame
+ lda #255
+ sta PLAYER_HEARTS
++lda #0
++sta PLAYER_LIVES
+ completedthegame:
+ jsr resetrobinvars1
+ jsr turninteroff
+--- a/bank3/general_rou.s
++++ b/bank3/general_rou.s
+@@ -339,6 +339,7 @@
+ bpl @resetscore_loop
+ rts
+ addtohearts:
++rts
+ lda PLAYER_HEARTS
+ clc
+ adc #1
+--- a/bank3/xtrarous_rou.s
++++ b/bank3/xtrarous_rou.s
+@@ -109,9 +109,8 @@
+ and #15
+ tay
+ bne @printtheguard_skip_if_not_equal
+-ldy #6
+-lda (TEMP_POINTER_9),Y
+-and #15
++ldy #8
++tya
+ sta EXTRA_VARS + 2,X
+ bne @printtheguard_loop
+ @printtheguard_skip_if_not_equal:
+--- a/bank3/xtracont_rou.s
++++ b/bank3/xtracont_rou.s
+@@ -545,6 +545,12 @@
+ rts
+ gotarrowpos:
+ lda (TEMP_POINTER_9),Y
++bmi @gotarrowpos_negative
++lda #4
++bne @gotarrowpos_store_direction
++@gotarrowpos_negative:
++lda #$FC
++@gotarrowpos_store_direction:
+ ldy #0
+ sta ARROW_DIRECTION,X
+ cmp #0
+@@ -749,3 +755,5 @@
+ lda (TEMP_POINTER_9),Y
+ sta EXTRA_VARS,X
+ rts
++
++; Hardcore guard timing now uses the normal dectiming cadence.

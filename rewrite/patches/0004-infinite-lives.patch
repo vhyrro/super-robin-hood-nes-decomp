@@ -1,0 +1,17 @@
+--- a/bank3/control_rou.s
++++ b/bank3/control_rou.s
+@@ -44,10 +44,10 @@
+ lda PLAYER_HEARTS
+ bne display_lives
+ lose_life:
+-dec PLAYER_LIVES
+-dex
+-bpl @lose_life_skip_if_positive
+-jmp display_lives
++lda #6
++sta PLAYER_LIVES
++ldx #6
++jmp @lose_life_skip_if_positive
+ @lose_life_skip_if_positive:
+ lda #3
+ sta PLAYER_HEARTS

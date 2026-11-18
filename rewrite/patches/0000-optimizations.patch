@@ -1,0 +1,2389 @@
+diff --git a/bank0/vars_pds.s b/bank0/vars_pds.s
+index 0144ce8..bcf941d 100644
+--- a/bank0/vars_pds.s
++++ b/bank0/vars_pds.s
+@@ -80,54 +80,54 @@ ZP_VAR BLOCK_ATTRIBUTE
+ 
+ 
+ RAM_VAR CHARACTER_FOUND
+-RAM_VAR BLOCK_FOUND
+-RAM_VAR BLOCK_X
+-RAM_VAR BLOCK_Y
++RAM_VAR _RAM_SLOT_BLOCK_FOUND
++RAM_VAR _RAM_SLOT_BLOCK_X
++RAM_VAR _RAM_SLOT_BLOCK_Y
+ RAM_VAR MIN_MAP
+ RAM_VAR MAX_MAP
+ ZP_VAR MAP_POINTER, 2
+ ZP_VAR MAP_NUMBER
+ 
+ 
+-RAM_VAR PLAYER_X_DELTA
+-RAM_VAR PLAYER_X_LOW
+-RAM_VAR PLAYER_X_HIGH
+-RAM_VAR PLAYER_Y
+-RAM_VAR PLAYER_ONSCREEN_X
+-RAM_VAR PLAYER_FACING
+-RAM_VAR OLD_PLAYER_FACING
+-RAM_VAR PREVIOUS_PLAYER_X_LOW
+-RAM_VAR PREVIOUS_PLAYER_X_HIGH
+-RAM_VAR PREVIOUS_PLAYER_Y
+-RAM_VAR RUN_ANIMATION_COUNTER
+-RAM_VAR PLAYER_DIRECTION
+-RAM_VAR PLAYER_ANIMATION
+-RAM_VAR PLAYER_FIRING
+-RAM_VAR PLAYER_CROUCHING
+-RAM_VAR PLAYER_HEIGHT
+-RAM_VAR PLAYER_JUMPING
+-RAM_VAR PLAYER_GRAVITY
+-RAM_VAR PLAYER_LOOK_DIRECTION
+-RAM_VAR PLAYER_ON_LADDER
+-RAM_VAR PLAYER_LADDER_COUNTER
+-RAM_VAR PLAYER_INVINCIBILITY_TIMER
+-RAM_VAR PLAYER_BEHIND_BACKGROUND
+-RAM_VAR PLAYER_JUST_JUMPED
+-RAM_VAR SAVED_PLAYER_X_LOW
+-RAM_VAR SAVED_PLAYER_X_HIGH
+-RAM_VAR SAVED_PLAYER_Y
+-RAM_VAR OLD_PLAYER_ON_LADDER
+-RAM_VAR PLAYER_KILLED
++RAM_VAR _RAM_SLOT_PLAYER_X_DELTA
++RAM_VAR _RAM_SLOT_PLAYER_X_LOW
++RAM_VAR _RAM_SLOT_PLAYER_X_HIGH
++RAM_VAR _RAM_SLOT_PLAYER_Y
++RAM_VAR _RAM_SLOT_PLAYER_ONSCREEN_X
++RAM_VAR _RAM_SLOT_PLAYER_FACING
++RAM_VAR _RAM_SLOT_OLD_PLAYER_FACING
++RAM_VAR _RAM_SLOT_PREVIOUS_PLAYER_X_LOW
++RAM_VAR _RAM_SLOT_PREVIOUS_PLAYER_X_HIGH
++RAM_VAR _RAM_SLOT_PREVIOUS_PLAYER_Y
++RAM_VAR _RAM_SLOT_RUN_ANIMATION_COUNTER
++RAM_VAR _RAM_SLOT_PLAYER_DIRECTION
++RAM_VAR _RAM_SLOT_PLAYER_ANIMATION
++RAM_VAR _RAM_SLOT_PLAYER_FIRING
++RAM_VAR _RAM_SLOT_PLAYER_CROUCHING
++RAM_VAR _RAM_SLOT_PLAYER_HEIGHT
++RAM_VAR _RAM_SLOT_PLAYER_JUMPING
++RAM_VAR _RAM_SLOT_PLAYER_GRAVITY
++RAM_VAR _RAM_SLOT_PLAYER_LOOK_DIRECTION
++RAM_VAR _RAM_SLOT_PLAYER_ON_LADDER
++RAM_VAR _RAM_SLOT_PLAYER_LADDER_COUNTER
++RAM_VAR _RAM_SLOT_PLAYER_INVINCIBILITY_TIMER
++RAM_VAR _RAM_SLOT_PLAYER_BEHIND_BACKGROUND
++RAM_VAR _RAM_SLOT_PLAYER_JUST_JUMPED
++RAM_VAR _RAM_SLOT_SAVED_PLAYER_X_LOW
++RAM_VAR _RAM_SLOT_SAVED_PLAYER_X_HIGH
++RAM_VAR _RAM_SLOT_SAVED_PLAYER_Y
++RAM_VAR _RAM_SLOT_OLD_PLAYER_ON_LADDER
++RAM_VAR _RAM_SLOT_PLAYER_KILLED
+ 
+ RAM_VAR DEAD_ARROW_X, 2
+-RAM_VAR DEAD_ARROW_Y
+-RAM_VAR DEAD_ARROW_COUNT
+-RAM_VAR ANIMATED_DOOR
+-RAM_VAR DOOR_X
+-RAM_VAR DOOR_Y
++RAM_VAR _RAM_SLOT_DEAD_ARROW_Y
++RAM_VAR _RAM_SLOT_DEAD_ARROW_COUNT
++RAM_VAR _RAM_SLOT_ANIMATED_DOOR
++RAM_VAR _RAM_SLOT_DOOR_X
++RAM_VAR _RAM_SLOT_DOOR_Y
+ 
+ ZP_VAR SOLID_TILE_FOUND
+-RAM_VAR JUST_STARTED_LIFE
++RAM_VAR _RAM_SLOT_JUST_STARTED_LIFE
+ ZP_VAR GAME_PAUSED
+ ZP_VAR PAUSE_DISABLED
+ ZP_VAR PAL_VERSION
+@@ -207,3 +207,43 @@ NORMAL_VARIABLES_ADDRESS = $0300
+ BLOCK_BUFFER_ADDRESS = $0170
+ HIGH_SCORES_IN_RAM = $07ED - 17 * 10 + 1
+ HIGH_SCORES_MAGIC = 151
++
++; --- zero-page promotion block (append-only: no existing symbol address changes)
++ZP_VAR BLOCK_FOUND
++ZP_VAR BLOCK_X
++ZP_VAR BLOCK_Y
++ZP_VAR PLAYER_X_DELTA
++ZP_VAR PLAYER_X_LOW
++ZP_VAR PLAYER_X_HIGH
++ZP_VAR PLAYER_Y
++ZP_VAR PLAYER_ONSCREEN_X
++ZP_VAR PLAYER_FACING
++ZP_VAR OLD_PLAYER_FACING
++ZP_VAR PREVIOUS_PLAYER_X_LOW
++ZP_VAR PREVIOUS_PLAYER_X_HIGH
++ZP_VAR PREVIOUS_PLAYER_Y
++ZP_VAR RUN_ANIMATION_COUNTER
++ZP_VAR PLAYER_DIRECTION
++ZP_VAR PLAYER_ANIMATION
++ZP_VAR PLAYER_FIRING
++ZP_VAR PLAYER_CROUCHING
++ZP_VAR PLAYER_HEIGHT
++ZP_VAR PLAYER_JUMPING
++ZP_VAR PLAYER_GRAVITY
++ZP_VAR PLAYER_LOOK_DIRECTION
++ZP_VAR PLAYER_ON_LADDER
++ZP_VAR PLAYER_LADDER_COUNTER
++ZP_VAR PLAYER_INVINCIBILITY_TIMER
++ZP_VAR PLAYER_BEHIND_BACKGROUND
++ZP_VAR PLAYER_JUST_JUMPED
++ZP_VAR SAVED_PLAYER_X_LOW
++ZP_VAR SAVED_PLAYER_X_HIGH
++ZP_VAR SAVED_PLAYER_Y
++ZP_VAR OLD_PLAYER_ON_LADDER
++ZP_VAR PLAYER_KILLED
++ZP_VAR DEAD_ARROW_Y
++ZP_VAR DEAD_ARROW_COUNT
++ZP_VAR ANIMATED_DOOR
++ZP_VAR DOOR_X
++ZP_VAR DOOR_Y
++ZP_VAR JUST_STARTED_LIFE
+diff --git a/bank1/mod.s b/bank1/mod.s
+index ea23919..39cf43c 100644
+--- a/bank1/mod.s
++++ b/bank1/mod.s
+@@ -7,3 +7,4 @@
+ .include "bank1/newbits_rou.s"
+ .include "bank1/explode_rou.s"
+ .include "bank1/prtrobin_rou.s"
++.include "bank1/spritesd_title.s"
+diff --git a/bank1/prtrobin_rou.s b/bank1/prtrobin_rou.s
+index fe6b540..8be83ac 100644
+--- a/bank1/prtrobin_rou.s
++++ b/bank1/prtrobin_rou.s
+@@ -175,7 +175,6 @@ jsr subtract_height_of_sprite
+ clc
+ adc #($F2)
+ sta PLAYER_HEIGHT
+-lda #SPRITE_ROBIN_HEADS
+ @workoutheadrou_body:
+ lda PLAYER_ON_LADDER
+ bne @workoutheadrou_skip_if_not_equal
+diff --git a/bank1/soundfx_rou.s b/bank1/soundfx_rou.s
+index 75c8cda..c6cf080 100644
+--- a/bank1/soundfx_rou.s
++++ b/bank1/soundfx_rou.s
+@@ -778,6 +778,11 @@ sta SFX_VOICES + 3,X
+ rts
+ fx_play:
+ inc SFX_COUNTER
++lda SFX_PRIORITY
++ora SFX_PRIORITY + 1
++ora SFX_PRIORITY + 2
++ora SFX_PRIORITY + 3
++beq @empty
+ lda #3
+ sta SFX_TEMP
+ @again:
+@@ -812,6 +817,10 @@ jsr fx_do
+ dec SFX_TEMP
+ bpl @again
+ rts
++@empty:
++lda #255
++sta SFX_TEMP
++rts
+ fx_next:
+ lda SFX_POINTER_LOW,X
+ sta SFX_ADDRESS_1_LOW
+diff --git a/bank1/spritesd_title.s b/bank1/spritesd_title.s
+new file mode 100644
+index 0000000..97a13db
+--- /dev/null
++++ b/bank1/spritesd_title.s
+@@ -0,0 +1,88 @@
++; Title/logo sprite definitions moved out of bank 3.
++; Only the title screen (bank 1 mapped) prints these; spritetable
++; entries 26..28 point here.
++codemasters_logo:
++.byte $07
++.byte $00
++.byte <(codemasters_logo_data_0)
++.byte >(codemasters_logo_data_0)
++.byte $20
++.byte $FD
++.byte $08
++.byte <(codemasters_logo_data_1)
++.byte >(codemasters_logo_data_1)
++.byte $20
++.byte $F8
++.byte $10
++.byte <(codemasters_logo_data_2)
++.byte >(codemasters_logo_data_2)
++.byte $20
++.byte $F8
++.byte $18
++.byte <(codemasters_logo_data_3)
++.byte >(codemasters_logo_data_3)
++.byte $20
++.byte $FB
++.byte $20
++.byte <(codemasters_logo_data_4)
++.byte >(codemasters_logo_data_4)
++.byte $20
++.byte $05
++.byte $28
++.byte <(codemasters_logo_data_5)
++.byte >(codemasters_logo_data_5)
++.byte $30
++.byte $F8
++.byte $24
++.byte $F2
++codemasters_logo_data_0:
++.byte $41
++.byte $D5,$D6,$D7,$D8
++codemasters_logo_data_1:
++.byte $51
++.byte $D9,$DA,$DB,$DC,$DD
++codemasters_logo_data_2:
++.byte $61
++.byte $DE,$DF,$E0,$E1,$E2,$E3
++codemasters_logo_data_3:
++.byte $61
++.byte $E4,$E5,$E6,$E7,$E8,$E9
++codemasters_logo_data_4:
++.byte $51
++.byte $EA,$EB,$EC,$ED,$EE
++codemasters_logo_data_5:
++.byte $31
++.byte $EF,$F0,$F1
++camerica_logo:
++.byte $02
++.byte $01
++.byte <(camerica_logo_data_0)
++.byte >(camerica_logo_data_0)
++.byte $21
++.byte $06
++.byte $10
++.byte <(camerica_logo_data_1)
++.byte >(camerica_logo_data_1)
++camerica_logo_data_0:
++.byte $82
++.byte $DC,$DD,$DE,$DF,$E0,$E1,$E2,$E3
++.byte $E4,$E5,$E6,$E7,$E8,$E9,$EA,$EB
++camerica_logo_data_1:
++.byte $61
++.byte $EC,$ED,$ED,$ED,$ED,$EE
++press_start:
++.byte $02
++.byte $02
++.byte <(press_start_data)
++.byte >(press_start_data)
++.byte $22
++.byte $00
++.byte $0A
++.byte <(press_start_data_1)
++.byte >(press_start_data_1)
++press_start_data:
++.byte $51
++.byte $EF,$F0,$F1,$F2,$F2
++press_start_data_1:
++.byte $51
++.byte $F2,$F3,$F4,$F0,$F3
+diff --git a/bank3/control_rou.s b/bank3/control_rou.s
+index 89f4e1b..1c8a0ae 100644
+--- a/bank3/control_rou.s
++++ b/bank3/control_rou.s
+@@ -182,7 +182,7 @@ beq robinnotjumping
+ jmp dorobinjumping
+ robinnotjumping:
+ jsr checkleftrightkeys
+-jsr addleftright
++jsr addleftright1
+ lda RUN_ANIMATION_COUNTER
+ bne @robinnotjumping_skip_if_not_equal
+ lda PLAYER_GRAVITY
+@@ -790,7 +790,7 @@ beq @dorobinjumping_skip_if_equal
+ inc PLAYER_CROUCHING
+ rts
+ @dorobinjumping_skip_if_equal:
+-jsr addleftright
++jsr restleftright
+ bit PLAYER_GRAVITY
+ bpl @dorobinjumping_skip_if_positive
+ lda PLAYER_BEHIND_BACKGROUND
+diff --git a/bank3/general_rou.s b/bank3/general_rou.s
+index a698654..76172a9 100644
+--- a/bank3/general_rou.s
++++ b/bank3/general_rou.s
+@@ -11,16 +11,33 @@ ldx #1
+ stx JOYPAD_1_REGISTER
+ dex
+ stx JOYPAD_1_REGISTER
+-padloop1:
+ lda JOYPAD_STATE
+ sta JOYPAD_DEBOUNCE
+-ldy #8
+-padloop2:
+ lda JOYPAD_1_REGISTER
+ lsr A
+ rol JOYPAD_STATE
+-dey
+-bne padloop2
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++lda JOYPAD_1_REGISTER
++lsr A
++rol JOYPAD_STATE
++ldy #0
+ rts
+ random:
+ lda FRAME_COUNTER
+@@ -139,20 +156,25 @@ clearscr:
+ .byte $FF
+ clearspriteblock:
+ ldx #4
++stx SPRITE_BLOCK_POINTER
++lda #254
++.repeat 63, i
++sta SPRITE_BLOCK_ADDRESS + 4 + (i * 4)
++.endrepeat
++lda #0
++ldx #0
++rts
+ clearspriteblock1:
+ stx SPRITE_BLOCK_POINTER
+-@clearspriteblock1_loop:
+ lda #254
++@clearspriteblock1_loop:
+ sta SPRITE_BLOCK_ADDRESS,X
+-lda #0
+-sta SPRITE_BLOCK_ADDRESS + 3,X
+-sta SPRITE_BLOCK_ADDRESS + 2,X
+-sta SPRITE_BLOCK_ADDRESS + 1,X
+ inx
+ inx
+ inx
+ inx
+ bne @clearspriteblock1_loop
++lda #0
+ rts
+ turninteron1:
+ asl VBLANK_FLAG
+@@ -263,7 +285,6 @@ adc #128
+ ldx SPRITE_BLOCK_POINTER
+ beq @printscore_skip_if_equal
+ sta SPRITE_BLOCK_ADDRESS + 1,X
+-lda TEMP_BYTE_1
+ lda #2
+ sta SPRITE_BLOCK_ADDRESS + 2,X
+ lda TEMP_BYTE
+diff --git a/bank3/interupt_rou.s b/bank3/interupt_rou.s
+index 10d8a29..e8dc28c 100644
+--- a/bank3/interupt_rou.s
++++ b/bank3/interupt_rou.s
+@@ -35,17 +35,22 @@ jsr readkeypads
+ lda #1
+ sta bank_table + 1
+ jsr fx_play
++lda GAME_PAUSED
++bne @dont_do_interrupt_skip_if_not_equal
++jsr play_music
++@dont_do_interrupt_skip_if_not_equal:
+ lda CURRENT_BANK
+ jsr change_bank_routine_1
++jmp interrupt_done
+ dont_do_interrupt:
+ lda GAME_PAUSED
+-bne @dont_do_interrupt_skip_if_not_equal
++bne interrupt_done
+ lda #1
+ sta bank_table + 1
+ jsr play_music
+ lda CURRENT_BANK
+ jsr change_bank_routine_1
+-@dont_do_interrupt_skip_if_not_equal:
++interrupt_done:
+ pla
+ tay
+ pla
+@@ -62,8 +67,8 @@ lda FRAME_FINISHED
+ bne @pausenoton_skip_if_not_equal
+ inc FRAME_COUNTER
+ @pausenoton_body:
+-jsr clearspriteblock
+ jsr random
++jsr clearspriteblock
+ @pausenoton_skip_if_not_equal:
+ inpausemode:
+ rts
+diff --git a/bank3/mainloop_rou.s b/bank3/mainloop_rou.s
+index 5bcfc1b..d962ec5 100644
+--- a/bank3/mainloop_rou.s
++++ b/bank3/mainloop_rou.s
+@@ -73,24 +73,36 @@ jsr moveman
+ jsr animatelegs
+ jsr setxscroll
+ jsr updatearrows
+-jsr change_bank1_routine
++lda #1
++sta CURRENT_BANK
++sta bank_table + 1
+ jsr printrobin
+ jsr float_up_number
+-jsr change_bank0_routine
++lda #0
++sta CURRENT_BANK
++sta bank_table + 0
+ jsr updatespitters
+ lda FRAME_COUNTER
+ and #1
+ bne @ingameloop_skip_if_not_equal_2
+ jsr updateonscreens
+ jsr putextrason
+-jsr change_bank1_routine
++lda #1
++sta CURRENT_BANK
++sta bank_table + 1
+ jsr updatehearts
+-jsr change_bank0_routine
++lda #0
++sta CURRENT_BANK
++sta bank_table + 0
+ jmp @ingameloop_skip
+ @ingameloop_skip_if_not_equal_2:
+-jsr change_bank1_routine
++lda #1
++sta CURRENT_BANK
++sta bank_table + 1
+ jsr updatehearts
+-jsr change_bank0_routine
++lda #0
++sta CURRENT_BANK
++sta bank_table + 0
+ jsr putextrason
+ jsr updateonscreens
+ @ingameloop_skip:
+diff --git a/bank3/mapscrol_rou.s b/bank3/mapscrol_rou.s
+index c7f481d..f822b5b 100644
+--- a/bank3/mapscrol_rou.s
++++ b/bank3/mapscrol_rou.s
+@@ -1,4 +1,11 @@
+ RIGHT_EDGE_OFFSET = 18
++; Row -> min/max block-X range for the changed-block table. Indexed by
++; BLOCK_Y & 15 so an out-of-range row can never write outside the arrays.
++; This is the last RAM allocation in the project (mapscrol_rou.s is the last
++; file that declares RAM_VARs), so no existing address moves.
++CHANGED_BLOCK_ROW_SIZE = 16
++RAM_VAR CHANGED_BLOCK_ROW_MIN, CHANGED_BLOCK_ROW_SIZE
++RAM_VAR CHANGED_BLOCK_ROW_MAX, CHANGED_BLOCK_ROW_SIZE
+ attributemasks:
+ .byte $FC
+ .byte $F3
+@@ -22,10 +29,6 @@ attributeands:
+ .byte $30
+ .byte $C0
+ setxscroll:
+-lda SCREEN_X_LOW
+-sta TEMP_POINTER_2
+-lda SCREEN_X_LOW + 1
+-sta TEMP_POINTER_2 + 1
+ lda PLAYER_X_LOW
+ sec
+ sbc #120
+@@ -39,19 +42,15 @@ sta TEMP_POINTER_2
+ @setxscroll_skip_if_not_equal:
+ sta TEMP_POINTER_2 + 1
+ lda TEMP_POINTER_2 + 1
+-sta TEMP_BYTE
++and #15
++tay
+ lda TEMP_POINTER_2
+-lsr TEMP_BYTE
+-ror
+-lsr TEMP_BYTE
+-ror
+-lsr TEMP_BYTE
+-ror
+-lsr TEMP_BYTE
+-ror
++lsr
++lsr
++lsr
++lsr
++ora multiply_by_16_lo,Y
+ sta MAP_STRIP
+-cmp #0
+-bcc mapnotmoved
+ cmp MAX_MAP
+ bcc printmapdownside
+ lda MAX_MAP
+@@ -97,16 +96,14 @@ ldx #0
+ setmapset:
+ stx SCROLL_DIRECTION
+ lda SCREEN_X_HIGH
+-sta TEMP_BYTE
++and #15
++tay
+ lda SCREEN_X_LOW
+-lsr TEMP_BYTE
+-ror
+-lsr TEMP_BYTE
+-ror
+-lsr TEMP_BYTE
+-ror
+-lsr TEMP_BYTE
+-ror
++lsr
++lsr
++lsr
++lsr
++ora multiply_by_16_lo,Y
+ sta MAP_STRIP
+ jsr bringonmap
+ lda INTERRUPT_ENABLED
+@@ -126,1033 +123,14 @@ lsr
+ rol PPU_CONTROL_SHADOW
+ rts
+ times14tablelo:
+-TABLE_OFFSET .set 0
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $1C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $2A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $38
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $46
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $54
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $62
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $70
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $7E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $8C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $9A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $EE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $FC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $18
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $26
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $34
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $42
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $50
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $5E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $6C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $7A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $88
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $96
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $CE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $DC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $EA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $14
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $22
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $30
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $3E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $4C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $5A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $68
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $76
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $84
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $92
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $AE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $BC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $CA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $10
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $1E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $2C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $3A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $48
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $56
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $64
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $72
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $80
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $8E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $9C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $AA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $FE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $1A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $28
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $36
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $44
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $52
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $60
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $6E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $7C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $8A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $98
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $DE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $EC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $FA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $16
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $24
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $32
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $40
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $4E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $5C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $6A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $78
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $86
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $94
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $BE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $CC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $DA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $12
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $20
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $2E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $3C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $4A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $58
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $66
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $74
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $82
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $90
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $9E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $AC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $BA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $1C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $2A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $38
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $46
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $54
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $62
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $70
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $7E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $8C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $9A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $EE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $FC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $18
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $26
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $34
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $42
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $50
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $5E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $6C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $7A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $88
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $96
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $CE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $DC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $EA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $14
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $22
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $30
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $3E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $4C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $5A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $68
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $76
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $84
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $92
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $AE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $BC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $CA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $10
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $1E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $2C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $3A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $48
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $56
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $64
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $72
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $80
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $8E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $9C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $AA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $FE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $1A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $28
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $36
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $44
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $52
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $60
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $6E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $7C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $8A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $98
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $DE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $EC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $FA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $16
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $24
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $32
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $40
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $4E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $5C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $6A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $78
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $86
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $94
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $A2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $B0
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $BE
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $CC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $DA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $12
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $20
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $2E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $3C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $4A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $58
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $66
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $74
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $82
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $90
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $9E
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $AC
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $BA
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $C8
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $D6
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $E4
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $F2
+-TABLE_OFFSET .set TABLE_OFFSET + 14
++; 227 entries: max reached index is MAP_STRIP(MAX_MAP=$D0)+RIGHT_EDGE_OFFSET(18)=226
++.repeat 227, I
++.byte <(I*14)
++.endrepeat
+ times14tablehi:
+-TABLE_OFFSET .set 0
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $00
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $01
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $02
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $03
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $04
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $05
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $06
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $07
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $08
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $09
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0A
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0B
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0C
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
+-.byte $0D
+-TABLE_OFFSET .set TABLE_OFFSET + 14
++.repeat 227, I
++.byte >(I*14)
++.endrepeat
+ findsolid:
+ @findsolid_skip:
+ cpy #14 * 16
+@@ -1241,30 +219,6 @@ sty BLOCK_Y
+ jsr checkchangedblock
+ lda BLOCK_FOUND
+ rts
+-findchr:
+-jsr findblock
+-findchrpart:
+-tay
+-lsr TEMP_BYTE
+-bcs bottompart
+-lsr TEMP_BYTE_1
+-bcs rightside
+-lda block_strip_top_left,Y
+-sta CHARACTER_FOUND
+-rts
+-rightside:
+-lda block_strip_top_right,Y
+-sta CHARACTER_FOUND
+-rts
+-bottompart:
+-lsr TEMP_BYTE_1
+-bcs rightside1
+-lda block_strip_bottom_left,Y
+-sta CHARACTER_FOUND
+-rts
+-rightside1:
+-lda block_strip_bottom_right,Y
+-sta CHARACTER_FOUND
+ noblocksneeded:
+ rts
+ bringonmap:
+@@ -1295,7 +249,6 @@ dex
+ jsr getblockbit
+ @bringonmap_skip_if_positive_2:
+ jsr checkchangedblock1
+-lda BLOCK_FOUND
+ jsr printblocktoscreen
+ jmp checkaddflamesetc
+ getblockbit:
+@@ -1314,18 +267,29 @@ inc BLOCK_X
+ checkchangedblock1:
+ ldx CHANGED_BLOCKS_POINTER
+ beq @checkchangedblock1_skip_if_equal
++lda BLOCK_Y
++and #15
++tax
++lda BLOCK_X
++cmp CHANGED_BLOCK_ROW_MIN,X
++bcc @checkchangedblock1_skip_if_equal
++cmp CHANGED_BLOCK_ROW_MAX,X
++beq @checkchangedblock1_scan
++bcs @checkchangedblock1_skip_if_equal
++@checkchangedblock1_scan:
+ ldx #0
+ @checkchangedblock1_loop:
+-lda BLOCK_X
+ cmp CHANGED_BLOCKS,X
+ bne @checkchangedblock1_skip_if_not_equal
+ lda CHANGED_BLOCKS + 1,X
+ cmp BLOCK_Y
+-bne @checkchangedblock1_skip_if_not_equal
++bne @checkchangedblock1_reload_x
+ lda CHANGED_BLOCKS + 2,X
+ sta BLOCK_FOUND
+ ldx BLOCK_X
+ rts
++@checkchangedblock1_reload_x:
++lda BLOCK_X
+ @checkchangedblock1_skip_if_not_equal:
+ inx
+ inx
+@@ -1388,6 +352,20 @@ lda SCRATCH_BYTE_1
+ sta CHANGED_BLOCKS + 0,X
+ lda SCRATCH_BYTE_3
+ sta CHANGED_BLOCKS + 2,X
++lda SCRATCH_BYTE_2                ; widen this row's X range
++and #15
++tax
++lda SCRATCH_BYTE_1
++cmp CHANGED_BLOCK_ROW_MIN,X
++bcs @addachangedblock1_row_min_ok
++sta CHANGED_BLOCK_ROW_MIN,X
++@addachangedblock1_row_min_ok:
++cmp CHANGED_BLOCK_ROW_MAX,X
++bcc @addachangedblock1_row_max_ok
++beq @addachangedblock1_row_max_ok
++sta CHANGED_BLOCK_ROW_MAX,X
++@addachangedblock1_row_max_ok:
++lda SCRATCH_BYTE_3                ; keep A = block id for printblocktoscreencheck
+ ldx SCRATCH_BYTE_1
+ bit INTERRUPT_ENABLED
+ bpl @addachangedblock1_skip_if_positive
+@@ -1419,6 +397,7 @@ txa
+ clc
+ adc #($FD)
+ sta CHANGED_BLOCKS_POINTER
++jsr recomputechangedblockrow
+ ldx SCRATCH_BYTE_1
+ lda MAP_POINTER
+ clc
+@@ -1442,6 +421,57 @@ ldx SCRATCH_BYTE_1
+ rts
+ blocknotonscreen:
+ rts
++; Recompute CHANGED_BLOCK_ROW_MIN/MAX for the row in SCRATCH_BYTE_2 after a
++; delete. Clobbers A/X/Y; callers reload their inputs from scratch bytes.
++; ponytail: full rescan of the (max 22-entry) table, only on delete (~1/1200
++; frames in the replay). Incremental "next min" is not worth the code.
++recomputechangedblockrow:
++lda SCRATCH_BYTE_2
++and #15
++sta TEMP_BYTE                    ; bucket (TEMP_BYTE is not touched by the NMI)
++tax
++lda #$FF
++sta CHANGED_BLOCK_ROW_MIN,X
++lda #0
++sta CHANGED_BLOCK_ROW_MAX,X
++lda CHANGED_BLOCKS_POINTER
++beq @recomputechangedblockrow_done
++ldy #0
++@recomputechangedblockrow_loop:
++lda CHANGED_BLOCKS + 1,Y
++and #15
++cmp TEMP_BYTE
++bne @recomputechangedblockrow_next
++lda CHANGED_BLOCKS + 0,Y
++cmp CHANGED_BLOCK_ROW_MIN,X
++bcs @recomputechangedblockrow_not_min
++sta CHANGED_BLOCK_ROW_MIN,X
++@recomputechangedblockrow_not_min:
++lda CHANGED_BLOCKS + 0,Y
++cmp CHANGED_BLOCK_ROW_MAX,X
++bcc @recomputechangedblockrow_next
++beq @recomputechangedblockrow_next
++sta CHANGED_BLOCK_ROW_MAX,X
++@recomputechangedblockrow_next:
++iny
++iny
++iny
++cpy CHANGED_BLOCKS_POINTER
++bne @recomputechangedblockrow_loop
++@recomputechangedblockrow_done:
++rts
++; Empty table -> min=$FF / max=$00 for every row (rejects every query).
++clearchangedblockrows:
++ldx #15
++lda #$FF
++@clearchangedblockrows_loop:
++sta CHANGED_BLOCK_ROW_MIN,X
++lda #0
++sta CHANGED_BLOCK_ROW_MAX,X
++lda #$FF
++dex
++bpl @clearchangedblockrows_loop
++rts
+ printblocktoscreencheck:
+ stx BLOCK_X
+ sty BLOCK_Y
+@@ -1658,6 +688,7 @@ lda #0
+ sta FRAME_COUNTER
+ sta ANIMATED_DOOR
+ sta CHANGED_BLOCKS_POINTER
++jsr clearchangedblockrows
+ jsr resetdoorsintomap
+ jsr doallsecrets
+ jsr resetextravars
+diff --git a/bank3/mod.s b/bank3/mod.s
+index d6e2b8b..386cb30 100644
+--- a/bank3/mod.s
++++ b/bank3/mod.s
+@@ -13,4 +13,28 @@
+ .include "bank3/unpack_rou.s"
+ .include "bank3/general_rou.s"
+ .include "bank3/mapscrol_rou.s"
++routinepointers_lo:
++.byte <endofrous
++.byte <flashblock
++.byte <standguard
++.byte <platformh
++.byte <platformv
++.byte <key_routine
++.byte <canonrou
++.byte <secretrou
++.byte <marionrou
++.byte <redefinewaterbank
++.byte $FF,$FF,$FF,$FF,$FF,$FF
++routinepointers_hi:
++.byte >endofrous
++.byte >flashblock
++.byte >standguard
++.byte >platformh
++.byte >platformv
++.byte >key_routine
++.byte >canonrou
++.byte >secretrou
++.byte >marionrou
++.byte >redefinewaterbank
++.byte $FF,$FF,$FF,$FF,$FF,$FF
+ .include "bank3/endcode_rou.s"
+diff --git a/bank3/spritesd_dat.s b/bank3/spritesd_dat.s
+index c26b47f..93e88d5 100644
+--- a/bank3/spritesd_dat.s
++++ b/bank3/spritesd_dat.s
+@@ -84,91 +84,6 @@ SPRITE_MARIONETTE = (* - spritetable) / 2
+ SPRITE_PAUSE = (* - spritetable) / 2
+ .word pauses
+ spritedefs:
+-codemasters_logo:
+-.byte $07
+-.byte $00
+-.byte <(codemasters_logo_data_0)
+-.byte >(codemasters_logo_data_0)
+-.byte $20
+-.byte $FD
+-.byte $08
+-.byte <(codemasters_logo_data_1)
+-.byte >(codemasters_logo_data_1)
+-.byte $20
+-.byte $F8
+-.byte $10
+-.byte <(codemasters_logo_data_2)
+-.byte >(codemasters_logo_data_2)
+-.byte $20
+-.byte $F8
+-.byte $18
+-.byte <(codemasters_logo_data_3)
+-.byte >(codemasters_logo_data_3)
+-.byte $20
+-.byte $FB
+-.byte $20
+-.byte <(codemasters_logo_data_4)
+-.byte >(codemasters_logo_data_4)
+-.byte $20
+-.byte $05
+-.byte $28
+-.byte <(codemasters_logo_data_5)
+-.byte >(codemasters_logo_data_5)
+-.byte $30
+-.byte $F8
+-.byte $24
+-.byte $F2
+-codemasters_logo_data_0:
+-.byte $41
+-.byte $D5,$D6,$D7,$D8
+-codemasters_logo_data_1:
+-.byte $51
+-.byte $D9,$DA,$DB,$DC,$DD
+-codemasters_logo_data_2:
+-.byte $61
+-.byte $DE,$DF,$E0,$E1,$E2,$E3
+-codemasters_logo_data_3:
+-.byte $61
+-.byte $E4,$E5,$E6,$E7,$E8,$E9
+-codemasters_logo_data_4:
+-.byte $51
+-.byte $EA,$EB,$EC,$ED,$EE
+-codemasters_logo_data_5:
+-.byte $31
+-.byte $EF,$F0,$F1
+-camerica_logo:
+-.byte $02
+-.byte $01
+-.byte <(camerica_logo_data_0)
+-.byte >(camerica_logo_data_0)
+-.byte $21
+-.byte $06
+-.byte $10
+-.byte <(camerica_logo_data_1)
+-.byte >(camerica_logo_data_1)
+-camerica_logo_data_0:
+-.byte $82
+-.byte $DC,$DD,$DE,$DF,$E0,$E1,$E2,$E3
+-.byte $E4,$E5,$E6,$E7,$E8,$E9,$EA,$EB
+-camerica_logo_data_1:
+-.byte $61
+-.byte $EC,$ED,$ED,$ED,$ED,$EE
+-press_start:
+-.byte $02
+-.byte $02
+-.byte <(press_start_data)
+-.byte >(press_start_data)
+-.byte $22
+-.byte $00
+-.byte $0A
+-.byte <(press_start_data_1)
+-.byte >(press_start_data_1)
+-press_start_data:
+-.byte $51
+-.byte $EF,$F0,$F1,$F2,$F2
+-press_start_data_1:
+-.byte $51
+-.byte $F2,$F3,$F4,$F0,$F3
+ head0:
+ .byte $01
+ .byte $3C
+diff --git a/bank3/spritesr_rou.s b/bank3/spritesr_rou.s
+index 5521cb4..2f82dfa 100644
+--- a/bank3/spritesr_rou.s
++++ b/bank3/spritesr_rou.s
+@@ -32,18 +32,10 @@ ror SPRITE_REVERSE
+ sty SPRITE_Y_COORD
+ asl
+ tay
+-bcs @printspriteposrev_skip_if_carry
+ lda spritetable,Y
+ sta TEMP_POINTER_2
+ lda spritetable + 1,Y
+ sta TEMP_POINTER_2 + 1
+-jmp @printspriteposrev_skip
+-@printspriteposrev_skip_if_carry:
+-lda spritetable + 256,Y
+-sta TEMP_POINTER_2
+-lda spritetable + 1 + 256,Y
+-sta TEMP_POINTER_2 + 1
+-@printspriteposrev_skip:
+ ldy #0
+ lda (TEMP_POINTER_2),Y
+ sta SPRITE_FRAME_COUNT
+@@ -65,6 +57,7 @@ clc
+ adc SPRITE_COLOUR
+ @eachfrminspritelp_skip_if_equal:
+ and #195
++ora SPRITE_BEHIND
+ sta SPRITE_TEMP_ATTRIBUTE
+ lda #8
+ asl TEMP_BYTE
+@@ -183,7 +176,6 @@ iny
+ inx
+ sta SPRITE_BLOCK_ADDRESS,X
+ lda SPRITE_TEMP_ATTRIBUTE
+-ora SPRITE_BEHIND
+ inx
+ sta SPRITE_BLOCK_ADDRESS,X
+ inx
+@@ -257,18 +249,10 @@ bcs @winprintspriteposrev_loop
+ sty SPRITE_Y_COORD
+ asl
+ tay
+-bcs @winprintspriteposrev_skip_if_carry
+ lda spritetable,Y
+ sta TEMP_POINTER_2
+ lda spritetable + 1,Y
+ sta TEMP_POINTER_2 + 1
+-jmp @winprintspriteposrev_skip
+-@winprintspriteposrev_skip_if_carry:
+-lda spritetable + 256,Y
+-sta TEMP_POINTER_2
+-lda spritetable + 1 + 256,Y
+-sta TEMP_POINTER_2 + 1
+-@winprintspriteposrev_skip:
+ ldy #0
+ lda (TEMP_POINTER_2),Y
+ sta SPRITE_FRAME_COUNT
+@@ -292,6 +276,7 @@ clc
+ adc SPRITE_COLOUR
+ @wineachfrminspritelp_skip_if_equal:
+ and #195
++ora SPRITE_BEHIND
+ sta SPRITE_TEMP_ATTRIBUTE
+ lda #8
+ asl TEMP_BYTE
+@@ -434,7 +419,6 @@ lda (TEMP_POINTER_1),Y
+ inx
+ sta SPRITE_BLOCK_ADDRESS,X
+ lda SPRITE_TEMP_ATTRIBUTE
+-ora SPRITE_BEHIND
+ inx
+ sta SPRITE_BLOCK_ADDRESS,X
+ inx
+diff --git a/bank3/unpack_rou.s b/bank3/unpack_rou.s
+index 9379b9e..1eea25b 100644
+--- a/bank3/unpack_rou.s
++++ b/bank3/unpack_rou.s
+@@ -110,129 +110,221 @@ PP1_TYPE_TABLE = TEMP_POINTER_2
+ PP1_FOLLOW_1 = PP1_TYPE_TABLE + 4
+ PP1_FOLLOW_2 = PP1_TYPE_TABLE + 8
+ PP1_FOLLOW_3 = PP1_TYPE_TABLE + 12
++PP1_MASK = TEMP_BYTE_2
++PP1_TILES = TEMP_BYTE_1
++PP1_LINE = TEMP_BYTE_3
++PP1_P0 = TEMP_BYTE_4
++PP1_P1 = TEMP_BYTE_5
++PP1_TMP = TEMP_BYTE_8
++; Reload the bit reservoir.  Entered with PP1_MASK == 0; exits with C = next
++; stream bit and A = the new mask (7 usable bits + marker in bit 0), exactly
++; like the pp1_getc/pp1_getq pair it replaces.
++.macro PP1_REFILL
++lda (PP1_ADDRESS),Y
++iny
++bne :+
++inc PP1_ADDRESS_HIGH
++:
++rol a
++sta PP1_MASK
++.endmacro
+ pp1_unpack:
+ ldy #0
+ lda (PP1_ADDRESS),Y
+-sta TEMP_BYTE_1
+-sta TEMP_BYTE_8
++sta PP1_TILES
+ iny
+ lda #128
+-sta TEMP_BYTE_2
++sta PP1_MASK
++jmp pp1_chrloop
++pp1_hdr_slow:
++jsr pp1_getq
++bcc pp1_hdr
++jmp pp1_gotheader
+ pp1_chrloop:
+-jsr pp1_getc
++asl PP1_MASK
++beq pp1_hdr_slow
+ bcs pp1_gotheader
++pp1_hdr:
+ ldx #3
+ @hl:
+ jsr pp1_get2
+ sta PP1_TYPE_TABLE,X
+-beq @t0
++beq @h0
+ lsr
+-beq @t1
+-bcc @t2
+-@t3:
++beq @h1
++bcc @h2
+ jsr pp1_t3
+ sta PP1_FOLLOW_3,X
+-jmp @t0
+-@t2:
++jmp @h0
++@h2:
+ jsr pp1_t3
+-sta TEMP_BYTE_3
++sta PP1_TMP
+ jsr pp1_getc
+-bcc @t0
+-lda TEMP_BYTE_3
++bcc @h0
++lda PP1_TMP
+ sta PP1_FOLLOW_2,X
+-jmp @t0
+-@t1:
++jmp @h0
++@h1:
+ jsr pp1_t1
+ sta PP1_FOLLOW_1,X
+-@t0:
++@h0:
+ dex
+ bpl @hl
+ pp1_gotheader:
+ ldx #7
+ pp1_getline:
+-stx TEMP_BYTE_3
+-asl TEMP_BYTE_2
+-bcc @q10
+-bne pp1_gotline
+-jsr pp1_getq
++stx PP1_LINE
++asl PP1_MASK
++beq pp1_lrf
++pp1_line_go:
+ bcs pp1_gotline
+-@q10:
+-jsr pp1_get2
++pp1_start_colour:
++asl PP1_MASK
++beq pp1_s0rf
++pp1_s0_go:
++lda #0
++rol
++tax
++asl PP1_MASK
++beq pp1_s1rf
++pp1_s1_go:
++txa
++rol
+ tax
+-sta TEMP_BYTE_4
++sta PP1_P0
+ lsr
+ ora #2
+-sta TEMP_BYTE_5
+-@next:
++sta PP1_P1
+ lda PP1_TYPE_TABLE,X
+-beq @t0
+-asl TEMP_BYTE_2
+-bcc @q11
+-bne @t0
+-jsr pp1_getq
+-bcs @t0
+-@q11:
++beq pp1_staticline_tramp
++pp1_next:
++asl PP1_MASK
++bcc pp1_hop
++beq pp1_nrf
++pp1_stay:
++txa
++pp1_pshift:
++lsr
++rol PP1_P0
++lsr
++rol PP1_P1
++bcc pp1_next
++pp1_gotline:
++lda PP1_P0
++sta PPU_DATA_REGISTER
++ldx PP1_LINE
++lda PP1_P1
++sta PP1_ZERO_BUFFER,X
++dex
++bpl pp1_getline
++jmp pp1_flush
++; ---- bit reservoir refills for the line loop (kept inside branch range) ----
++pp1_staticline_tramp:
++jmp pp1_staticline
++pp1_lrf:
++PP1_REFILL
++bcs pp1_gotline
++jmp pp1_start_colour
++pp1_s0rf:
++PP1_REFILL
++jmp pp1_s0_go
++pp1_s1rf:
++PP1_REFILL
++jmp pp1_s1_go
++pp1_nrf:
++PP1_REFILL
++bcc pp1_hop
++jmp pp1_stay
++; ---- colour change: follow the per-colour transition tree ----
++pp1_hop:
+ lda PP1_TYPE_TABLE,X
+ lsr
+-beq @t1
+-bcc @t2
+-@t3:
+-asl TEMP_BYTE_2
+-bcc @q12
+-bne @t1
+-jsr pp1_getq
+-bcs @t1
+-@q12:
+-asl TEMP_BYTE_2
+-bcc @t2b
+-bne @q13
+-jsr pp1_getq
+-bcc @t2b
+-@q13:
++beq pp1_hop1
++bcc pp1_hop2
++asl PP1_MASK
++beq pp1_h3rf
++pp1_h3go:
++bcs pp1_hop1
++asl PP1_MASK
++beq pp1_h3brf
++pp1_h3bgo:
++bcs pp1_hop3b
++lda PP1_FOLLOW_2,X
++jmp pp1_hopdone
++pp1_hop3b:
+ lda PP1_FOLLOW_3,X
+-tax
+-jmp @p
+-@t2:
+-asl TEMP_BYTE_2
+-bcc @t1
+-bne @q14
+-jsr pp1_getq
+-bcc @t1
+-@q14:
+-@t2b:
++jmp pp1_hopdone
++pp1_hop1:
++lda PP1_FOLLOW_1,X
++jmp pp1_hopdone
++pp1_hop2:
++asl PP1_MASK
++beq pp1_h2rf
++pp1_h2go:
+ lda PP1_FOLLOW_2,X
+-tax
+-jmp @p
+-@t1:
++bcs pp1_hopdone
+ lda PP1_FOLLOW_1,X
++pp1_hopdone:
+ tax
+-@t0:
++lda PP1_TYPE_TABLE,X
++beq pp1_statictail
++txa
++jmp pp1_pshift
++pp1_h3rf:
++PP1_REFILL
++jmp pp1_h3go
++pp1_h3brf:
++PP1_REFILL
++jmp pp1_h3bgo
++pp1_h2rf:
++PP1_REFILL
++jmp pp1_h2go
++; ---- a line whose start colour never changes: all 8 pixels are that colour ----
++pp1_staticline:
++lda pp1_static0,X
++sta PP1_P0
++lda pp1_static1,X
++sta PP1_P1
++jmp pp1_gotline
++; ---- rest of the line keeps the same colour and reads no bits ----
++pp1_statictail:
++@stl:
+ txa
+-@p:
+ lsr
+-rol TEMP_BYTE_4
++rol PP1_P0
+ lsr
+-rol TEMP_BYTE_5
+-bcc @next
+-pp1_gotline:
+-lda TEMP_BYTE_4
++rol PP1_P1
++bcc @stl
++jmp pp1_gotline
++pp1_static0:
++.byte $00, $FF, $00, $FF
++pp1_static1:
++.byte $00, $00, $FF, $FF
++; ---- eight lines done: flush the buffered plane-1 bytes, next tile ----
++pp1_flush:
++lda PP1_ZERO_BUFFER + 7
+ sta PPU_DATA_REGISTER
+-ldx TEMP_BYTE_3
+-lda TEMP_BYTE_5
+-sta PP1_ZERO_BUFFER,X
+-dex
+-bpl pp1_getline
+-ldx #7
+-@bpl1:
+-lda PP1_ZERO_BUFFER,X
++lda PP1_ZERO_BUFFER + 6
+ sta PPU_DATA_REGISTER
+-dex
+-bpl @bpl1
+-dec TEMP_BYTE_1
++lda PP1_ZERO_BUFFER + 5
++sta PPU_DATA_REGISTER
++lda PP1_ZERO_BUFFER + 4
++sta PPU_DATA_REGISTER
++lda PP1_ZERO_BUFFER + 3
++sta PPU_DATA_REGISTER
++lda PP1_ZERO_BUFFER + 2
++sta PPU_DATA_REGISTER
++lda PP1_ZERO_BUFFER + 1
++sta PPU_DATA_REGISTER
++lda PP1_ZERO_BUFFER + 0
++sta PPU_DATA_REGISTER
++dec PP1_TILES
+ beq @done
+ jmp pp1_chrloop
+ @done:
++pp1_unpack_ret:
+ rts
++
+ pp1_getc:
+ asl TEMP_BYTE_2
+ beq @h0
+diff --git a/bank3/xtracont_rou.s b/bank3/xtracont_rou.s
+index f332417..c91972d 100644
+--- a/bank3/xtracont_rou.s
++++ b/bank3/xtracont_rou.s
+@@ -2,27 +2,12 @@ putextrason:
+ lda #0
+ sta EXTRA_VAR_POINTER
+ lda MAP_NUMBER
+-asl
+ tax
+-lda maprouspointer,X
++lda maprouspointer_lo,X
+ sta TEMP_POINTER_9
+-lda maprouspointer + 1,X
++lda maprouspointer_hi,X
+ sta TEMP_POINTER_9 + 1
+-anotherrou:
+-ldy #0
+-lda (TEMP_POINTER_9),Y
+-asl
+-tax
+-lda routinepointers,X
+-sta TEMP_POINTER_8
+-lda routinepointers + 1,X
+-sta TEMP_POINTER_8 + 1
+-iny
+-lda (TEMP_POINTER_9),Y
+-sta NUMBER_OF_PARAMETERS
+-iny
+-ldx EXTRA_VAR_POINTER
+-jmp (TEMP_POINTER_8)
++jmp anotherrou
+ backfromrou:
+ clc
+ adc EXTRA_VAR_POINTER
+@@ -35,7 +20,20 @@ sta TEMP_POINTER_9
+ bcc @backfromrounovars_skip_if_no_carry
+ inc TEMP_POINTER_9 + 1
+ @backfromrounovars_skip_if_no_carry:
+-jmp anotherrou
++anotherrou:
++ldy #0
++lda (TEMP_POINTER_9),Y
++tax
++lda routinepointers_lo,X
++sta TEMP_POINTER_8
++lda routinepointers_hi,X
++sta TEMP_POINTER_8 + 1
++iny
++lda (TEMP_POINTER_9),Y
++sta NUMBER_OF_PARAMETERS
++ldy #2
++ldx EXTRA_VAR_POINTER
++jmp (TEMP_POINTER_8)
+ endofrous:
+ cpx #NUMBER_OF_EXTRA_VARS
+ bcc @endofrous_skip_if_no_carry
+@@ -56,20 +54,10 @@ sta PPU_MASK_REGISTER
+ jmp @endofrous_skip
+ @endofrous_skip_if_no_carry:
+ rts
+-maprouspointer:
+-.word map1rous
+-.word map2rous
+-.word map3rous
+-.word map4rous
+-.word map5rous
+-.word map6rous
+-.word map7rous
+-.word map8rous
+-.word map9rous
+-.word map11rous
+-.word map12rous
+-.word map13rous
+-.word map14rous
++maprouspointer_lo:
++.byte <map1rous, <map2rous, <map3rous, <map4rous, <map5rous, <map6rous, <map7rous, <map8rous, <map9rous, <map11rous, <map12rous, <map13rous, <map14rous
++maprouspointer_hi:
++.byte >map1rous, >map2rous, >map3rous, >map4rous, >map5rous, >map6rous, >map7rous, >map8rous, >map9rous, >map11rous, >map12rous, >map13rous, >map14rous
+ EXTRA_TYPE_END = 0
+ EXTRA_TYPE_FLASH_BLOCK = 1
+ EXTRA_TYPE_STANDING_GUARD = 2
+@@ -80,17 +68,6 @@ EXTRA_TYPE_CANNON = 6
+ EXTRA_TYPE_SECRET = 7
+ EXTRA_TYPE_MARIONETTE = 8
+ EXTRA_TYPE_WATER = 9
+-routinepointers:
+-.word endofrous
+-.word flashblock
+-.word standguard
+-.word platformh
+-.word platformv
+-.word key_routine
+-.word canonrou
+-.word secretrou
+-.word marionrou
+-.word redefinewaterbank
+ .include "build/objects.s"
+ 
+ NUMBER_OF_EXTRAS = 255
+diff --git a/bank3/xtrarous_rou.s b/bank3/xtrarous_rou.s
+index cea2a92..bfebe53 100644
+--- a/bank3/xtrarous_rou.s
++++ b/bank3/xtrarous_rou.s
+@@ -34,7 +34,17 @@ jsr dectiming
+ lda #2
+ jmp backfromrou
+ standguard:
+-jsr checkifextraon
++lda (TEMP_POINTER_9),Y
++tay
++and #7
++tax
++tya
++lsr
++lsr
++lsr
++tay
++lda EXTRAS_ON,Y
++and bitpattern,X
+ bne @standguard_skip_if_not_equal
+ jmp guardturnedoff
+ @standguard_skip_if_not_equal:

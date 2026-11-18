@@ -1,0 +1,84 @@
+--- a/bank3/control_rou.s
++++ b/bank3/control_rou.s
+@@ -335,7 +335,7 @@
+ cmp OLD_PLAYER_FACING
+ beq @checkleftrightkeys_skip_if_equal_2
+ ldx #1
+-sta RUN_ANIMATION_COUNTER
++stx RUN_ANIMATION_COUNTER
+ @checkleftrightkeys_skip_if_equal_2:
+ sta OLD_PLAYER_FACING
+ @checkleftrightkeys_skip_if_not_equal_2:
+@@ -808,7 +808,7 @@
+ @dorobinjumping_skip_if_positive:
+ lda RUN_ANIMATION_COUNTER
+ beq notjumpingleftorright
+-lda PLAYER_FACING
++lda OLD_PLAYER_FACING
+ bpl jumpingright
+ jsr findwallleft
+ beq notjumpingleftorright
+@@ -1026,7 +1026,7 @@
+ findwallleft:
+ lda PLAYER_X_LOW
+ sec
+-sbc #PLAYER_WIDTH + 1
++sbc #PLAYER_WIDTH
+ sta TEMP_BYTE_8
+ lda PLAYER_X_HIGH
+ sbc #0
+@@ -1063,7 +1063,7 @@
+ findwallright:
+ lda PLAYER_X_LOW
+ clc
+-adc #PLAYER_WIDTH + 1
++adc #PLAYER_WIDTH
+ sta TEMP_BYTE_8
+ lda PLAYER_X_HIGH
+ adc #0
+--- a/bank3/xtrarous_rou.s
++++ b/bank3/xtrarous_rou.s
+@@ -550,8 +550,8 @@
+ sec
+ sbc PLAYER_ONSCREEN_X
+ clc
+-adc #10
+-cmp #20
++adc #8
++cmp #16
+ bcs spitnocollision
+ tya
+ nowchrchecky:
+--- a/bank3/xtracont_rou.s
++++ b/bank3/xtracont_rou.s
+@@ -169,24 +169,24 @@
+ sec
+ sbc PLAYER_Y
+ clc
+-adc #32 + 2
+-cmp #40 + 2
++adc #28
++cmp #36
+ bcs nopickcoll
+ bcc now_check_x
+ crouchcollide:
+ sec
+ sbc PLAYER_Y
+ clc
+-adc #32 + 8 - 16
+-cmp #40 + 8 - 16
++adc #20
++cmp #28
+ bcs nopickcoll
+ now_check_x:
+ lda TEMP_POINTER_8
+ sec
+ sbc PLAYER_ONSCREEN_X
+ clc
+-adc #12
+-cmp #24
++adc #8
++cmp #16
+ nopickcoll:
+ rts
+ bitpattern:

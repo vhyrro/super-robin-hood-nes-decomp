@@ -1,0 +1,67 @@
+--- a/tools/png2pp1.py
++++ b/tools/png2pp1.py
+@@ -590,6 +590,7 @@
+             raw = apply_font(raw, font, palette)
+         packed = encode_pp1(raw)
+         (OUT / f"{asset['name']}.pp1").write_bytes(packed)
++        (OUT / f"{asset['name']}.chr").write_bytes(raw)
+         total += len(packed)
+     print(f"generated {len(manifest)} PP1 files, {total} bytes")
+ 
+--- a/bank1/mod.s
++++ b/bank1/mod.s
+@@ -8,3 +8,4 @@
+ .include "bank1/explode_rou.s"
+ .include "bank1/prtrobin_rou.s"
+ .include "bank1/spritesd_title.s"
++.include "bank1/firstchr_raw.s"
+--- /dev/null
++++ b/bank1/firstchr_raw.s
+@@ -0,0 +1,4 @@
++; Raw copy of the 157-tile base CHR set, used to skip PP1 decompression
++; on the most common load. 2512 bytes.
++firstchr_base:
++.incbin "build/gfx/base.chr"
+--- a/bank3/unpack_rou.s
++++ b/bank3/unpack_rou.s
+@@ -102,9 +102,40 @@
+ sta PP1_ADDRESS_LOW
+ lda compactedchrstable + 1,Y
+ sta PP1_ADDRESS_HIGH
++cpy #CHARSET_BASE*4
++bne @unpack
++lda #1
++jsr change_bank_routine
++lda #<firstchr_base
++sta PP1_ADDRESS_LOW
++lda #>firstchr_base
++sta PP1_ADDRESS_HIGH
++jsr copy_raw_chr
++pla
++jmp change_bank_routine
++@unpack:
+ jsr pp1_unpack
+ pla
+ jmp change_bank_routine
++copy_raw_chr:
++ldx #157
++@raw_chunk:
++ldy #0
++.repeat 16
++lda (PP1_ADDRESS),Y
++sta PPU_DATA_REGISTER
++iny
++.endrepeat
++lda PP1_ADDRESS_LOW
++clc
++adc #16
++sta PP1_ADDRESS_LOW
++bcc @raw_noinc
++inc PP1_ADDRESS_HIGH
++@raw_noinc:
++dex
++bne @raw_chunk
++rts
+ PP1_ZERO_BUFFER = SCRATCH_BYTE_1
+ PP1_TYPE_TABLE = TEMP_POINTER_2
+ PP1_FOLLOW_1 = PP1_TYPE_TABLE + 4
